@@ -4,7 +4,7 @@ import {RenderSystem} from './framework/components/renderer/Renderer';
 import {ScriptSystem} from './framework/components/script/ScriptSystem';
 import {SpriteSystem} from './framework/components/sprite/SpriteSystem';
 
-/*
+/**
 TODO:
 * Tilesets
 * Layers
