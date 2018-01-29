@@ -1,0 +1,24 @@
+{
+  "name": "vagrant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "dependencies": {
+    "webpack": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.93",
+    "@types/pixi.js": "^4.6.3",
+    "pixi.js": "^4.7.0",
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2",
+    "webpack-dev-server": "^2.11.0"
+  },
+  "scripts": {
+    "build": "webpack",
+    "start:dev": "webpack-dev-server --hot --watch-poll"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
