@@ -17,7 +17,7 @@ interface IUncalculatedSprites {
 }
 
 interface ISpritesheetData {
-    imageAlias: string;
+    imageName: string;
     frameWidth: number;
     frameHeight: number;
     sprites: IUncalculatedSprites;
@@ -36,7 +36,7 @@ export class SpriteRegistry {
     private static sprites: {[key: string]: Sprite} = {};
 
     static registerSprite(data: ISpritesheetData) {
-        let image = AssetRegistry.getImage(data.imageAlias);
+        let image = AssetRegistry.getImage(data.imageName);
         let framesWide: number = image.width/data.frameWidth;
         let framesHigh: number = image.height/data.frameHeight;
 
@@ -54,7 +54,7 @@ export class SpriteRegistry {
                     height : data.frameHeight
                 });
             });
-            SpriteRegistry.setSprite(key, new Sprite(data.imageAlias, frames, framerate));
+            SpriteRegistry.setSprite(key, new Sprite(data.imageName, frames, framerate));
         }
     }
 

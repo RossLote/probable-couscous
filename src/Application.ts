@@ -8,13 +8,13 @@ import {SpriteSystem} from './framework/components/sprite/SpriteSystem';
 TODO:
 * Tilesets
 * Layers
-* Local storage
-* Input
-* Events
 * Collision
-* Physics
+* Input
 * Sound
 * Scenes
+* Local storage
+* Events
+* Physics
 * Lights
 * UI
 * Fonts
@@ -38,6 +38,7 @@ export class Application {
     canvas: HTMLCanvasElement;
     root: Entity;
     playing: boolean = false;
+    currentScene: any;
 
     constructor(canvas: HTMLCanvasElement = undefined) {
         Application.currentApplication = this;
@@ -45,6 +46,8 @@ export class Application {
             canvas = document.createElement('canvas');
             document.body.appendChild(canvas);
         }
+        canvas.width = 1000;
+        canvas.height = 600;
         this.canvas = canvas;
         this.root = new Entity();
 

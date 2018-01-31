@@ -2,7 +2,7 @@
 
 interface IAssets {
     url: string,
-    alias: string
+    name: string
 }
 
 export class AssetRegistry {
@@ -10,8 +10,8 @@ export class AssetRegistry {
     private static audio : {[key: string] : HTMLAudioElement} = {};
     static promises: Promise<any>[] = [];
 
-    static addImage(url: string, alias: string) : typeof AssetRegistry {
-        AssetRegistry.addImages([{url: url, alias: alias}]);
+    static addImage(url: string, name: string) : typeof AssetRegistry {
+        AssetRegistry.addImages([{url: url, name: name}]);
         return AssetRegistry;
     }
 
@@ -20,7 +20,7 @@ export class AssetRegistry {
             AssetRegistry.promises.push(new Promise(function(resolve, reject){
                 let image = new Image();
                 image.onload = function(){
-                    AssetRegistry.images[data.alias] = image;
+                    AssetRegistry.images[data.name] = image;
                     resolve();
                 }
                 image.src = data.url;
@@ -29,12 +29,12 @@ export class AssetRegistry {
         return AssetRegistry;
     }
 
-    static getImage(alias: string) {
-        return AssetRegistry.images[alias];
+    static getImage(name: string) {
+        return AssetRegistry.images[name];
     }
 
-    static addSound(url: string, alias: string) : typeof AssetRegistry {
-        AssetRegistry.addSounds([{url: url, alias: alias}]);
+    static addSound(url: string, name: string) : typeof AssetRegistry {
+        AssetRegistry.addSounds([{url: url, name: name}]);
         return AssetRegistry;
     }
 
@@ -43,7 +43,7 @@ export class AssetRegistry {
             AssetRegistry.promises.push(new Promise(function(resolve, reject){
                 let image = new Audio();
                 image.onload = function(){
-                    AssetRegistry.audio[data.alias] = image;
+                    AssetRegistry.audio[data.name] = image;
                     resolve();
                 }
                 image.src = data.url;
@@ -52,8 +52,8 @@ export class AssetRegistry {
         return AssetRegistry;
     }
 
-    static getSound(alias: string) {
-        return AssetRegistry.audio[alias];
+    static getSound(name: string) {
+        return AssetRegistry.audio[name];
     }
 
     static loadAssets(): Promise<any> {

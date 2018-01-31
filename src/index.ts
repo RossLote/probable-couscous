@@ -1,23 +1,27 @@
 import {AssetRegistry} from './core/assets';
 import {SpriteRegistry} from './core/sprites';
+import {TilesetRegistry, TileManager} from './core/tileset';
 import {Application} from './Application';
 import blah from './scripts/Tester';
 
 AssetRegistry.addImages([{
     url: '/images/magecity.png',
-    alias: 'magecity'
+    name: 'magecity'
 },{
     url: '/images/town01.png',
-    alias: 'town1'
+    name: 'town1'
 },{
     url: '/images/town02.png',
-    alias: 'town2'
+    name: 'town2'
 },{
     url: '/images/Fumiko.png',
-    alias: 'fumiko'
+    name: 'fumiko'
+},{
+    url: '/images/mapPack_tilesheet.png',
+    name: 'tileset'
 }]).loadAssets().then(function(){
     SpriteRegistry.registerSprites([{
-        imageAlias: 'fumiko',
+        imageName: 'fumiko',
         frameWidth: 24,
         frameHeight: 32,
         sprites: {
@@ -67,8 +71,93 @@ AssetRegistry.addImages([{
             }
         }
     }]);
+    TilesetRegistry.registerTilesets({
+        'tester': {
+            imageName: 'tileset',
+            frameWidth: 64,
+            frameHeight: 64
+        }
+    });
 
-    var app = new Application()
+    let app = new Application()
+
+    let water = [
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
+        [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203]
+    ];
+
+    let grass = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 6, 7, 7, 7, 7, 8, 0, 0, 0, 0, 0],
+        [0, 0, 6, 27, 24, 24, 24, 24, 26, 8, 0, 0, 0, 0],
+        [0, 6, 27, 24, 24, 24, 24, 24, 24, 26, 7, 8, 0, 0],
+        [0, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25, 0, 0],
+        [0, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 26, 8, 0],
+        [0, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25, 0],
+        [0, 40, 41, 41, 41, 41, 10, 24, 24, 24, 24, 24, 25, 0],
+        [0, 0, 0, 0, 0, 0, 40, 41, 41, 41, 41, 41, 42, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+    let ice = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 69, 70, 71, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 86, 87, 89, 71, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 103, 104, 73, 89, 70, 71, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 86, 87, 87, 88, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 103, 104, 104, 105, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+    let details = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 61, 0, 124, 107, 0, 106, 0, 0, 0, 0, 0],
+        [0, 0, 0, 112, 0, 0, 0, 0, 0, 0, 124, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 44, 0, 124, 0, 0, 0, 0, 0],
+        [0, 0, 61, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+    let tileManager = new TileManager([{
+        name: 'water',
+        tilesetName: 'tester',
+        data: water,
+        zIndex: 0
+    },{
+        name: 'grass',
+        tilesetName: 'tester',
+        data: grass,
+        zIndex: 1
+    },{
+        name: 'ice',
+        tilesetName: 'tester',
+        data: ice,
+        zIndex: 2
+    },{
+        name: 'details',
+        tilesetName: 'tester',
+        data: details,
+        zIndex: 3
+    }]);
+
+    // tileManager.render(app.canvas)
+    //
+    app.currentScene = tileManager;
 
     var entity = app.root.createChild();
     entity.addComponent('sprite', {

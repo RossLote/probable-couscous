@@ -18,6 +18,10 @@ export class RenderSystem extends System {
         var root = [this.app.root];
         var this_ = this;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Break this out
+        this.app.currentScene.render(this.canvas);
+
         function graph(entities: Array<Entity>) {
             entities.forEach(function(entity){
                 this_.context.save()
