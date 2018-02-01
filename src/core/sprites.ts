@@ -26,7 +26,7 @@ interface ISpritesheetData {
 
 export class Sprite {
     public secondsPerFrame: number;
-    constructor(public imageALias: string, public frames: Array<IFrame>, public framerate: number){
+    constructor(public imageName: string, public frames: Array<IFrame>, public framerate: number){
         this.secondsPerFrame = 1/framerate;
     }
 }

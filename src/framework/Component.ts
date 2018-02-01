@@ -3,7 +3,7 @@ import {Entity} from './Entity';
 
 export class Component {
 
-    constructor(private system: System, private entity: Entity, data: any) {
+    constructor(protected system: System, protected entity: Entity, data: any) {
         for (let key in data) {
             (<any>this)[key] = data[key];
         }

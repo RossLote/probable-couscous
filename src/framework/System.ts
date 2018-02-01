@@ -12,17 +12,15 @@ export class System {
         this.app = Application.getCurrentApplication();
     }
 
-    addComponent(entity: Entity, data: object) : Component {
+    addComponent(entity: Entity, data: any) : Component {
         this.entities.push(entity);
         return new this.ComponentType(this, entity, data);
     }
 
     initialize() {
         this.entities.forEach((entity: Entity) => {
-            let components = entity.getComponents(this.name);
-            components.forEach((component) => {
-                this.initializeEntity(entity, component);
-            })
+            let component = entity.getComponent(this.name);
+            this.initializeEntity(entity, component);
         });
     }
 
@@ -32,10 +30,8 @@ export class System {
 
     update(dt: number) : void {
         this.entities.forEach((entity: Entity) => {
-            let components = entity.getComponents(this.name);
-            components.forEach((component) => {
-                this.updateEntity(dt, entity, component);
-            });
+            let component = entity.getComponent(this.name);
+            this.updateEntity(dt, entity, component);
         });
     }
 

@@ -3,6 +3,9 @@ import {SpriteRegistry} from '../../../core/sprites';
 import {System} from '../../System';
 import {Entity} from '../../Entity';
 
+import {SpriteComponent} from '../sprite/SpriteComponent';
+import {TileMapComponent} from '../tilemap/TileMapComponent';
+
 export class RenderSystem extends System {
     private context: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
@@ -18,10 +21,6 @@ export class RenderSystem extends System {
         var root = [this.app.root];
         var this_ = this;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Break this out
-        this.app.currentScene.render(this.canvas);
-
         function graph(entities: Array<Entity>) {
             entities.forEach(function(entity){
                 this_.context.save()
@@ -33,39 +32,45 @@ export class RenderSystem extends System {
         graph(root);
     }
 
-    updateEntity(dt: number, entity: Entity) {
-        let ctx = this.context;
-        let pos = entity.transform.position;
+    renderSprite = (entity: Entity, component: SpriteComponent) => {
         let scale = entity.transform.scale;
-        let sprites = <any>entity.getComponents('sprite');
-        ctx.translate(pos.x, pos.y);
-        sprites.forEach((component: any) => {
-            let sprite = SpriteRegistry.getSprite(component.spriteName);
-            let frame: any = sprite.frames[component.currentFrame];
-            ctx.drawImage(
-                AssetRegistry.getImage(sprite.imageALias),
-                frame.x,
-                frame.y,
-                frame.width,
-                frame.height,
-                0,
-                0,
-                frame.width * scale.x,
-                frame.height * scale.y
+        let sprite = SpriteRegistry.getSprite(component.spriteName);
+        let frame: any = sprite.frames[component.currentFrame];
+        this.context.drawImage(
+            AssetRegistry.getImage(sprite.imageName),
+            frame.x,
+            frame.y,
+            frame.width,
+            frame.height,
+            0,
+            0,
+            frame.width * scale.x,
+            frame.height * scale.y
+        )
+    }
+
+    renderTileMap = (entity: Entity, tilemap: TileMapComponent) => {
+        tilemap.mapData.forEach((data: any) => {
+            this.context.drawImage(
+                tilemap.tileset.image,
+                data.sx,
+                data.sy,
+                tilemap.tileset.frameWidth,
+                tilemap.tileset.frameHeight,
+                data.dx,
+                data.dy,
+                tilemap.tileset.frameWidth,
+                tilemap.tileset.frameHeight
             )
-        });
-        // if (sprite) {
-        //     ctx.drawImage(
-        //         sprite.image,
-        //         sprite.data.x,
-        //         sprite.data.y,
-        //         sprite.data.width,
-        //         sprite.data.height,
-        //         pos.x,
-        //         pos.y,
-        //         sprite.data.width * scale.x,
-        //         sprite.data.height * scale.y
-        //     )
-        // }
+        })
+    }
+
+    updateEntity(dt: number, entity: Entity) {
+        let pos = entity.transform.position;
+        let sprite = <SpriteComponent>entity.getComponent('sprite');
+        let tilemap = <TileMapComponent>entity.getComponent('tilemap');
+        this.context.translate(pos.x, pos.y);
+        sprite && this.renderSprite(entity, sprite);
+        tilemap && this.renderTileMap(entity, tilemap);
     }
 }

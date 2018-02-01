@@ -1,6 +1,6 @@
 import {AssetRegistry} from './core/assets';
 import {SpriteRegistry} from './core/sprites';
-import {TilesetRegistry, TileManager} from './core/tileset';
+import {TilesetRegistry} from './core/tileset';
 import {Application} from './Application';
 import blah from './scripts/Tester';
 
@@ -133,35 +133,39 @@ AssetRegistry.addImages([{
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
 
-    let tileManager = new TileManager([{
-        name: 'water',
-        tilesetName: 'tester',
-        data: water,
-        zIndex: 0
-    },{
-        name: 'grass',
-        tilesetName: 'tester',
-        data: grass,
-        zIndex: 1
-    },{
-        name: 'ice',
-        tilesetName: 'tester',
-        data: ice,
-        zIndex: 2
-    },{
-        name: 'details',
-        tilesetName: 'tester',
-        data: details,
-        zIndex: 3
-    }]);
+
 
     // tileManager.render(app.canvas)
     //
-    app.currentScene = tileManager;
 
-    var entity = app.root.createChild();
-    entity.addComponent('sprite', {
-        spriteName: 'runE'
+    // var entity = app.root.createChild();
+    // entity.addComponent('sprite', {
+    //     spriteName: 'runE'
+    // });
+    var tilemaps = app.root.createChild();
+    tilemaps.createChild().addComponent('tilemap', {
+        tilesetName: 'tester',
+        data: water,
+        sortOrder: 'bottomLeft',
+        orderInLayer: 0
+    });
+    tilemaps.createChild().addComponent('tilemap', {
+        tilesetName: 'tester',
+        data: grass,
+        sortOrder: 'bottomLeft',
+        orderInLayer: 0
+    });
+    tilemaps.createChild().addComponent('tilemap', {
+        tilesetName: 'tester',
+        data: ice,
+        sortOrder: 'bottomLeft',
+        orderInLayer: 0
+    });
+    tilemaps.createChild().addComponent('tilemap', {
+        tilesetName: 'tester',
+        data: details,
+        sortOrder: 'bottomLeft',
+        orderInLayer: 0
     });
 
     app.startGameLoop();

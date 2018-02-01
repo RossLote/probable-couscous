@@ -3,6 +3,7 @@ import {Entity} from './framework/Entity';
 import {RenderSystem} from './framework/components/renderer/Renderer';
 import {ScriptSystem} from './framework/components/script/ScriptSystem';
 import {SpriteSystem} from './framework/components/sprite/SpriteSystem';
+import {TileMapSystem} from './framework/components/tilemap/TileMapSystem';
 
 /**
 TODO:
@@ -53,6 +54,7 @@ export class Application {
 
         this.registerSystems([
             ScriptSystem,
+            TileMapSystem,
             SpriteSystem,
             RenderSystem
         ]);
@@ -87,7 +89,7 @@ export class Application {
     private gameLoop(time: number) {
         let dt = (time - this.lastFrameTime)/1000;
         this.lastFrameTime = time;
-        window.requestAnimationFrame(this.gameLoop.bind(this));
+        // window.requestAnimationFrame(this.gameLoop.bind(this));
         if (this.playing) {
             for (let name in this.systems) {
                 this.systems[name].update(dt);

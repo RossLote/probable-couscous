@@ -4,7 +4,7 @@ import {Vector2} from '../core/Vector2';
 import {uuid} from '../core/uuid';
 
 interface IComponents {
-    [key: string]: Array<Component>
+    [key: string]: Component
 }
 
 interface ITransform {
@@ -14,7 +14,7 @@ interface ITransform {
 }
 
 export class Entity {
-    private components: IComponents = {};
+    private components: IComponents;
     private app: Application;
 
     public id: string;
@@ -27,7 +27,7 @@ export class Entity {
     }
 
     constructor() {
-        var self = this;
+        this.components = {};
         this.app = Application.getCurrentApplication();
         this.id = uuid();
     }
@@ -43,22 +43,21 @@ export class Entity {
         return entity;
     }
 
-    addComponent(name: string, data: object): Component {
+    addComponent = (name: string, data: object): Entity => {
         let component = this.app.getSystem(name).addComponent(this, data);
-        let components = this.components[name] || [];
-        components.push(component);
-        this.components[name] = components;
-        return component;
+        console.log(name, component)
+        this.components[name] = component;
+        return this;
     }
 
-    removeComponent(name: string) {
+    removeComponent = (name: string) => {
         delete this.components[name];
     }
 
-    getComponents(name: string): Array<Component> {
+    getComponent(name: string): Component {
         if (name in this.components) {
             return this.components[name];
         }
-        return [];
+        return undefined;
     }
 }
