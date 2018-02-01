@@ -1,5 +1,6 @@
 import {Component} from './Component';
 import {Application} from '../Application';
+import {RenderLayer, DefaultRenderLayer} from '../Layer';
 import {Vector2} from '../core/Vector2';
 import {uuid} from '../core/uuid';
 
@@ -25,11 +26,14 @@ export class Entity {
         rotation: 0,
         scale: new Vector2(1,1)
     }
+    private _orderInLayer: number;
+    private _renderLayer: RenderLayer;
 
     constructor() {
         this.components = {};
         this.app = Application.getCurrentApplication();
         this.id = uuid();
+        this.renderLayer = DefaultRenderLayer;
     }
 
     addChild(entity: Entity) {
@@ -45,7 +49,6 @@ export class Entity {
 
     addComponent = (name: string, data: object): Entity => {
         let component = this.app.getSystem(name).addComponent(this, data);
-        console.log(name, component)
         this.components[name] = component;
         return this;
     }
@@ -59,5 +62,24 @@ export class Entity {
             return this.components[name];
         }
         return undefined;
+    }
+
+    get renderLayer(): RenderLayer {
+        return this._renderLayer;
+    }
+
+    set renderLayer(layer: RenderLayer) {
+        this.renderLayer.removeEntity(this);
+        layer.addEntity(this);
+        this._renderLayer = layer;
+    }
+
+    get orderInLayer(): number {
+        return this._orderInLayer;
+    }
+
+    set orderInLayer(order: number) {
+        this._orderInLayer = order;
+        this.renderLayer.sort();
     }
 }
