@@ -2,6 +2,7 @@ import {AssetRegistry} from './core/assets';
 import {SpriteRegistry} from './core/sprites';
 import {TilesetRegistry} from './core/tileset';
 import {Application} from './Application';
+import {RenderLayer} from './Layer';
 import blah from './scripts/Tester';
 
 AssetRegistry.addImages([{
@@ -133,15 +134,16 @@ AssetRegistry.addImages([{
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
 
-
+    let testLayer = new RenderLayer('details', 1);
 
     // tileManager.render(app.canvas)
     //
 
-    // var entity = app.root.createChild();
-    // entity.addComponent('sprite', {
-    //     spriteName: 'runE'
-    // });
+    var entity = app.root.createChild();
+    entity.addComponent('sprite', {
+        spriteName: 'runE'
+    }).addComponent('script', blah);
+    entity.renderLayer = testLayer;
     var tilemaps = app.root.createChild();
     tilemaps.createChild().addComponent('tilemap', {
         tilesetName: 'tester',
@@ -166,7 +168,7 @@ AssetRegistry.addImages([{
         data: details,
         sortOrder: 'bottomLeft',
         orderInLayer: 0
-    });
+    })//.renderLayer = testLayer;
 
     app.startGameLoop();
 });

@@ -1,6 +1,6 @@
 import {System} from './framework/System';
 import {Entity} from './framework/Entity';
-import {RenderSystem} from './framework/components/renderer/Renderer';
+import {Renderer} from './Renderer';
 import {ScriptSystem} from './framework/components/script/ScriptSystem';
 import {SpriteSystem} from './framework/components/sprite/SpriteSystem';
 import {TileMapSystem} from './framework/components/tilemap/TileMapSystem';
@@ -10,7 +10,7 @@ TODO:
 * Tilesets
 *
 * Layers
-* 
+*
 * Collision
 * Input
 * Sound
@@ -38,6 +38,7 @@ export class Application {
     private systems: ISystems = {};
     private startTime: number;
     private lastFrameTime: number;
+    private renderer: Renderer;
     canvas: HTMLCanvasElement;
     root: Entity;
     playing: boolean = false;
@@ -52,13 +53,13 @@ export class Application {
         canvas.width = 1000;
         canvas.height = 600;
         this.canvas = canvas;
+        this.renderer = new Renderer(this);
         this.root = new Entity();
 
         this.registerSystems([
             ScriptSystem,
             TileMapSystem,
-            SpriteSystem,
-            RenderSystem
+            SpriteSystem
         ]);
     }
 
@@ -91,11 +92,12 @@ export class Application {
     private gameLoop(time: number) {
         let dt = (time - this.lastFrameTime)/1000;
         this.lastFrameTime = time;
-        // window.requestAnimationFrame(this.gameLoop.bind(this));
+        window.requestAnimationFrame(this.gameLoop.bind(this));
         if (this.playing) {
             for (let name in this.systems) {
                 this.systems[name].update(dt);
             }
+            this.renderer.render(dt);
         }
     }
 }

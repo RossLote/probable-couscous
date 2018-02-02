@@ -69,7 +69,9 @@ export class Entity {
     }
 
     set renderLayer(layer: RenderLayer) {
-        this.renderLayer.removeEntity(this);
+        if (this.renderLayer) {
+            this.renderLayer.removeEntity(this);
+        }
         layer.addEntity(this);
         this._renderLayer = layer;
     }
