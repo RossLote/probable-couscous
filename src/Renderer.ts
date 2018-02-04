@@ -42,7 +42,6 @@ export class Renderer {
     }
 
     renderSprite = (dt: number, entity: Entity, component: SpriteComponent) => {
-        let scale = entity.transform.scale;
         let sprite = SpriteRegistry.getSprite(component.spriteName);
         let frame: any = sprite.frames[component.currentFrame];
         this.context.drawImage(
@@ -53,8 +52,8 @@ export class Renderer {
             frame.height,
             0,
             0,
-            frame.width * scale.x,
-            frame.height * scale.y
+            frame.width,
+            frame.height
         )
     }
 
@@ -75,10 +74,10 @@ export class Renderer {
     }
 
     renderEntity(dt: number, entity: Entity) {
-        let pos = entity.transform.position;
+        let m = entity.transform.localToWorldMatrix.data;
         let sprite = <SpriteComponent>entity.getComponent('sprite');
         let tilemap = <TileMapComponent>entity.getComponent('tilemap');
-        this.context.translate(pos.x, pos.y);
+        this.context.transform(m[0], m[3], m[1], m[4], m[2], m[5]);
         tilemap && this.renderTileMap(dt, entity, tilemap);
         sprite && this.renderSprite(dt, entity, sprite);
     }

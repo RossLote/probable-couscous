@@ -1,18 +1,14 @@
 import {Component} from './Component';
+import {Transform} from './Transform';
 import {Application} from '../Application';
 import {RenderLayer, DefaultRenderLayer} from '../Layer';
-import {Vector2} from '../core/Vector2';
+import {Vector2} from '../math/Vector2';
 import {uuid} from '../core/uuid';
 
 interface IComponents {
     [key: string]: Component
 }
 
-interface ITransform {
-    position: Vector2,
-    rotation: number,
-    scale: Vector2
-}
 
 export class Entity {
     private components: IComponents;
@@ -21,11 +17,9 @@ export class Entity {
     public id: string;
     public children: Array<Entity> = [];
     public parent: Entity;
-    public transform : ITransform = {
-        position: new Vector2,
-        rotation: 0,
-        scale: new Vector2(1,1)
-    }
+
+    public transform: Transform = new Transform;
+
     private _orderInLayer: number;
     private _renderLayer: RenderLayer;
 
