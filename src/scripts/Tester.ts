@@ -6,11 +6,9 @@ export default class Tester extends Script {
     //     this.entity.transform.position.x = 100;
     //     this.entity.transform.position.y = 100;
     // }
-    // update(dt:number){
-    //     let pos = this.entity.transform.position;
-    //     pos.x += 5 * dt
-    //     pos.y += 8 * dt;
-    // }
+    update(dt:number){
+        this.entity.transform.localRotation+=0.2*dt;
+    }
     // cleanup() {
     //
     // }

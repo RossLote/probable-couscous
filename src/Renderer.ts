@@ -18,33 +18,30 @@ export class Renderer {
     }
 
     render(dt: number){
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        const context = this.context;
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
         RenderLayers.forEach((layer) => {
             layer.preRenderSetup();
             layer.getEntities().forEach((entity) => {
-                this.context.save()
-                this.renderEntity(dt, entity);
-                this.context.restore();
+                this.renderEntity(context, dt, entity);
             })
         });
-        // var root = [this.app.root];
-        // var this_ = this;
-        // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        // function graph(entities: Array<Entity>) {
-        //     entities.forEach(function(entity){
-        //         this_.context.save()
-        //         this_.updateEntity(dt, entity);
-        //         graph(entity.children);
-        //         this_.context.restore()
-        //     }, this);
-        // }
-        // graph(root);
     }
 
-    renderSprite = (dt: number, entity: Entity, component: SpriteComponent) => {
+    renderSprite = (context: CanvasRenderingContext2D, dt: number, entity: Entity, component: SpriteComponent) => {
         let sprite = SpriteRegistry.getSprite(component.spriteName);
         let frame: any = sprite.frames[component.currentFrame];
-        this.context.drawImage(
+        let pivot = entity.transform.pivot.data;
+        context.translate(-pivot[0], -pivot[1]);
+        context.fillRect(
+            0,
+            0,
+            frame.width,
+            frame.height
+        )
+        context.drawImage(
             AssetRegistry.getImage(sprite.imageName),
             frame.x,
             frame.y,
@@ -57,9 +54,9 @@ export class Renderer {
         )
     }
 
-    renderTileMap = (dt: number, entity: Entity, tilemap: TileMapComponent) => {
+    renderTileMap = (context: CanvasRenderingContext2D, dt: number, entity: Entity, tilemap: TileMapComponent) => {
         tilemap.mapData.forEach((data: any) => {
-            this.context.drawImage(
+            context.drawImage(
                 tilemap.tileset.image,
                 data.sx,
                 data.sy,
@@ -73,12 +70,12 @@ export class Renderer {
         })
     }
 
-    renderEntity(dt: number, entity: Entity) {
+    renderEntity(context: CanvasRenderingContext2D, dt: number, entity: Entity) {
         let m = entity.transform.localToWorldMatrix.data;
         let sprite = <SpriteComponent>entity.getComponent('sprite');
         let tilemap = <TileMapComponent>entity.getComponent('tilemap');
-        this.context.transform(m[0], m[3], m[1], m[4], m[2], m[5]);
-        tilemap && this.renderTileMap(dt, entity, tilemap);
-        sprite && this.renderSprite(dt, entity, sprite);
+        this.context.setTransform(m[0], m[3], m[1], m[4], m[2], m[5]);
+        tilemap && this.renderTileMap(context, dt, entity, tilemap);
+        sprite && this.renderSprite(context, dt, entity, sprite);
     }
 }

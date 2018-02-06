@@ -15,27 +15,34 @@ export class Entity {
     private app: Application;
 
     public id: string;
-    public children: Array<Entity> = [];
+    public children: Array<Entity>;
     public parent: Entity;
 
-    public transform: Transform = new Transform;
+    public transform: Transform;
+    public pivot: Vector2;
 
     private _orderInLayer: number;
     private _renderLayer: RenderLayer;
 
     constructor() {
         this.components = {};
+        this.children = new Array<Entity>();
+        this.pivot = new Vector2(0, 0)
         this.app = Application.getCurrentApplication();
         this.id = uuid();
         this.renderLayer = DefaultRenderLayer;
+        this.transform = new Transform;
     }
 
-    addChild(entity: Entity) {
+    addChild = (entity: Entity): Entity => {
         this.children.push(entity);
         entity.parent = this;
+        entity.transform.parent = this.transform;
+        console.log(this.transform.children)
+        return this;
     }
 
-    createChild(): Entity {
+    createChild = (): Entity => {
         var entity = new Entity();
         this.addChild(entity);
         return entity;
@@ -51,7 +58,7 @@ export class Entity {
         delete this.components[name];
     }
 
-    getComponent(name: string): Component {
+    getComponent = (name: string): Component => {
         if (name in this.components) {
             return this.components[name];
         }

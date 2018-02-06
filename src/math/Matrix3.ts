@@ -34,19 +34,53 @@ export class Matrix3 {
     }
 
     static multiply(matrices: Array<Matrix3>): Matrix3 {
-        return Matrix3.IDENTITY;
+        let m = matrices.shift();
+        if (m) {
+            m = m.clone();
+            for (let i = 0, n = matrices.length; i < n; i++) {
+                m.multiply(matrices[i]);
+            }
+            return m;
+        }
     }
 
-    static rotate(scalar: number): Matrix3 {
-        return Matrix3.IDENTITY;
+    static rotate(angle: number): Matrix3 {
+        let cos = Math.cos(angle),
+			sin = Math.sin(angle);
+        return new Matrix3(
+            cos, -sin,  0,
+            sin,  cos,  0,
+              0,    0,  1
+        );
+    }
+
+    static rotateDegrees(angle: number): Matrix3 {
+        angle *= 0.01745329251994329;
+        let cos = Math.cos(angle),
+			sin = Math.sin(angle);
+        return new Matrix3(
+            cos, -sin,  0,
+            sin,  cos,  0,
+              0,    0,  1
+        );
     }
 
     static scale(vector: Vector2): Matrix3 {
-        return Matrix3.IDENTITY;
+        let v = vector.data;
+        return new Matrix3(
+            v[0],    0,  0,
+               0, v[1],  0,
+               0,    0,  1
+        );
     }
 
     static translate(vector: Vector2): Matrix3 {
-        return Matrix3.IDENTITY;
+        let v = vector.data;
+        return new Matrix3(
+            1, 0, v[0],
+            0, 1, v[1],
+            0, 0,    1
+        );
     }
 
     clone = ():Matrix3 => {
@@ -107,7 +141,42 @@ export class Matrix3 {
         )
     }
 
-    multiply = (value: any): Matrix3 => {
+    multiply = (rhs: Matrix3): Matrix3 => {
+        let a = this.data,
+            b = rhs.data;
+
+        let a11 = a[0],
+            a12 = a[1],
+            a13 = a[2],
+
+            a21 = a[3],
+            a22 = a[4],
+            a23 = a[5],
+
+            a31 = a[6],
+            a32 = a[7],
+            a33 = a[8];
+
+        let b11 = b[0],
+            b12 = b[1],
+            b13 = b[2],
+
+            b21 = b[3],
+            b22 = b[4],
+            b23 = b[5],
+
+            b31 = b[6],
+            b32 = b[7],
+            b33 = b[8];
+
+        this.data = new Float32Array([
+            a11*b11+a12*b21+a13*b31,   a11*b12+a12*b22+a13*b32,   a11*b13+a12*b23+a13*b33,
+
+            a21*b11+a22*b21+a23*b31,   a21*b12+a22*b22+a23*b32,   a21*b13+a22*b23+a23*b33,
+
+            a31*b11+a32*b21+a33*b31,   a31*b12+a32*b22+a33*b32,   a31*b13+a32*b23+a33*b33,
+        ]);
+
         return this;
     }
 
