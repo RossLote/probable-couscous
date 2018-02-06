@@ -1,3 +1,4 @@
+import {Keyboard} from './input/Keyboard';
 import {System} from './framework/System';
 import {Entity} from './framework/Entity';
 import {Renderer} from './Renderer';
@@ -43,6 +44,7 @@ export class Application {
     root: Entity;
     playing: boolean = false;
     currentScene: any;
+    keyboard: Keyboard;
 
     constructor(canvas: HTMLCanvasElement = undefined) {
         Application.currentApplication = this;
@@ -55,6 +57,7 @@ export class Application {
         this.canvas = canvas;
         this.renderer = new Renderer(this);
         this.root = new Entity();
+        this.keyboard = new Keyboard(window);
 
         this.registerSystems([
             ScriptSystem,
@@ -98,6 +101,7 @@ export class Application {
                 this.systems[name].update(dt);
             }
             this.renderer.render(dt);
+            this.keyboard.update();
         }
     }
 }

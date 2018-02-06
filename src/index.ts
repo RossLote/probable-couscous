@@ -42,7 +42,7 @@ AssetRegistry.addImages([{
                 frames: [0, 1, 2, 1],
                 framerate: 6
             },
-            walkW: {
+            walkE: {
                 frames: [17, 18, 19, 18],
                 framerate: 6
             },
@@ -50,7 +50,7 @@ AssetRegistry.addImages([{
                 frames: [34, 35, 36, 35],
                 framerate: 6
             },
-            walkE: {
+            walkW: {
                 frames: [51, 52, 53, 52],
                 framerate: 6
             },
@@ -58,7 +58,7 @@ AssetRegistry.addImages([{
                 frames: [3, 4, 5, 4],
                 framerate: 9
             },
-            runW: {
+            runE: {
                 frames: [20, 21, 22, 21],
                 framerate: 9
             },
@@ -66,7 +66,7 @@ AssetRegistry.addImages([{
                 frames: [37, 38, 39, 38],
                 framerate: 9
             },
-            runE: {
+            runW: {
                 frames: [54, 55, 56, 55],
                 framerate: 9
             }
@@ -153,36 +153,36 @@ AssetRegistry.addImages([{
 
     entity.transform.localPosition = [400, 300];
     // entity.transform.localRotation = 1;
-    // entity.transform.pivot = [12.5, 15.5];
+    // entity.transform.pivot = [12.5, 15.5];;
 
     entity.addComponent('sprite', {
         spriteName: 'runE'
     }).addComponent('script', blah);
 
-    let child1 = entity.createChild()
+    // let child1 = entity.createChild()
     // let child2 = entity.createChild()
-    let grandChild = child1.createChild()
-    let greatGrandChild = grandChild.createChild()
+    // let grandChild = child1.createChild()
+    // let greatGrandChild = grandChild.createChild()
 
-    child1.transform.localPosition = [0, 50];
+    // child1.transform.localPosition = [0, 50];
     // child1.transform.pivot = [12.5, 15.5];
     // child1.transform.localRotation = -2;
     // child2.transform.localPosition = [72, 77];
     // child2.transform.localRotation = 3;
     // grandChild.transform.pivot = [12.5, 15.5];
-    grandChild.transform.localPosition = [0, 50];
+    // grandChild.transform.localPosition = [0, 50];
     // greatGrandChild.transform.localPosition = [100, 33];
     // greatGrandChild.transform.localRotation = 3;
 
-    child1.addComponent('sprite', {
-        spriteName: 'walkE'
-    }).addComponent('script', blah);
+    // child1.addComponent('sprite', {
+    //     spriteName: 'walkE'
+    // }).addComponent('script', blah);
     // child2.addComponent('sprite', {
     //     spriteName: 'walkE'
     // });
-    grandChild.addComponent('sprite', {
-        spriteName: 'runW'
-    });//.addComponent('script', blah);
+    // grandChild.addComponent('sprite', {
+    //     spriteName: 'runW'
+    // });//.addComponent('script', blah);
     // greatGrandChild.addComponent('sprite', {
     //     spriteName: 'runS'
     // });

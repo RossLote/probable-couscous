@@ -153,7 +153,7 @@ export class Transform {
     }
 
     public get localPosition():any {
-    	return this._localPosition;
+    	return this._localPosition.clone();
     }
 
     // sets the position relative to the parent

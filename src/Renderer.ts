@@ -35,12 +35,6 @@ export class Renderer {
         let frame: any = sprite.frames[component.currentFrame];
         let pivot = entity.transform.pivot.data;
         context.translate(-pivot[0], -pivot[1]);
-        context.fillRect(
-            0,
-            0,
-            frame.width,
-            frame.height
-        )
         context.drawImage(
             AssetRegistry.getImage(sprite.imageName),
             frame.x,
