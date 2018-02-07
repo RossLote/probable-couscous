@@ -8,21 +8,19 @@ import {TileMapSystem} from './framework/components/tilemap/TileMapSystem';
 
 /**
 TODO:
-* Tilesets
-*
-* Layers
-*
-* Collision
-* Input
-* Sound
+* Tilesets              ✓
+* Layers                ✓
+* Input                 ✓
 * Scenes
-* Local storage
-* Events
+* Sound
+* Collision
 * Physics
+* Events/Triggers
 * Lights
 * UI
 * Fonts
 * Build from JSON
+* Local storage (Saving)
 * Script import
 * WebGL
 * Documentation
@@ -94,6 +92,7 @@ export class Application {
 
     private gameLoop(time: number) {
         let dt = (time - this.lastFrameTime)/1000;
+        console.log(dt);
         this.lastFrameTime = time;
         window.requestAnimationFrame(this.gameLoop.bind(this));
         if (this.playing) {

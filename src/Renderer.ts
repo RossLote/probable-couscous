@@ -33,8 +33,6 @@ export class Renderer {
     renderSprite = (context: CanvasRenderingContext2D, dt: number, entity: Entity, component: SpriteComponent) => {
         let sprite = SpriteRegistry.getSprite(component.spriteName);
         let frame: any = sprite.frames[component.currentFrame];
-        let pivot = entity.transform.getPivot().data;
-        context.translate(-pivot[0], -pivot[1]);
         context.drawImage(
             AssetRegistry.getImage(sprite.imageName),
             frame.x,

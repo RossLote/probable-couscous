@@ -105,8 +105,9 @@ export class Transform {
         let t = Matrix3.translate(this.localPosition);
         let r = Matrix3.rotate(this.localRotation);
         let s = Matrix3.scale(this.localScale);
+        let p = Matrix3.translate(this.pivot);
 
-        return Matrix3.multiply([t, r, s]);
+        return Matrix3.multiply([t, r, s, p]);
     }
 
     // gets the matrix that converts from local
@@ -195,7 +196,7 @@ export class Transform {
 	}
 
 	getPivot = ():Vector2 => {
-		return this.pivot.clone();
+		return this.pivot.clone().multiply(new Vector2(-1, -1));
 	}
 
 	setPivot = (vector: Vector2|Array<number>):Transform => {
@@ -203,7 +204,7 @@ export class Transform {
 		    vector = new Vector2(vector);
 		}
 		if (!vector.equals(this.localPosition)) {
-			this.pivot = vector;
+			this.pivot = vector.multiply(new Vector2(-1, -1));
 			this.setDirty();
 		}
 		return this;

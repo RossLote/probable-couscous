@@ -15,8 +15,6 @@ export class Entity {
     private app: Application;
 
     public id: string;
-    public children: Array<Entity>;
-    public parent: Entity;
 
     public transform: Transform;
     public pivot: Vector2;
@@ -26,7 +24,6 @@ export class Entity {
 
     constructor() {
         this.components = {};
-        this.children = new Array<Entity>();
         this.pivot = new Vector2(0, 0)
         this.app = Application.getCurrentApplication();
         this.id = uuid();
@@ -35,8 +32,6 @@ export class Entity {
     }
 
     addChild = (entity: Entity): Entity => {
-        this.children.push(entity);
-        entity.parent = this;
         entity.transform.parent = this.transform;
         return this;
     }
@@ -62,6 +57,10 @@ export class Entity {
             return this.components[name];
         }
         return undefined;
+    }
+
+    destroy = () => {
+        //TODO
     }
 
     get renderLayer(): RenderLayer {

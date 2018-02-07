@@ -16,17 +16,17 @@ export default class Tester extends Script {
         let sprite = <any>this.entity.getComponent('sprite');
 
         if (pressed('up')){
-            velocity.y = -100;
+            velocity.y -= 100;
         }
         if (pressed('down')) {
-            velocity.y = 100;
+            velocity.y += 100;
         }
 
         if (pressed('left')) {
-            velocity.x = -100;
+            velocity.x -= 100;
         }
         if (pressed('right')) {
-            velocity.x = 100;
+            velocity.x += 100;
         }
 
         velocity.multiply(new Vector2(dt, dt));
@@ -34,13 +34,13 @@ export default class Tester extends Script {
             sprite.spriteName = 'standN'
         } else {
             if (velocity.x > 0) {
-                sprite.spriteName = 'walkE'
+                sprite.spriteName = 'runE'
             } else if (velocity.x < 0) {
-                sprite.spriteName = 'walkW'
+                sprite.spriteName = 'runW'
             } else if (velocity.y > 0) {
-                sprite.spriteName = 'walkS'
+                sprite.spriteName = 'runS'
             } else if (velocity.y < 0) {
-                sprite.spriteName = 'walkN'
+                sprite.spriteName = 'runN'
             }
         }
 

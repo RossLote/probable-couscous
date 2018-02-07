@@ -155,7 +155,7 @@ AssetRegistry.addImages([{
 
     entity.transform.setLocalPosition([400, 300])
     // entity.transform.localRotation = 1;
-    // entity.transform.pivot = [12.5, 15.5];;
+    entity.transform.setPivot([12, 15]);
 
     entity.addComponent('sprite', {
         spriteName: 'runE'
@@ -190,36 +190,36 @@ AssetRegistry.addImages([{
     // });
     entity.renderLayer = testLayer;
     var tilemaps = app.root.createChild();
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: water,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 0
-    // });
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: grass,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 0
-    // });
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: ice,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 0
-    // });
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: detailsLower,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 0
-    // })//.renderLayer = testLayer;
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: detailsUpper,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 1
-    // }).renderLayer = testLayer;
+    tilemaps.createChild().addComponent('tilemap', {
+        tilesetName: 'tester',
+        data: water,
+        sortOrder: 'bottomLeft',
+        orderInLayer: 0
+    });
+    tilemaps.createChild().addComponent('tilemap', {
+        tilesetName: 'tester',
+        data: grass,
+        sortOrder: 'bottomLeft',
+        orderInLayer: 0
+    });
+    tilemaps.createChild().addComponent('tilemap', {
+        tilesetName: 'tester',
+        data: ice,
+        sortOrder: 'bottomLeft',
+        orderInLayer: 0
+    });
+    tilemaps.createChild().addComponent('tilemap', {
+        tilesetName: 'tester',
+        data: detailsLower,
+        sortOrder: 'bottomLeft',
+        orderInLayer: 0
+    })//.renderLayer = testLayer;
+    tilemaps.createChild().addComponent('tilemap', {
+        tilesetName: 'tester',
+        data: detailsUpper,
+        sortOrder: 'bottomLeft',
+        orderInLayer: 1
+    }).renderLayer = testLayer;
 
     app.startGameLoop();
 });
