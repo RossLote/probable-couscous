@@ -9,7 +9,7 @@ export default class Tester extends Script {
     // }
     update(dt:number){
 
-        let pos = this.entity.transform.localPosition;
+        let pos = this.entity.transform.getLocalPosition();
         let dirty = false;
         let pressed = this.app.keyboard.isPressed;
         let velocity = Vector2.ZERO;
@@ -44,7 +44,7 @@ export default class Tester extends Script {
             }
         }
 
-        this.entity.transform.localPosition = pos.add(velocity);
+        this.entity.transform.setLocalPosition(pos.add(velocity));
     }
     // cleanup() {
     //

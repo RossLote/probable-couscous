@@ -38,7 +38,6 @@ export class Entity {
         this.children.push(entity);
         entity.parent = this;
         entity.transform.parent = this.transform;
-        console.log(this.transform.children)
         return this;
     }
 

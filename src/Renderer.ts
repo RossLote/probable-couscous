@@ -33,7 +33,7 @@ export class Renderer {
     renderSprite = (context: CanvasRenderingContext2D, dt: number, entity: Entity, component: SpriteComponent) => {
         let sprite = SpriteRegistry.getSprite(component.spriteName);
         let frame: any = sprite.frames[component.currentFrame];
-        let pivot = entity.transform.pivot.data;
+        let pivot = entity.transform.getPivot().data;
         context.translate(-pivot[0], -pivot[1]);
         context.drawImage(
             AssetRegistry.getImage(sprite.imageName),
@@ -65,7 +65,7 @@ export class Renderer {
     }
 
     renderEntity(context: CanvasRenderingContext2D, dt: number, entity: Entity) {
-        let m = entity.transform.localToWorldMatrix.data;
+        let m = entity.transform.getWorldTransform().data;
         let sprite = <SpriteComponent>entity.getComponent('sprite');
         let tilemap = <TileMapComponent>entity.getComponent('tilemap');
         this.context.setTransform(m[0], m[3], m[1], m[4], m[2], m[5]);

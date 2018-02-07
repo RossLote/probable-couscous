@@ -5,6 +5,8 @@ import {Application} from './Application';
 import {RenderLayer} from './Layer';
 import blah from './scripts/Tester';
 
+import {Vector2} from './math/Vector2';
+
 AssetRegistry.addImages([{
     url: '/images/magecity.png',
     name: 'magecity'
@@ -151,7 +153,7 @@ AssetRegistry.addImages([{
 
     var entity = app.root.createChild();
 
-    entity.transform.localPosition = [400, 300];
+    entity.transform.setLocalPosition([400, 300])
     // entity.transform.localRotation = 1;
     // entity.transform.pivot = [12.5, 15.5];;
 

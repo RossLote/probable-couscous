@@ -12,30 +12,30 @@ export class Transform {
 	private _parent: Transform;
     // all of the transforms that have this
     // transform set as their parent
-    children: Array<Transform>;
+    private children: Array<Transform>;
 
     // the position relative to the parent transform
-    private _localPosition: Vector2 = Vector2.ZERO;
+    private localPosition: Vector2 = Vector2.ZERO;
     // rotation relative to the parent
-    private _localRotation: number = 0.0;
+    private localRotation: number = 0.0;
     // scale relative to the parent
-    private _localScale: Vector2 = Vector2.ONE;
+    private localScale: Vector2 = Vector2.ONE;
 
-    private _pivot: Vector2 = Vector2.ZERO;
+    private pivot: Vector2 = Vector2.ZERO;
 
     // specifies if the localToWorldTransform
     // needs to be recalulated
     private isDirty:boolean = false;
     // the transform that converts local coordinates
     // to world coordinates
-    private _localToWorldMatrix: Matrix3 = Matrix3.IDENTITY;
+    private localToWorldMatrix: Matrix3 = Matrix3.IDENTITY;
 
     // specifies if the worldToLocalMatrix
     // needs to be recalculated
     private isInverseDirty: boolean = false;
     // the transform that converts world cooridnates
     // to local coordinates
-    private _worldToLocalMatrix: Matrix3 = Matrix3.IDENTITY;
+    private worldToLocalMatrix: Matrix3 = Matrix3.IDENTITY;
 
     /*
      * Whenever any change happens that changes the localToWorldMatrix
@@ -111,7 +111,7 @@ export class Transform {
 
     // gets the matrix that converts from local
     // coordinates to world coordinates
-    get localToWorldMatrix(): Matrix3 {
+    getWorldTransform = (): Matrix3 => {
         // if the dirty flag is set, the the
         // localToWorldMatrix is out of date
         // and needs to be reclaculated
@@ -120,92 +120,93 @@ export class Transform {
            		// if the parent is null then the parent is
            		// the world so the localToWorldMatrix
            	 	// is the same as local to parent matrix
-                this._localToWorldMatrix = this.calculateLocalToParentMatrix();
+                this.localToWorldMatrix = this.calculateLocalToParentMatrix();
             } else {
                 // if there is a parent, then the localToWorldMatrix
                 // is calcualted recursively using the parent's localToWorldMatrix
                 // concatenated with the local to parent matrix
-                this._localToWorldMatrix = Matrix3.multiply([this.parent.localToWorldMatrix, this.calculateLocalToParentMatrix()]);
+                this.localToWorldMatrix = Matrix3.multiply([this.parent.getWorldTransform(), this.calculateLocalToParentMatrix()]);
             }
 
             // clear the dirty flag since the
             // matrix is now up to date
             this.isDirty = false;
         }
-        return this._localToWorldMatrix;
+        return this.localToWorldMatrix;
     }
 
-    get worldToLocalMatrix(): Matrix3 {
+    getLocalTransform = (): Matrix3 => {
         if (this.isInverseDirty) {
             // the inverse is out of date
             // so it needs to be updated
 
             // the worldToLocalMatrix is the inverse of
             // the localToWorldMatrix
-         	this._worldToLocalMatrix = this.localToWorldMatrix.inverse();
+         	this.worldToLocalMatrix = this.getWorldTransform().inverse();
 
             // clear the dirty flag since the
             // matrix is now up to date
             this.isInverseDirty = false;
         }
 
-        return this._worldToLocalMatrix;
+        return this.worldToLocalMatrix;
     }
 
-    public get localPosition():any {
-    	return this._localPosition.clone();
-    }
+	getLocalPosition = ():Vector2 => {
+		return this.localPosition.clone();
+	}
 
-    // sets the position relative to the parent
-    // and marks the transform as dirty
-    public set localPosition(value: any){
-        if (value.length === 2) {
-            this._localPosition.set(value[0], value[1]);
-        } else if (value instanceof Vector2) {
-            this._localPosition = value;
-        }
-        this.setDirty();
-    }
+	setLocalPosition = (vector: Vector2|Array<number>):Transform => {
+		if (Array.isArray(vector)) {
+		    vector = new Vector2(vector);
+		}
+		if (!vector.equals(this.localPosition)) {
+			this.localPosition = vector;
+			this.setDirty();
+		}
+		return this;
+	}
 
-    public get localRotation():number {
-    	return this._localRotation;
-    }
+	getLocalRotation = ():number => {
+		return this.localRotation;
+	}
 
-    // sets the rotation relative to the parent
-    // and marks the transform as dirty
-    public set localRotation(value: number) {
-        this._localRotation = value;
-        // set the dirty flag since the localToWorldMatrix needs to be updated
-        this.setDirty();
-    }
+	setLocalRotation = (rotation: number):Transform => {
+		if (rotation !== this.localRotation) {
+			this.localRotation = rotation;
+			this.setDirty();
+		}
+		return this;
+	}
 
-    public get localScale():any {
-    	return this._localScale;
-    }
+	getLocalScale = ():Vector2 => {
+		return this.localScale.clone();
+	}
 
-    // sets the scale relative to the parent
-    // and marks the transform as dirty
-    public set localScale(value: any) {
-        if (value.length === 2) {
-            this._localScale.set(value[0], value[1]);
-        } else if (value instanceof Vector2) {
-            this._localScale = value;
-        }
-        this.setDirty();
-    }
+	setLocalScale = (vector: Vector2|Array<number>):Transform => {
+		if (Array.isArray(vector)) {
+		    vector = new Vector2(vector);
+		}
+		if (!vector.equals(this.localPosition)) {
+			this.localScale = vector;
+			this.setDirty();
+		}
+		return this;
+	}
 
-    public get pivot():any {
-    	return this._pivot;
-    }
+	getPivot = ():Vector2 => {
+		return this.pivot.clone();
+	}
 
-    // sets the scale relative to the parent
-    // and marks the transform as dirty
-    public set pivot(value: any) {
-        if (value.length === 2) {
-            this._pivot.set(value[0], value[1]);
-        } else if (value instanceof Vector2) {
-            this._pivot = value;
-        }
-        this.setDirty();
-    }
+	setPivot = (vector: Vector2|Array<number>):Transform => {
+		if (Array.isArray(vector)) {
+		    vector = new Vector2(vector);
+		}
+		if (!vector.equals(this.localPosition)) {
+			this.pivot = vector;
+			this.setDirty();
+		}
+		return this;
+	}
+
 }
