@@ -1,4 +1,4 @@
-import {Entity} from "./framework/Entity";
+import {Entity} from "./Entity";
 
 
 export const RenderLayers = Array<RenderLayer>()

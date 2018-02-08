@@ -1,8 +1,8 @@
 import {AssetRegistry} from './core/assets';
 import {SpriteRegistry} from './core/sprites';
 import {TilesetRegistry} from './core/tileset';
-import {Application} from './Application';
-import {RenderLayer} from './Layer';
+import {Application} from './framework/Application';
+import {RenderLayer} from './framework/Layer';
 import blah from './scripts/Tester';
 
 import {Vector2} from './math/Vector2';

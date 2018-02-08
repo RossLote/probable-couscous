@@ -1,10 +1,10 @@
-import {Keyboard} from './input/Keyboard';
-import {System} from './framework/System';
-import {Entity} from './framework/Entity';
+import {Keyboard} from '../input/Keyboard';
+import {System} from '../framework/System';
+import {Entity} from '../framework/Entity';
 import {Renderer} from './Renderer';
-import {ScriptSystem} from './framework/components/script/ScriptSystem';
-import {SpriteSystem} from './framework/components/sprite/SpriteSystem';
-import {TileMapSystem} from './framework/components/tilemap/TileMapSystem';
+import {ScriptSystem} from '../framework/components/script/ScriptSystem';
+import {SpriteSystem} from '../framework/components/sprite/SpriteSystem';
+import {TileMapSystem} from '../framework/components/tilemap/TileMapSystem';
 
 /**
 TODO:

@@ -1,11 +1,11 @@
 import {Application} from './Application';
 import {RenderLayers} from './Layer';
-import {AssetRegistry} from './core/assets';
-import {SpriteRegistry} from './core/sprites';
+import {AssetRegistry} from '../core/assets';
+import {SpriteRegistry} from '../core/sprites';
 
-import {Entity} from './framework/Entity';
-import {SpriteComponent} from './framework/components/sprite/SpriteComponent';
-import {TileMapComponent} from './framework/components/tilemap/TileMapComponent';
+import {Entity} from './Entity';
+import {SpriteComponent} from './components/sprite/SpriteComponent';
+import {TileMapComponent} from './components/tilemap/TileMapComponent';
 
 export class Renderer {
 

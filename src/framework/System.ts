@@ -1,6 +1,6 @@
 import {Entity} from './Entity';
 import {Component} from './Component';
-import {Application} from '../Application';
+import {Application} from './Application';
 
 export class System {
     name: string;
