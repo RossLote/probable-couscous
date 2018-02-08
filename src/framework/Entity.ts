@@ -17,18 +17,16 @@ export class Entity {
     public id: string;
 
     public transform: Transform;
-    public pivot: Vector2;
 
     private _orderInLayer: number;
     private _renderLayer: RenderLayer;
 
     constructor() {
         this.components = {};
-        this.pivot = new Vector2(0, 0)
         this.app = Application.getCurrentApplication();
         this.id = uuid();
         this.renderLayer = DefaultRenderLayer;
-        this.transform = new Transform;
+        this.transform = new Transform(this);
     }
 
     addChild = (entity: Entity): Entity => {
@@ -49,6 +47,9 @@ export class Entity {
     }
 
     removeComponent = (name: string) => {
+        let component =  this.components[name];
+        this.app.getSystem(name).removeComponent(this);
+        component.destroy();
         delete this.components[name];
     }
 
@@ -59,8 +60,45 @@ export class Entity {
         return undefined;
     }
 
+    getChildren = ():Array<Entity> => {
+        let entities: Array<Entity> = [];
+        let childTransforms = this.transform.children;
+        let i, n;
+        for (i = 0, n = childTransforms.length; i < n; i++) {
+            entities.push(childTransforms[i].entity);
+        }
+        return entities
+    }
+
     destroy = () => {
-        //TODO
+        console.log(this.id);
+        this.app.registerEntityForDestruction(this);
+    }
+
+    forceDestroy = () => {
+        for (let key in this.components) {
+            this.removeComponent(key);
+        }
+
+        let children = this.getChildren();
+
+        this.renderLayer = undefined;
+        this.transform.entity = undefined;
+        this.transform.destroy()
+        this.transform = undefined;
+        this.app = undefined;
+
+
+        let i, n;
+        for (i = 0, n = children.length; i < n; i++) {
+            children[i].forceDestroy();
+        }
+
+        for (let key in this) {
+            if (this.hasOwnProperty(key)) {
+                delete this[key];
+            }
+        }
     }
 
     get renderLayer(): RenderLayer {
@@ -68,10 +106,15 @@ export class Entity {
     }
 
     set renderLayer(layer: RenderLayer) {
+        if (layer === this._renderLayer) {
+            return;
+        }
         if (this.renderLayer) {
             this.renderLayer.removeEntity(this);
         }
-        layer.addEntity(this);
+        if (layer) {
+            layer.addEntity(this);
+        }
         this._renderLayer = layer;
     }
 

@@ -17,6 +17,13 @@ export class System {
         return new this.ComponentType(this, entity, data);
     }
 
+    removeComponent = (entity: Entity) => {
+        let index = this.entities.indexOf(entity);
+        if (index > -1) {
+            this.entities.splice(index, 1);
+        }
+    }
+
     initialize() {
         this.entities.forEach((entity: Entity) => {
             let component = entity.getComponent(this.name);

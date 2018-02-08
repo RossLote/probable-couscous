@@ -1,5 +1,6 @@
 import {Vector2} from '../math/Vector2';
 import {Matrix3} from '../math/Matrix3';
+import { Entity } from './Entity';
 
 /**
  * This is from https://www.gamedev.net/articles/programming/math-and-physics/making-a-game-engine-transformations-r3566/
@@ -12,7 +13,7 @@ export class Transform {
 	private _parent: Transform;
     // all of the transforms that have this
     // transform set as their parent
-    private children: Array<Transform>;
+    private _children: Array<Transform>;
 
     // the position relative to the parent transform
     private localPosition: Vector2 = Vector2.ZERO;
@@ -38,13 +39,13 @@ export class Transform {
     private worldToLocalMatrix: Matrix3 = Matrix3.IDENTITY;
 
     /*
-     * Whenever any change happens that changes the localToWorldMatrix
-     * this should be called. That way the next time localToWorldMatrix
-     * is requested it will be recalculated
-     */
-     constructor() {
-         this.children = new Array<Transform>();
-     }
+    * Whenever any change happens that changes the localToWorldMatrix
+    * this should be called. That way the next time localToWorldMatrix
+    * is requested it will be recalculated
+    */
+    constructor(public entity: Entity) {
+        this._children = new Array<Transform>();
+    }
 
     private setDirty = (): void => {
     	// only update dirty boolean if it isn't already dirty
@@ -55,8 +56,9 @@ export class Transform {
             // set all children to be dirty since any modification
             // of a parent transform also effects its children's
             // localToWorldTransform
-            let children = this.children;
-            for (let i = 0, n=children.length; i < n; i++) {
+            let children = this._children;
+            let i, n;
+            for (i = 0, n=children.length; i < n; i++) {
                 children[i].setDirty();
             }
         }
@@ -90,6 +92,18 @@ export class Transform {
 
     get parent(): Transform {
     	return this._parent;
+    }
+
+    get children():Array<Transform>{
+        return this._children;
+    }
+
+    destroy = () => {
+        for (let key in this) {
+            if (this.hasOwnProperty(key)) {
+                delete this[key];
+            }
+        }
     }
 
     // calculates the transform matrix that converts

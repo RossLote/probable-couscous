@@ -1,6 +1,7 @@
 import {Script} from '../framework/components/script/Script';
 import {Vector2} from '../math/Vector2';
 
+
 export default class Tester extends Script {
 
     // initialize(){
@@ -14,6 +15,10 @@ export default class Tester extends Script {
         let pressed = this.app.keyboard.isPressed;
         let velocity = Vector2.ZERO;
         let sprite = <any>this.entity.getComponent('sprite');
+
+        if (this.app.keyboard.wasPressed('a')) {
+            this.app.sceneManager.loadScene('scene2');
+        }
 
         if (pressed('up')){
             velocity.y -= 100;

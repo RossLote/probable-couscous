@@ -2,28 +2,31 @@ import {Application} from './Application';
 import {Entity} from './Entity';
 import TestScript from '../scripts/Tester';
 
+import {uuid} from '../core/uuid';
 
-class Scene {
 
+export class Scene {
+    uuid: string;
     private root: Entity;
 
     constructor(){
+        this.uuid = uuid();
         this.root = new Entity();
     }
 
+    createEntity = () => {
+        return this.root.createChild();
+    }
+
     setup = (app: Application) => {
-        var entity = this.root.createChild();
-
-        entity.transform.setLocalPosition([400, 300])
-        // entity.transform.localRotation = 1;
-        entity.transform.setPivot([12, 15]);
-
-        entity.addComponent('sprite', {
-            spriteName: 'runE'
-        }).addComponent('script', TestScript);
+        
     }
 
     teardown = (app: Application) => {
 
+    }
+
+    destroy = () => {
+        this.root.destroy();
     }
 }

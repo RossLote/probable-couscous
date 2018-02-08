@@ -8,4 +8,12 @@ export class Component {
             (<any>this)[key] = data[key];
         }
     }
+
+    destroy = () => {
+        for (let key in this) {
+            if (this.hasOwnProperty(key)) {
+                delete this[key];
+            }
+        }
+    }
 }

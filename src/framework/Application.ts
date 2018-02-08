@@ -5,6 +5,8 @@ import {Renderer} from './Renderer';
 import {ScriptSystem} from '../framework/components/script/ScriptSystem';
 import {SpriteSystem} from '../framework/components/sprite/SpriteSystem';
 import {TileMapSystem} from '../framework/components/tilemap/TileMapSystem';
+import {Scene} from './Scene';
+import {SceneManager} from './SceneManager';
 
 /**
 TODO:
@@ -38,6 +40,8 @@ export class Application {
     private startTime: number;
     private lastFrameTime: number;
     private renderer: Renderer;
+    private poolOfDestruction: Array<Entity>;
+    sceneManager: SceneManager;
     canvas: HTMLCanvasElement;
     root: Entity;
     playing: boolean = false;
@@ -56,6 +60,8 @@ export class Application {
         this.renderer = new Renderer(this);
         this.root = new Entity();
         this.keyboard = new Keyboard(window);
+        this.poolOfDestruction = [];
+        this.sceneManager = new SceneManager(this);
 
         this.registerSystems([
             ScriptSystem,
@@ -81,6 +87,15 @@ export class Application {
         return this.systems[name];
     }
 
+    loadScene = (scene: Scene) => {
+        if (this.currentScene) {
+            this.currentScene.teardown(this);
+            this.currentScene.destroy();
+        }
+        scene.setup(this);
+        this.currentScene = scene;
+    }
+
     startGameLoop() {
         this.playing = true;
         for (let name in this.systems) {
@@ -90,9 +105,24 @@ export class Application {
         this.gameLoop(0);
     }
 
+    registerEntityForDestruction = (entity: Entity) => {
+        if (this.poolOfDestruction.indexOf(entity) === -1) {
+            this.poolOfDestruction.push(entity);
+        }
+    }
+
+    private commenceAnnihilation = (): void => {
+        let entities = this.poolOfDestruction;
+        let i, n = entities.length;
+        for (i = 0; i < n; i++) {
+            let entity = entities[i];
+            entity && entity.forceDestroy && entity.forceDestroy();
+        }
+        this.poolOfDestruction = [];
+    }
+
     private gameLoop(time: number) {
         let dt = (time - this.lastFrameTime)/1000;
-        console.log(dt);
         this.lastFrameTime = time;
         window.requestAnimationFrame(this.gameLoop.bind(this));
         if (this.playing) {
@@ -101,6 +131,7 @@ export class Application {
             }
             this.renderer.render(dt);
             this.keyboard.update();
+            this.commenceAnnihilation();
         }
     }
 }
