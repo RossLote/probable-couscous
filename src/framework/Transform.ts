@@ -241,10 +241,10 @@ export class Transform {
 
 	toJSON = ():any =>{
 		return {
-			localPosition: this.getLocalPosition().data,
+			localPosition: this.getLocalPosition(),
 			localRotation: this.getLocalRotation(),
-			localScale: this.getLocalScale().data,
-			pivot: this.getPivot().data
+			localScale: this.getLocalScale(),
+			pivot: this.getPivot()
 		}
 	}
 

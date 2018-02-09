@@ -99,14 +99,19 @@ AssetRegistry.addImages([{
         }
 
         postInitialize = () => {
+            if (this.data && typeof this.data === "string" ) {
+                console.log(this.data)
+                this.data = JSON.parse(this.data);
+            }
             let playerData = this.data['player'];
             playerData && playerData.transform && this.player.transform.fromJSON(playerData.transform)
         }
 
         teardown = () => {
             this.data['player'] = {
-                transform: this.player.transform.toJSON()
+                transform: this.player.transform
             }
+            this.data = JSON.stringify(this.data);
             this.player = undefined;
         }
     }

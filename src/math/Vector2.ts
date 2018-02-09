@@ -181,4 +181,8 @@ export class Vector2 {
     toString = (): string => {
         return `[${this.data[0]}, ${this.data[1]}]`;
     }
+
+    toJSON = ():Array<number> => {
+        return Array.prototype.slice.call(this.data);
+    }
 }

@@ -125,4 +125,8 @@ export class Entity {
         this._orderInLayer = order;
         this.renderLayer.sort();
     }
+
+    toJSON = ():any => {
+
+    }
 }

@@ -196,6 +196,10 @@ export class Matrix3 {
         return this;
     }
 
+    toJSON = ():Array<number> => {
+        return Array.prototype.slice.call(this.data);
+    }
+
     toString = ():string => {
         let a = this.data;
         return `[
