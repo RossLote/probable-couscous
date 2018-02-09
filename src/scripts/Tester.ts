@@ -18,6 +18,8 @@ export default class Tester extends Script {
 
         if (this.app.keyboard.wasPressed('a')) {
             this.app.sceneManager.loadScene('scene2');
+        } else if (this.app.keyboard.wasPressed('b')) {
+            this.app.sceneManager.loadScene('scene1');
         }
 
         if (pressed('up')){

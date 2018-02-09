@@ -71,7 +71,6 @@ export class Entity {
     }
 
     destroy = () => {
-        console.log(this.id);
         this.app.registerEntityForDestruction(this);
     }
 

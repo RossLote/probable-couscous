@@ -9,17 +9,31 @@ export class Scene {
     uuid: string;
     private root: Entity;
 
-    constructor(){
+    constructor(protected data: any = {}){
         this.uuid = uuid();
-        this.root = new Entity();
     }
 
     createEntity = () => {
         return this.root.createChild();
     }
 
-    setup = (app: Application) => {
-        
+    addEntity = (entity: Entity) => {
+        return this.root.addChild(entity);
+    }
+
+    preInitialise = (app: Application): Scene => {
+        if (!this.root) {
+            this.root = new Entity();
+        }
+        return this;
+    }
+
+    initialize = (app: Application) => {
+
+    }
+
+    postInitialize = (app: Application) => {
+
     }
 
     teardown = (app: Application) => {
@@ -28,5 +42,6 @@ export class Scene {
 
     destroy = () => {
         this.root.destroy();
+        delete this.root;
     }
 }

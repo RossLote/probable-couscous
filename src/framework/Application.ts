@@ -92,7 +92,9 @@ export class Application {
             this.currentScene.teardown(this);
             this.currentScene.destroy();
         }
-        scene.setup(this);
+        scene.preInitialise(this);
+        scene.initialize(this);
+        scene.postInitialize(this);
         this.currentScene = scene;
     }
 

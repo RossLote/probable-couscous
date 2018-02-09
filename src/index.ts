@@ -88,21 +88,31 @@ AssetRegistry.addImages([{
     let testLayer = new RenderLayer('details', 1);
 
     class Scene1 extends Scene {
-        setup = (app: Application) => {
+        player: any;
+        initialize = (app: Application) => {
             var entity = this.createEntity();
-
-            entity.transform.setLocalPosition([400, 300])
-            // entity.transform.localRotation = 1;
             entity.transform.setPivot([12, 15]);
 
-            entity.addComponent('sprite', {
+            this.player = entity.addComponent('sprite', {
                 spriteName: 'runE'
             }).addComponent('script', TestScript);
+        }
+
+        postInitialize = () => {
+            let playerData = this.data['player'];
+            playerData && playerData.transform && this.player.transform.fromJSON(playerData.transform)
+        }
+
+        teardown = () => {
+            this.data['player'] = {
+                transform: this.player.transform.toJSON()
+            }
+            this.player = undefined;
         }
     }
 
     class Scene2 extends Scene {
-        setup = () => {
+        initialize = () => {
             let water = [
                 [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
                 [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
@@ -212,88 +222,9 @@ AssetRegistry.addImages([{
         }
     }
 
-    class Scene3 extends Scene {
-
-    }
-
     app.sceneManager.addScene('scene1', new Scene1);
     app.sceneManager.addScene('scene2', new Scene2);
-    app.sceneManager.addScene('scene3', new Scene3);
 
     app.sceneManager.loadScene('scene1');
-    //
-    // var entity = app.root.createChild();
-    //
-    // entity.transform.setLocalPosition([400, 300])
-    // // entity.transform.localRotation = 1;
-    // entity.transform.setPivot([12, 15]);
-    //
-    // entity.addComponent('sprite', {
-    //     spriteName: 'runE'
-    // }).addComponent('script', blah);
-    //
-    // let child1 = entity.createChild()
-    // let child2 = entity.createChild()
-    // let grandChild = child1.createChild()
-    // let greatGrandChild = grandChild.createChild()
-    //
-    // child1.addComponent('sprite', {
-    //     spriteName: 'walkE'
-    // }).addComponent('script', blah);
-    // child2.addComponent('sprite', {
-    //     spriteName: 'walkE'
-    // });
-    // grandChild.addComponent('sprite', {
-    //     spriteName: 'runW'
-    // });//.addComponent('script', blah);
-    // greatGrandChild.addComponent('sprite', {
-    //     spriteName: 'runS'
-    // });
-    // entity.renderLayer = testLayer;
-    // var tilemaps = app.root.createChild();
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: water,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 0
-    // });
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: grass,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 0
-    // });
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: ice,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 0
-    // });
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: detailsLower,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 0
-    // })//.renderLayer = testLayer;
-    // tilemaps.createChild().addComponent('tilemap', {
-    //     tilesetName: 'tester',
-    //     data: detailsUpper,
-    //     sortOrder: 'bottomLeft',
-    //     orderInLayer: 1
-    // }).renderLayer = testLayer;
-
     app.startGameLoop();
 });
-
-
-// import {Vector2} from './math/Vector2'
-//
-// let test = Vector2.ZERO
-//
-// test.add(new Vector2(3, 5));
-//
-// let test2 = new Vector2(2,4);
-//
-// test2.multiply(new Vector2(8, 2))
-//
-// console.log(test.toString(), test2.dot(test))

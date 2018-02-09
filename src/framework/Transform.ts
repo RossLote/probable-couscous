@@ -6,6 +6,14 @@ import { Entity } from './Entity';
  * This is from https://www.gamedev.net/articles/programming/math-and-physics/making-a-game-engine-transformations-r3566/
  */
 
+function castVector2(vector: Vector2|Array<number>|Float32Array): Vector2 {
+	if (vector instanceof Vector2) {
+	    return vector
+	} else {
+	    return new Vector2(vector);
+	}
+}
+
 export class Transform {
     // the parent transform of this transform
     // if it is null then the parent transform
@@ -172,9 +180,7 @@ export class Transform {
 	}
 
 	setLocalPosition = (vector: Vector2|Array<number>):Transform => {
-		if (Array.isArray(vector)) {
-		    vector = new Vector2(vector);
-		}
+		vector = castVector2(vector);
 		if (!vector.equals(this.localPosition)) {
 			this.localPosition = vector;
 			this.setDirty();
@@ -199,9 +205,7 @@ export class Transform {
 	}
 
 	setLocalScale = (vector: Vector2|Array<number>):Transform => {
-		if (Array.isArray(vector)) {
-		    vector = new Vector2(vector);
-		}
+		vector = castVector2(vector);
 		if (!vector.equals(this.localPosition)) {
 			this.localScale = vector;
 			this.setDirty();
@@ -214,14 +218,35 @@ export class Transform {
 	}
 
 	setPivot = (vector: Vector2|Array<number>):Transform => {
-		if (Array.isArray(vector)) {
+		if (vector.length) {
 		    vector = new Vector2(vector);
 		}
+		vector = <Vector2>vector;
 		if (!vector.equals(this.localPosition)) {
 			this.pivot = vector.multiply(new Vector2(-1, -1));
 			this.setDirty();
 		}
 		return this;
+	}
+
+	fromJSON = (json: any) => {
+		if (!json) {
+		    return;
+		}
+		console.log(json);
+		json.localPosition && this.setLocalPosition(json.localPosition);
+		json.localRotation && this.setLocalRotation(json.localRotation);
+		json.localScale && this.setLocalScale(json.localScale);
+		json.pivot && this.setPivot(json.pivot);
+	}
+
+	toJSON = ():any =>{
+		return {
+			localPosition: this.localPosition.data,
+			localRotation: this.localRotation,
+			localScale: this.localScale.data,
+			pivot: this.pivot.data
+		}
 	}
 
 }
