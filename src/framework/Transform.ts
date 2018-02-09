@@ -233,7 +233,6 @@ export class Transform {
 		if (!json) {
 		    return;
 		}
-		console.log(json);
 		json.localPosition && this.setLocalPosition(json.localPosition);
 		json.localRotation && this.setLocalRotation(json.localRotation);
 		json.localScale && this.setLocalScale(json.localScale);
@@ -242,10 +241,10 @@ export class Transform {
 
 	toJSON = ():any =>{
 		return {
-			localPosition: this.localPosition.data,
-			localRotation: this.localRotation,
-			localScale: this.localScale.data,
-			pivot: this.pivot.data
+			localPosition: this.getLocalPosition().data,
+			localRotation: this.getLocalRotation(),
+			localScale: this.getLocalScale().data,
+			pivot: this.getPivot().data
 		}
 	}
 
