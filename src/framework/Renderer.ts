@@ -1,5 +1,5 @@
 import {Application} from './Application';
-import {RenderLayers} from './Layer';
+import {LayerManager} from './layer/LayerManager';
 import {AssetRegistry} from '../core/assets';
 import {SpriteRegistry} from '../core/sprites';
 
@@ -21,8 +21,7 @@ export class Renderer {
         const context = this.context;
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        RenderLayers.forEach((layer) => {
+        this.app.layerManager.getLayers().forEach((layer) => {
             layer.preRenderSetup();
             layer.getEntities().forEach((entity) => {
                 this.renderEntity(context, dt, entity);

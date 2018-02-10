@@ -1,7 +1,7 @@
 import {Component} from './Component';
 import {Transform} from './Transform';
 import {Application} from './Application';
-import {RenderLayer, DefaultRenderLayer} from './Layer';
+import {Layer} from './layer/Layer';
 import {Vector2} from '../math/Vector2';
 import {uuid} from '../core/uuid';
 
@@ -11,21 +11,19 @@ interface IComponents {
 
 
 export class Entity {
-    private components: IComponents;
-    private app: Application;
-
     public id: string;
-
     public transform: Transform;
 
+    private components: IComponents;
+    private app: Application;
     private _orderInLayer: number;
-    private _renderLayer: RenderLayer;
+    private _renderLayer: Layer;
 
     constructor() {
         this.components = {};
         this.app = Application.getCurrentApplication();
         this.id = uuid();
-        this.renderLayer = DefaultRenderLayer;
+        this.renderLayer = this.app.layerManager.getLayer('default');
         this.transform = new Transform(this);
     }
 
@@ -100,11 +98,11 @@ export class Entity {
         }
     }
 
-    get renderLayer(): RenderLayer {
+    get renderLayer(): Layer {
         return this._renderLayer;
     }
 
-    set renderLayer(layer: RenderLayer) {
+    set renderLayer(layer: Layer) {
         if (layer === this._renderLayer) {
             return;
         }
@@ -127,6 +125,13 @@ export class Entity {
     }
 
     toJSON = ():any => {
-
+        return {
+            id: this.id,
+            transform: this.transform,
+            components: this.components,
+            children: this.getChildren,
+            orderInLayer: this._orderInLayer,
+            renderLayer: this.renderLayer
+        }
     }
 }

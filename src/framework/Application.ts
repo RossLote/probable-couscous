@@ -5,8 +5,9 @@ import {Renderer} from './Renderer';
 import {ScriptSystem} from '../framework/components/script/ScriptSystem';
 import {SpriteSystem} from '../framework/components/sprite/SpriteSystem';
 import {TileMapSystem} from '../framework/components/tilemap/TileMapSystem';
-import {Scene} from './Scene';
-import {SceneManager} from './SceneManager';
+import {Scene} from './scene/Scene';
+import {SceneManager} from './scene/SceneManager';
+import {LayerManager} from './layer/LayerManager';
 
 /**
 TODO:
@@ -42,6 +43,7 @@ export class Application {
     private renderer: Renderer;
     private poolOfDestruction: Array<Entity>;
     sceneManager: SceneManager;
+    layerManager: LayerManager;
     canvas: HTMLCanvasElement;
     root: Entity;
     playing: boolean = false;
@@ -58,9 +60,9 @@ export class Application {
         canvas.height = 600;
         this.canvas = canvas;
         this.renderer = new Renderer(this);
-        this.root = new Entity();
         this.keyboard = new Keyboard(window);
         this.poolOfDestruction = [];
+        this.layerManager = new LayerManager();
         this.sceneManager = new SceneManager(this);
 
         this.registerSystems([
@@ -68,6 +70,7 @@ export class Application {
             TileMapSystem,
             SpriteSystem
         ]);
+        this.root = new Entity();
     }
 
     static getCurrentApplication() : Application {

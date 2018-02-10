@@ -1,24 +1,12 @@
-import {Entity} from "./Entity";
+import {Entity} from "../Entity";
 
 
-export const RenderLayers = Array<RenderLayer>()
-
-export class RenderLayer {
+export class Layer {
     private entities: Array<Entity>;
     private requiresSort: boolean = false;
 
     constructor(public name: string, public order: number){
         this.entities = [];
-        RenderLayers.push(this)
-        RenderLayers.sort(function(a: RenderLayer, b: RenderLayer){
-            if (a.order < b.order) {
-                return -1;
-            }
-            if (a.order > b.order) {
-                return 1;
-            }
-            return 0;
-        })
     }
 
     preRenderSetup = () => {
@@ -59,6 +47,11 @@ export class RenderLayer {
         });
         this.requiresSort = false;
     }
-}
 
-export const DefaultRenderLayer = new RenderLayer('default', 0);
+    toJSON = ():any => {
+        return {
+            name: this.name,
+            order: this.order
+        }
+    }
+}

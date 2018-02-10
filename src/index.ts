@@ -2,8 +2,8 @@ import {AssetRegistry} from './core/assets';
 import {SpriteRegistry} from './core/sprites';
 import {TilesetRegistry} from './core/tileset';
 import {Application} from './framework/Application';
-import {RenderLayer} from './framework/Layer';
-import {Scene} from './framework/Scene';
+import {LayerManager} from './framework/layer/LayerManager';
+import {Scene} from './framework/scene/Scene';
 import TestScript from './scripts/Tester';
 
 import {Vector2} from './math/Vector2';
@@ -85,7 +85,7 @@ AssetRegistry.addImages([{
 
     let app = new Application()
 
-    let testLayer = new RenderLayer('details', 1);
+    app.layerManager.createLayer('details', 1)
 
     class Scene1 extends Scene {
         player: any;
@@ -191,7 +191,7 @@ AssetRegistry.addImages([{
 
             entity.addComponent('sprite', {
                 spriteName: 'runE'
-            }).addComponent('script', TestScript).renderLayer = testLayer;
+            }).addComponent('script', TestScript).renderLayer = app.layerManager.getLayer('details');
 
             let tilemaps = this.createEntity();
             tilemaps.createChild().addComponent('tilemap', {
@@ -217,13 +217,13 @@ AssetRegistry.addImages([{
                 data: detailsLower,
                 sortOrder: 'bottomLeft',
                 orderInLayer: 0
-            })//.renderLayer = testLayer;
+            })//.renderLayer = app.layerManager.getLayer('details');
             tilemaps.createChild().addComponent('tilemap', {
                 tilesetName: 'tester',
                 data: detailsUpper,
                 sortOrder: 'bottomLeft',
                 orderInLayer: 1
-            }).renderLayer = testLayer;
+            }).renderLayer = app.layerManager.getLayer('details');
         }
     }
 

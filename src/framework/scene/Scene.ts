@@ -1,8 +1,8 @@
-import {Application} from './Application';
-import {Entity} from './Entity';
-import TestScript from '../scripts/Tester';
+import {Application} from '../Application';
+import {Entity} from '../Entity';
+import TestScript from '../../scripts/Tester';
 
-import {uuid} from '../core/uuid';
+import {uuid} from '../../core/uuid';
 
 
 export class Scene {
