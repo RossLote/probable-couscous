@@ -21,9 +21,10 @@ TODO:
 * Input                             ✓
 * Scenes                            ✓
 * Serialisation                     ✓
-* Convert registries to app objects
+* Convert registries to app objects ✓
 * Collision
 * Physics
+* Scene entity sharing?
 * Sound
 * Events/Triggers
 * Lights
