@@ -3,13 +3,12 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": true,
-    "module": "es6",
-    "target": "es2015",
+    "module": "esnext",
+    "target": "esnext",
     "allowJs": true,
     "typeRoots": [
       "node_modules/@types"
     ],
-    "types" : ["pixi.js", "lodash"]
   },
   "include": [
     "src/**/*"

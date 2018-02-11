@@ -27,6 +27,25 @@ export class Entity {
         this.transform = new Transform(this);
     }
 
+    static buildFromJSON(data: any) {
+        let entity = new Entity()
+        entity.id = data.id;
+        entity.transform.fromJSON(data.transform);
+        entity.renderLayer = entity.app.layerManager.getLayer(data.renderLayer);
+        entity.orderInLayer = data.orderInLayer;
+        for (let key in data.components) {
+            entity.addComponent(key, data.components[key]);
+        }
+        if (data.children) {
+            let i, n, e;
+            for (i = 0, n = data.children.length; i < n; i++) {
+                e = Entity.buildFromJSON(data.children[i])
+                e.transform.parent = entity.transform;
+            }
+        }
+        return entity
+    }
+
     addChild = (entity: Entity): Entity => {
         entity.transform.parent = this.transform;
         return this;
@@ -129,9 +148,9 @@ export class Entity {
             id: this.id,
             transform: this.transform,
             components: this.components,
-            children: this.getChildren,
+            children: this.getChildren(),
             orderInLayer: this._orderInLayer,
-            renderLayer: this.renderLayer
+            renderLayer: this.renderLayer.name
         }
     }
 }

@@ -11,7 +11,7 @@ export class LayerManager {
 
     createLayer = (name: string, order: number = 0) => {
         if (this.getLayer(name)) {
-            throw "Layer already exists";
+            throw new Error("Layer already exists");
         }
         let layer = new Layer(name, order);
         this.layers.push(layer);

@@ -11,10 +11,12 @@ import {LayerManager} from './layer/LayerManager';
 
 /**
 TODO:
-* Tilesets              ✓
-* Layers                ✓
-* Input                 ✓
-* Scenes
+* Tilesets                          ✓
+* Layers                            ✓
+* Input                             ✓
+* Scenes                            ✓
+* Serialisation                     ✓
+* Convert registries to app objects
 * Collision
 * Physics
 * Sound

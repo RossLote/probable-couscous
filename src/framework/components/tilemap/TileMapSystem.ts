@@ -36,10 +36,11 @@ export class TileMapSystem extends System {
         _mapData.sort((<any>sortFunctions)[data.sortOrder]);
         this.entities.push(entity);
         return new TileMapComponent(this, entity, {
-            tileset: tileset,
-            mapData: _mapData,
+            tilesetName: data.tilesetName,
+            originalMapData: mapData,
             sortOrder: data.sortOrder,
-            orderInLayer: data.orderInLayer
+            tileset: tileset,
+            mapData: _mapData
         });
     }
 }

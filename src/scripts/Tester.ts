@@ -1,4 +1,4 @@
-import {Script} from '../framework/components/script/Script';
+import {Script} from '../core/scripts';
 import {Vector2} from '../math/Vector2';
 
 

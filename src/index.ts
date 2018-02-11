@@ -1,29 +1,42 @@
 import {AssetRegistry} from './core/assets';
+import {ScriptRegistry} from './core/scripts';
 import {SpriteRegistry} from './core/sprites';
 import {TilesetRegistry} from './core/tileset';
 import {Application} from './framework/Application';
+import {Entity} from './framework/Entity';
 import {LayerManager} from './framework/layer/LayerManager';
 import {Scene} from './framework/scene/Scene';
 import TestScript from './scripts/Tester';
 
 import {Vector2} from './math/Vector2';
 
-AssetRegistry.addImages([{
-    url: '/images/magecity.png',
-    name: 'magecity'
-},{
-    url: '/images/town01.png',
-    name: 'town1'
-},{
-    url: '/images/town02.png',
-    name: 'town2'
-},{
-    url: '/images/Fumiko.png',
-    name: 'fumiko'
-},{
-    url: '/images/mapPack_tilesheet.png',
-    name: 'tileset'
-}]).loadAssets().then(function(){
+let assetsPromise = AssetRegistry.loadAssets({
+    images:[{
+        url: '/images/magecity.png',
+        name: 'magecity'
+    },{
+        url: '/images/town01.png',
+        name: 'town1'
+    },{
+        url: '/images/town02.png',
+        name: 'town2'
+    },{
+        url: '/images/Fumiko.png',
+        name: 'fumiko'
+    },{
+        url: '/images/mapPack_tilesheet.png',
+        name: 'tileset'
+    }]
+});
+
+let scriptsPromise = ScriptRegistry.loadScripts([
+    {
+        name: 'tester',
+        script: TestScript
+    }
+]);
+
+Promise.all([assetsPromise, scriptsPromise]).then(function(){
     SpriteRegistry.registerSprites([{
         imageName: 'fumiko',
         frameWidth: 24,
@@ -90,29 +103,28 @@ AssetRegistry.addImages([{
     class Scene1 extends Scene {
         player: any;
         initialize = (app: Application) => {
-            var entity = this.createEntity();
-            entity.transform.setPivot([12, 15]);
+            if (this.data) {
+                this.root = Entity.buildFromJSON(JSON.parse(this.data));
+            } else {
+                let entity = this.createEntity();
+                entity.createChild().createChild();
+                entity.createChild().createChild();
+                entity.transform.setPivot([12, 15]);
 
-            this.player = entity.addComponent('sprite', {
-                spriteName: 'runE'
-            }).addComponent('script', TestScript);
+                this.player = entity.addComponent('sprite', {
+                    spriteName: 'runE'
+                }).addComponent('script', {
+                    scriptName: 'tester'
+                });
+            }
         }
 
         postInitialize = () => {
-            if (this.data && typeof this.data === "string" ) {
-                console.log(this.data)
-                this.data = JSON.parse(this.data);
-            }
-            let playerData = this.data['player'];
-            playerData && playerData.transform && this.player.transform.fromJSON(playerData.transform)
+
         }
 
         teardown = () => {
-            this.data['player'] = {
-                transform: this.player.transform
-            }
-            this.data = JSON.stringify(this.data);
-            this.player = undefined;
+            this.data = JSON.stringify(this.root);
         }
     }
 
@@ -191,38 +203,35 @@ AssetRegistry.addImages([{
 
             entity.addComponent('sprite', {
                 spriteName: 'runE'
-            }).addComponent('script', TestScript).renderLayer = app.layerManager.getLayer('details');
+            }).addComponent('script', {
+                scriptName: 'tester'
+            }).renderLayer = app.layerManager.getLayer('details');
 
             let tilemaps = this.createEntity();
             tilemaps.createChild().addComponent('tilemap', {
                 tilesetName: 'tester',
                 data: water,
-                sortOrder: 'bottomLeft',
-                orderInLayer: 0
+                sortOrder: 'bottomLeft'
             });
             tilemaps.createChild().addComponent('tilemap', {
                 tilesetName: 'tester',
                 data: grass,
-                sortOrder: 'bottomLeft',
-                orderInLayer: 0
+                sortOrder: 'bottomLeft'
             });
             tilemaps.createChild().addComponent('tilemap', {
                 tilesetName: 'tester',
                 data: ice,
-                sortOrder: 'bottomLeft',
-                orderInLayer: 0
+                sortOrder: 'bottomLeft'
             });
             tilemaps.createChild().addComponent('tilemap', {
                 tilesetName: 'tester',
                 data: detailsLower,
-                sortOrder: 'bottomLeft',
-                orderInLayer: 0
-            })//.renderLayer = app.layerManager.getLayer('details');
+                sortOrder: 'bottomLeft'
+            })
             tilemaps.createChild().addComponent('tilemap', {
                 tilesetName: 'tester',
                 data: detailsUpper,
-                sortOrder: 'bottomLeft',
-                orderInLayer: 1
+                sortOrder: 'bottomLeft'
             }).renderLayer = app.layerManager.getLayer('details');
         }
     }

@@ -16,4 +16,8 @@ export class Component {
             }
         }
     }
+
+    toJSON = (): any => {
+        throw new Error("Method not implemented.");
+    }
 }

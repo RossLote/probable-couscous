@@ -56,7 +56,15 @@ export class AssetRegistry {
         return AssetRegistry.audio[name];
     }
 
-    static loadAssets(): Promise<any> {
+    static loadAssets(assetsData: any): Promise<any> {
+        let imageData = assetsData.images;
+        let soundData = assetsData.sounds;
+        if (imageData) {
+            this.addImages(imageData);
+        }
+        if (soundData) {
+            this.addSounds(soundData);
+        }
         return Promise.all(AssetRegistry.promises);
     }
 }

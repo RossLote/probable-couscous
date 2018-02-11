@@ -7,9 +7,9 @@ import {uuid} from '../../core/uuid';
 
 export class Scene {
     uuid: string;
-    private root: Entity;
+    protected root: Entity;
 
-    constructor(protected data: any = {}){
+    constructor(protected data: any = undefined){
         this.uuid = uuid();
     }
 

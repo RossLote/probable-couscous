@@ -6,8 +6,20 @@ import {Entity} from '../../Entity';
 
 
 export class TileMapComponent extends Component {
+    tilesetName: string;
+    originalMapData: Array<number>;
+    sortOrder: string;
+
+    // These attributes are calculated when the component is added
     tileset: Tileset;
     mapData: Array<ITileData>;
-    sortOrder: string;
-    orderInLayer: number;
+
+    toJSON = ():any => {
+        return {
+            tilesetName: this.tilesetName,
+            originalMapData: this.originalMapData,
+            sortOrder: this.sortOrder,
+            mapData: this.mapData
+        }
+    }
 }
