@@ -2,14 +2,14 @@ import {Application} from '../Application';
 import {Entity} from '../Entity';
 import TestScript from '../../scripts/Tester';
 
-import {uuid} from '../../core/uuid';
+import {uuid} from '../core/uuid';
 
 
 export class Scene {
     uuid: string;
     protected root: Entity;
 
-    constructor(protected data: any = undefined){
+    constructor(protected app: Application, protected data: any = undefined){
         this.uuid = uuid();
     }
 
@@ -21,22 +21,22 @@ export class Scene {
         return this.root.addChild(entity);
     }
 
-    preInitialise = (app: Application): Scene => {
+    preInitialise = (): Scene => {
         if (!this.root) {
             this.root = new Entity();
         }
         return this;
     }
 
-    initialize = (app: Application) => {
+    initialize = () => {
 
     }
 
-    postInitialize = (app: Application) => {
+    postInitialize = () => {
 
     }
 
-    teardown = (app: Application) => {
+    teardown = () => {
 
     }
 

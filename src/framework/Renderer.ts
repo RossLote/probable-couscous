@@ -1,7 +1,7 @@
 import {Application} from './Application';
 import {LayerManager} from './layer/LayerManager';
-import {AssetRegistry} from '../core/assets';
-import {SpriteRegistry} from '../core/sprites';
+import {AssetRegistry} from './core/assets';
+import {SpriteRegistry} from './core/sprites';
 
 import {Entity} from './Entity';
 import {SpriteComponent} from './components/sprite/SpriteComponent';
@@ -30,10 +30,10 @@ export class Renderer {
     }
 
     renderSprite = (context: CanvasRenderingContext2D, dt: number, entity: Entity, component: SpriteComponent) => {
-        let sprite = SpriteRegistry.getSprite(component.spriteName);
+        let sprite = this.app.spriteRegistry.getSprite(component.spriteName);
         let frame: any = sprite.frames[component.currentFrame];
         context.drawImage(
-            AssetRegistry.getImage(sprite.imageName),
+            this.app.assetsRegistry.getImage(sprite.imageName),
             frame.x,
             frame.y,
             frame.width,

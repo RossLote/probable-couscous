@@ -1,4 +1,4 @@
-import {Script, ScriptRegistry} from '../../../core/scripts';
+import {Script, ScriptRegistry} from '../../core/scripts';
 import {Entity} from '../../Entity';
 import {System} from '../../System';
 import {ScriptComponent} from './ScriptComponent';
@@ -12,7 +12,7 @@ export class ScriptSystem extends System {
     ComponentType: typeof ScriptComponent = ScriptComponent;
 
     addComponent(entity: Entity, data: IScriptData) : ScriptComponent {
-        let scriptClass = ScriptRegistry.getScript(data.scriptName);
+        let scriptClass = this.app.scriptRegistry.getScript(data.scriptName);
         let script = new scriptClass(entity, this.app);
         let component = <ScriptComponent>super.addComponent(entity, {
             script: script,

@@ -33,10 +33,11 @@ export class Sprite {
 
 
 export class SpriteRegistry {
-    private static sprites: {[key: string]: Sprite} = {};
 
-    static registerSprite(data: ISpritesheetData) {
-        let image = AssetRegistry.getImage(data.imageName);
+    constructor(private assetRegistry: AssetRegistry, private sprites: {[key: string]: Sprite} = {}) {}
+
+    registerSprite(data: ISpritesheetData) {
+        let image = this.assetRegistry.getImage(data.imageName);
         let framesWide: number = image.width/data.frameWidth;
         let framesHigh: number = image.height/data.frameHeight;
 
@@ -54,21 +55,21 @@ export class SpriteRegistry {
                     height : data.frameHeight
                 });
             });
-            SpriteRegistry.setSprite(key, new Sprite(data.imageName, frames, framerate));
+            this.setSprite(key, new Sprite(data.imageName, frames, framerate));
         }
     }
 
-    static registerSprites(data: Array<ISpritesheetData>) {
+    registerSprites(data: Array<ISpritesheetData>) {
         data.forEach((spritesheetData) => {
             this.registerSprite(spritesheetData);
         });
     }
 
-    static getSprite(name: string): Sprite {
-        return SpriteRegistry.sprites[name];
+    getSprite(name: string): Sprite {
+        return this.sprites[name];
     }
 
-    static setSprite(name: string, sprite: Sprite) {
-        SpriteRegistry.sprites[name] = sprite;
+    setSprite(name: string, sprite: Sprite) {
+        this.sprites[name] = sprite;
     }
 }

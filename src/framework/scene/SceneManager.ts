@@ -12,8 +12,8 @@ export class SceneManager {
         this.scenes = {};
     }
 
-    addScene(name: string, scene: Scene) {
-        this.scenes[name] = scene;
+    addScene(name: string, sceneClass: typeof Scene) {
+        this.scenes[name] = new sceneClass(this.app);
     }
 
     loadScene(name: string) {

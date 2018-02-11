@@ -1,16 +1,11 @@
-import {AssetRegistry} from './core/assets';
-import {ScriptRegistry} from './core/scripts';
-import {SpriteRegistry} from './core/sprites';
-import {TilesetRegistry} from './core/tileset';
 import {Application} from './framework/Application';
-import {Entity} from './framework/Entity';
-import {LayerManager} from './framework/layer/LayerManager';
-import {Scene} from './framework/scene/Scene';
 import TestScript from './scripts/Tester';
 
-import {Vector2} from './math/Vector2';
+import {Scene1, Scene2} from './scenes/all';
 
-let assetsPromise = AssetRegistry.loadAssets({
+const app = new Application();
+
+let assetsPromise = app.assetsRegistry.loadAssets({
     images:[{
         url: '/images/magecity.png',
         name: 'magecity'
@@ -29,7 +24,7 @@ let assetsPromise = AssetRegistry.loadAssets({
     }]
 });
 
-let scriptsPromise = ScriptRegistry.loadScripts([
+let scriptsPromise = app.scriptRegistry.loadScripts([
     {
         name: 'tester',
         script: TestScript
@@ -37,7 +32,7 @@ let scriptsPromise = ScriptRegistry.loadScripts([
 ]);
 
 Promise.all([assetsPromise, scriptsPromise]).then(function(){
-    SpriteRegistry.registerSprites([{
+    app.spriteRegistry.registerSprites([{
         imageName: 'fumiko',
         frameWidth: 24,
         frameHeight: 32,
@@ -88,7 +83,7 @@ Promise.all([assetsPromise, scriptsPromise]).then(function(){
             }
         }
     }]);
-    TilesetRegistry.registerTilesets({
+    app.tilesetRegistry.registerTilesets({
         'tester': {
             imageName: 'tileset',
             frameWidth: 64,
@@ -96,148 +91,10 @@ Promise.all([assetsPromise, scriptsPromise]).then(function(){
         }
     });
 
-    let app = new Application()
-
     app.layerManager.createLayer('details', 1)
 
-    class Scene1 extends Scene {
-        player: any;
-        initialize = (app: Application) => {
-            if (this.data) {
-                this.root = Entity.buildFromJSON(JSON.parse(this.data));
-            } else {
-                let entity = this.createEntity();
-                entity.createChild().createChild();
-                entity.createChild().createChild();
-                entity.transform.setPivot([12, 15]);
-
-                this.player = entity.addComponent('sprite', {
-                    spriteName: 'runE'
-                }).addComponent('script', {
-                    scriptName: 'tester'
-                });
-            }
-        }
-
-        postInitialize = () => {
-
-        }
-
-        teardown = () => {
-            this.data = JSON.stringify(this.root);
-        }
-    }
-
-    class Scene2 extends Scene {
-        initialize = () => {
-            let water = [
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
-                [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203]
-            ];
-
-            let grass = [
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 6, 7, 7, 7, 7, 8, 0, 0, 0, 0, 0],
-                [0, 0, 6, 27, 24, 24, 24, 24, 26, 8, 0, 0, 0, 0],
-                [0, 6, 27, 24, 24, 24, 24, 24, 24, 26, 7, 8, 0, 0],
-                [0, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25, 0, 0],
-                [0, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 26, 8, 0],
-                [0, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25, 0],
-                [0, 40, 41, 41, 41, 41, 10, 24, 24, 24, 24, 24, 25, 0],
-                [0, 0, 0, 0, 0, 0, 40, 41, 41, 41, 41, 41, 42, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            ];
-
-            let ice = [
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 69, 70, 71, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 86, 87, 89, 71, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 103, 104, 73, 89, 70, 71, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 86, 87, 87, 88, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 103, 104, 104, 105, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            ];
-
-            let detailsLower = [
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 33, 0, 124, 107, 0, 106, 0, 0, 0, 0, 0],
-                [0, 0, 0, 112, 0, 0, 0, 0, 0, 0, 124, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 44, 0, 124, 0, 0, 0, 0, 0],
-                [0, 0, 61, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            ];
-
-            let detailsUpper = [
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            ];
-
-            var entity = this.createEntity();
-
-            entity.transform.setLocalPosition([200, 200])
-            // entity.transform.localRotation = 1;
-            entity.transform.setPivot([12, 15]);
-
-            entity.addComponent('sprite', {
-                spriteName: 'runE'
-            }).addComponent('script', {
-                scriptName: 'tester'
-            }).renderLayer = app.layerManager.getLayer('details');
-
-            let tilemaps = this.createEntity();
-            tilemaps.createChild().addComponent('tilemap', {
-                tilesetName: 'tester',
-                data: water,
-                sortOrder: 'bottomLeft'
-            });
-            tilemaps.createChild().addComponent('tilemap', {
-                tilesetName: 'tester',
-                data: grass,
-                sortOrder: 'bottomLeft'
-            });
-            tilemaps.createChild().addComponent('tilemap', {
-                tilesetName: 'tester',
-                data: ice,
-                sortOrder: 'bottomLeft'
-            });
-            tilemaps.createChild().addComponent('tilemap', {
-                tilesetName: 'tester',
-                data: detailsLower,
-                sortOrder: 'bottomLeft'
-            })
-            tilemaps.createChild().addComponent('tilemap', {
-                tilesetName: 'tester',
-                data: detailsUpper,
-                sortOrder: 'bottomLeft'
-            }).renderLayer = app.layerManager.getLayer('details');
-        }
-    }
-
-    app.sceneManager.addScene('scene1', new Scene1);
-    app.sceneManager.addScene('scene2', new Scene2);
+    app.sceneManager.addScene('scene1', Scene1);
+    app.sceneManager.addScene('scene2', Scene2);
 
     app.sceneManager.loadScene('scene1');
     app.startGameLoop();

@@ -14,23 +14,23 @@ export class Tileset { // Pallete
 
 export class TilesetRegistry {
 
-    private static tilesets: {[key: string]: Tileset} = {};
+    constructor(private assetRegistry: AssetRegistry, private tilesets: {[key: string]: Tileset} = {}) {}
 
-    static registerTileset(name: string, data: ITilesetData){
-        TilesetRegistry.tilesets[name] = new Tileset(
-            AssetRegistry.getImage(data.imageName),
+    registerTileset(name: string, data: ITilesetData){
+        this.tilesets[name] = new Tileset(
+            this.assetRegistry.getImage(data.imageName),
             data.frameWidth,
             data.frameHeight
         )
     }
 
-    static registerTilesets(data: {[key: string]: ITilesetData}){
+    registerTilesets(data: {[key: string]: ITilesetData}){
         for (let key in data) {
-            TilesetRegistry.registerTileset(key, data[key]);
+            this.registerTileset(key, data[key]);
         }
     }
 
-    static getTileset(name: string): Tileset {
-        return TilesetRegistry.tilesets[name];
+    getTileset(name: string): Tileset {
+        return this.tilesets[name];
     }
 }

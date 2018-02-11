@@ -1,5 +1,5 @@
 import {Component} from '../../Component';
-import {Script} from '../../../core/scripts';
+import {Script} from '../../core/scripts';
 
 export class ScriptComponent extends Component {
     public script: Script;

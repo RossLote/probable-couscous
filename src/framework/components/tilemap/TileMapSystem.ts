@@ -1,4 +1,4 @@
-import {TilesetRegistry} from '../../../core/tileset';
+import {TilesetRegistry} from '../../core/tileset';
 import {Entity} from "../../Entity";
 import {System} from "../../System";
 import {TileMapComponent} from './TileMapComponent';
@@ -12,7 +12,7 @@ export class TileMapSystem extends System {
     addComponent(entity: Entity, data: TileMapData) : TileMapComponent {
         let mapData = data.data;
         let _mapData = Array<ITileData>();
-        let tileset = TilesetRegistry.getTileset(data.tilesetName);
+        let tileset = this.app.tilesetRegistry.getTileset(data.tilesetName);
         let imageWidth: number = tileset.image.width;
         let imageHeight: number = tileset.image.height;
         let framesWide: number = tileset.image.width/tileset.frameWidth;

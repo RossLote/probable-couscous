@@ -1,4 +1,4 @@
-import {Keyboard} from '../input/Keyboard';
+import {Keyboard} from './input/Keyboard';
 import {System} from '../framework/System';
 import {Entity} from '../framework/Entity';
 import {Renderer} from './Renderer';
@@ -8,6 +8,11 @@ import {TileMapSystem} from '../framework/components/tilemap/TileMapSystem';
 import {Scene} from './scene/Scene';
 import {SceneManager} from './scene/SceneManager';
 import {LayerManager} from './layer/LayerManager';
+
+import {AssetRegistry} from './core/assets';
+import {ScriptRegistry} from './core/scripts';
+import {SpriteRegistry} from './core/sprites';
+import {TilesetRegistry} from './core/tileset';
 
 /**
 TODO:
@@ -44,6 +49,10 @@ export class Application {
     private lastFrameTime: number;
     private renderer: Renderer;
     private poolOfDestruction: Array<Entity>;
+    assetsRegistry: AssetRegistry;
+    scriptRegistry: ScriptRegistry;
+    spriteRegistry: SpriteRegistry;
+    tilesetRegistry: TilesetRegistry;
     sceneManager: SceneManager;
     layerManager: LayerManager;
     canvas: HTMLCanvasElement;
@@ -53,6 +62,12 @@ export class Application {
     keyboard: Keyboard;
 
     constructor(canvas: HTMLCanvasElement = undefined) {
+
+        this.assetsRegistry = new AssetRegistry;
+        this.scriptRegistry = new ScriptRegistry;
+        this.spriteRegistry = new SpriteRegistry(this.assetsRegistry);
+        this.tilesetRegistry = new TilesetRegistry(this.assetsRegistry);
+
         Application.currentApplication = this;
         if (canvas === undefined) {
             canvas = document.createElement('canvas');
@@ -94,12 +109,12 @@ export class Application {
 
     loadScene = (scene: Scene) => {
         if (this.currentScene) {
-            this.currentScene.teardown(this);
+            this.currentScene.teardown();
             this.currentScene.destroy();
         }
-        scene.preInitialise(this);
-        scene.initialize(this);
-        scene.postInitialize(this);
+        scene.preInitialise();
+        scene.initialize();
+        scene.postInitialize();
         this.currentScene = scene;
     }
 

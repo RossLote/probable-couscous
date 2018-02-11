@@ -2,8 +2,8 @@ import {Component} from './Component';
 import {Transform} from './Transform';
 import {Application} from './Application';
 import {Layer} from './layer/Layer';
-import {Vector2} from '../math/Vector2';
-import {uuid} from '../core/uuid';
+import {Vector2} from './math/Vector2';
+import {uuid} from './core/uuid';
 
 interface IComponents {
     [key: string]: Component
