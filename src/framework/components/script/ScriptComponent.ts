@@ -5,7 +5,7 @@ export class ScriptComponent extends Component {
     public script: Script;
     public scriptName: string;
 
-    toJSON = ():any => {
+    toJSON():any{
         return {
             scriptName: this.scriptName
         }

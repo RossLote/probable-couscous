@@ -14,7 +14,7 @@ export class TileMapComponent extends Component {
     tileset: Tileset;
     mapData: Array<ITileData>;
 
-    toJSON = ():any => {
+    toJSON():any{
         return {
             tilesetName: this.tilesetName,
             originalMapData: this.originalMapData,

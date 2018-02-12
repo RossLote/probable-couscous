@@ -22,7 +22,7 @@ export class SpriteComponent extends Component {
         }
     }
 
-    toJSON = ():any => {
+    toJSON():any{
         return {
             spriteName: this.spriteName
         }

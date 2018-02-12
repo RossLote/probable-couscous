@@ -55,7 +55,7 @@ export class Transform {
         this._children = new Array<Transform>();
     }
 
-    private setDirty = (): void => {
+    private setDirty(): void{
     	// only update dirty boolean if it isn't already dirty
         if (!this.isDirty) {
      		this.isDirty = true;
@@ -106,7 +106,7 @@ export class Transform {
         return this._children;
     }
 
-    destroy = () => {
+    destroy(){
         for (let key in this) {
             if (this.hasOwnProperty(key)) {
                 delete this[key];
@@ -117,7 +117,7 @@ export class Transform {
     // calculates the transform matrix that converts
     // from local coordinates to the coordinate space
     // of the parent transform
-    calculateLocalToParentMatrix = (): Matrix3 => {
+    calculateLocalToParentMatrix(): Matrix3{
         // Matrix.translate creates a translation matrix
         // that shifts by (localPosition.x, localPosition.y)
         // Matrix.rotate rotates by localRotation radians
@@ -134,7 +134,7 @@ export class Transform {
 
     // gets the matrix that converts from local
     // coordinates to world coordinates
-    getWorldTransform = (): Matrix3 => {
+    getWorldTransform(): Matrix3{
         // if the dirty flag is set, the the
         // localToWorldMatrix is out of date
         // and needs to be reclaculated
@@ -158,7 +158,7 @@ export class Transform {
         return this.localToWorldMatrix;
     }
 
-    getLocalTransform = (): Matrix3 => {
+    getLocalTransform(): Matrix3{
         if (this.isInverseDirty) {
             // the inverse is out of date
             // so it needs to be updated
@@ -175,11 +175,11 @@ export class Transform {
         return this.worldToLocalMatrix;
     }
 
-	getLocalPosition = ():Vector2 => {
+	getLocalPosition():Vector2{
 		return this.localPosition.clone();
 	}
 
-	setLocalPosition = (vector: Vector2|Array<number>):Transform => {
+	setLocalPosition(vector: Vector2|Array<number>):Transform{
 		vector = castVector2(vector);
 		if (!vector.equals(this.localPosition)) {
 			this.localPosition = vector;
@@ -188,11 +188,11 @@ export class Transform {
 		return this;
 	}
 
-	getLocalRotation = ():number => {
+	getLocalRotation():number{
 		return this.localRotation;
 	}
 
-	setLocalRotation = (rotation: number):Transform => {
+	setLocalRotation(rotation: number):Transform{
 		if (rotation !== this.localRotation) {
 			this.localRotation = rotation;
 			this.setDirty();
@@ -200,11 +200,11 @@ export class Transform {
 		return this;
 	}
 
-	getLocalScale = ():Vector2 => {
+	getLocalScale():Vector2{
 		return this.localScale.clone();
 	}
 
-	setLocalScale = (vector: Vector2|Array<number>):Transform => {
+	setLocalScale(vector: Vector2|Array<number>):Transform{
 		vector = castVector2(vector);
 		if (!vector.equals(this.localPosition)) {
 			this.localScale = vector;
@@ -213,11 +213,11 @@ export class Transform {
 		return this;
 	}
 
-	getPivot = ():Vector2 => {
+	getPivot():Vector2{
 		return this.pivot.clone().multiply(new Vector2(-1, -1));
 	}
 
-	setPivot = (vector: Vector2|Array<number>):Transform => {
+	setPivot(vector: Vector2|Array<number>):Transform{
 		if (vector.length) {
 		    vector = new Vector2(vector);
 		}
@@ -229,7 +229,7 @@ export class Transform {
 		return this;
 	}
 
-	fromJSON = (json: any) => {
+	fromJSON(json: any){
 		if (!json) {
 		    return;
 		}
@@ -239,7 +239,7 @@ export class Transform {
 		json.pivot && this.setPivot(json.pivot);
 	}
 
-	toJSON = ():any =>{
+	toJSON():any{
 		return {
 			localPosition: this.getLocalPosition(),
 			localRotation: this.getLocalRotation(),

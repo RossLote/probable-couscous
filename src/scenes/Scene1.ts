@@ -6,7 +6,7 @@ export class Scene1 extends Scene {
     player: any;
     initialize = () => {
         if (this.data) {
-            this.root = Entity.buildFromJSON(JSON.parse(this.data));
+            this.root = Entity.buildFromJSON(this.app, JSON.parse(this.data));
         } else {
             let entity = this.createEntity();
             entity.createChild().createChild();

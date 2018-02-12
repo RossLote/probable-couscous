@@ -23,7 +23,7 @@ export class Scene {
 
     preInitialise = (): Scene => {
         if (!this.root) {
-            this.root = new Entity();
+            this.root = new Entity(this.app);
         }
         return this;
     }

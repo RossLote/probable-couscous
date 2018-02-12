@@ -12,7 +12,7 @@ export default class Tester extends Script {
 
         let pos = this.entity.transform.getLocalPosition();
         let dirty = false;
-        let pressed = this.app.keyboard.isPressed;
+        let pressed = this.app.keyboard.isPressed.bind(this.app.keyboard);
         let velocity = Vector2.ZERO;
         let sprite = <any>this.entity.getComponent('sprite');
 

@@ -83,11 +83,11 @@ export class Matrix3 {
         );
     }
 
-    clone = ():Matrix3 => {
+    clone():Matrix3{
         return new Matrix3().copy(this);
     }
 
-    copy = (rhs: Matrix3):Matrix3 => {
+    copy(rhs: Matrix3):Matrix3{
         let a = this.data,
             b = rhs.data;
 
@@ -106,7 +106,7 @@ export class Matrix3 {
         return this;
     }
 
-    equals = (rhs: Matrix3):boolean => {
+    equals(rhs: Matrix3):boolean{
         let a = this.data;
         let b = rhs.data;
         return (
@@ -122,11 +122,11 @@ export class Matrix3 {
         )
     }
 
-    inverse = ():Matrix3 => {
+    inverse():Matrix3{
         return this;
     }
 
-    isIdentity = (): boolean => {
+    isIdentity(): boolean{
         let a = this.data;
         return (
             (a[0] === 1) &&
@@ -141,7 +141,7 @@ export class Matrix3 {
         )
     }
 
-    multiply = (rhs: Matrix3): Matrix3 => {
+    multiply(rhs: Matrix3): Matrix3{
         let a = this.data,
             b = rhs.data;
 
@@ -180,7 +180,7 @@ export class Matrix3 {
         return this;
     }
 
-    setToIdentity = ():Matrix3 => {
+    setToIdentity():Matrix3{
         let d = this.data;
         d[0] = 1
         d[1] = 0
@@ -196,11 +196,11 @@ export class Matrix3 {
         return this;
     }
 
-    toJSON = ():Array<number> => {
+    toJSON():Array<number>{
         return Array.prototype.slice.call(this.data);
     }
 
-    toString = ():string => {
+    toString():string{
         let a = this.data;
         return `[
         ${a[0]}, ${a[1]}, ${a[2]},
@@ -209,7 +209,7 @@ export class Matrix3 {
         ]`
     }
 
-    transpose = ():Matrix3 => {
+    transpose():Matrix3{
         let a = this.data;
         let tmp;
 

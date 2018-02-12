@@ -9,7 +9,7 @@ export class LayerManager {
         this.createLayer('default');
     }
 
-    createLayer = (name: string, order: number = 0) => {
+    createLayer(name: string, order: number = 0){
         if (this.getLayer(name)) {
             throw new Error("Layer already exists");
         }
@@ -18,30 +18,30 @@ export class LayerManager {
         this.requiresSort = true;
     }
 
-    getLayer = (name: string): Layer => {
+    getLayer(name: string): Layer{
         return this.layers.find((layer: Layer) => {
             return layer.name === name;
         });
     }
 
-    getLayers = () => {
+    getLayers(){
         if (this.requiresSort) {
             this.sort();
         }
         return this.layers;
     }
 
-    preRenderSetup = () => {
+    preRenderSetup(){
         if (this.requiresSort) {
             this._sort();
         }
     }
 
-    sort = () =>{
+    sort(){
         this.requiresSort = true;
     }
 
-    private _sort = () => {
+    private _sort(){
         if (this.requiresSort) {
             this.layers.sort(function(a: Layer, b: Layer){
                 if (a.order < b.order) {
@@ -56,14 +56,14 @@ export class LayerManager {
         }
     }
 
-    fromJSON = (json: any) => {
+    fromJSON(json: any){
         this.layers = [];
         json.forEach((obj:any) => {
             this.createLayer(obj.name, obj.order);
         });
     }
 
-    toJSON = ():any => {
+    toJSON():any{
         return this.layers;
     }
 }

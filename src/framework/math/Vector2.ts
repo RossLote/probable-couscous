@@ -47,7 +47,7 @@ export class Vector2 {
         return new Vector2(0, 0);
     }
 
-    add = (rhs: Vector2): Vector2 => {
+    add(rhs: Vector2): Vector2{
         let a = this.data,
             b = rhs.data;
         a[0] += b[0]
@@ -64,11 +64,11 @@ export class Vector2 {
         );
     }
 
-    clone = (): Vector2 => {
+    clone(): Vector2{
         return new Vector2().copy(this);
     }
 
-    copy = (rhs: Vector2): Vector2 => {
+    copy(rhs: Vector2): Vector2{
         let a = this.data,
             b = rhs.data;
         a[0] = b[0];
@@ -76,28 +76,28 @@ export class Vector2 {
         return this;
     }
 
-    dot = (rhs: Vector2): number => {
+    dot(rhs: Vector2): number{
         let a = this.data,
             b = rhs.data;
         return a[0] * b[0] + a[1] * b[1];
     }
 
-    equals = (rhs: Vector2): boolean => {
+    equals(rhs: Vector2): boolean{
         let a = this.data,
             b = rhs.data;
         return a[0] === b[0] && a[1] === b[1];
     }
 
-    lengthSquared = (): number => {
+    lengthSquared(): number{
         let a = this.data;
         return a[0] * a[0] + a[1] * a[1];
     }
 
-    length = (): number => {
+    length(): number{
         return Math.sqrt(this.lengthSquared());
     }
 
-    lerp = (lhs: Vector2, rhs: Vector2, alpha: number): Vector2 => {
+    lerp(lhs: Vector2, rhs: Vector2, alpha: number): Vector2{
         let a = lhs.data,
             b = rhs.data,
             r = this.data;
@@ -108,7 +108,7 @@ export class Vector2 {
         return this;
     }
 
-    multiply = (rhs: Vector2): Vector2 => {
+    multiply(rhs: Vector2): Vector2{
         let a = this.data,
             b = rhs.data;
 
@@ -118,7 +118,7 @@ export class Vector2 {
         return this;
     }
 
-    static mul2 = (lhs: Vector2, rhs: Vector2): Vector2 => {
+    static mul2(lhs: Vector2, rhs: Vector2): Vector2{
         let a = lhs.data,
             b = rhs.data;
 
@@ -128,7 +128,7 @@ export class Vector2 {
         );
     }
 
-    normalize = (): Vector2 => {
+    normalize(): Vector2{
         let a = this.data;
 
         let lengthSquared = this.lengthSquared();
@@ -141,7 +141,7 @@ export class Vector2 {
         return this;
     }
 
-    scale = (scalar: number): Vector2 => {
+    scale(scalar: number): Vector2{
         let a = this.data;
 
         a[0] *= scalar;
@@ -150,7 +150,7 @@ export class Vector2 {
         return this;
     }
 
-    set = (x: number, y: number): Vector2 => {
+    set(x: number, y: number): Vector2{
         var a = this.data;
 
         a[0] = x;
@@ -159,7 +159,7 @@ export class Vector2 {
         return this;
     }
 
-    subtract = (rhs: Vector2): Vector2 => {
+    subtract(rhs: Vector2): Vector2{
         var a = this.data,
             b = rhs.data;
 
@@ -178,11 +178,11 @@ export class Vector2 {
         );
     }
 
-    toString = (): string => {
+    toString(): string{
         return `[${this.data[0]}, ${this.data[1]}]`;
     }
 
-    toJSON = ():Array<number> => {
+    toJSON():Array<number>{
         return Array.prototype.slice.call(this.data);
     }
 }

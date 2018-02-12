@@ -29,7 +29,7 @@ export class Renderer {
         });
     }
 
-    renderSprite = (context: CanvasRenderingContext2D, dt: number, entity: Entity, component: SpriteComponent) => {
+    renderSprite(context: CanvasRenderingContext2D, dt: number, entity: Entity, component: SpriteComponent){
         let sprite = this.app.spriteRegistry.getSprite(component.spriteName);
         let frame: any = sprite.frames[component.currentFrame];
         context.drawImage(
@@ -45,7 +45,7 @@ export class Renderer {
         )
     }
 
-    renderTileMap = (context: CanvasRenderingContext2D, dt: number, entity: Entity, tilemap: TileMapComponent) => {
+    renderTileMap(context: CanvasRenderingContext2D, dt: number, entity: Entity, tilemap: TileMapComponent){
         tilemap.mapData.forEach((data: any) => {
             context.drawImage(
                 tilemap.tileset.image,

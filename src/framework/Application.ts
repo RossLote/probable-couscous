@@ -22,6 +22,7 @@ TODO:
 * Scenes                            ✓
 * Serialisation                     ✓
 * Convert registries to app objects ✓
+* Update systems to store components instead of entities.
 * Collision
 * Physics
 * Scene entity sharing?
@@ -69,7 +70,6 @@ export class Application {
         this.spriteRegistry = new SpriteRegistry(this.assetsRegistry);
         this.tilesetRegistry = new TilesetRegistry(this.assetsRegistry);
 
-        Application.currentApplication = this;
         if (canvas === undefined) {
             canvas = document.createElement('canvas');
             document.body.appendChild(canvas);
@@ -88,27 +88,25 @@ export class Application {
             TileMapSystem,
             SpriteSystem
         ]);
-        this.root = new Entity();
+        this.root = new Entity(this);
     }
 
-    static getCurrentApplication() : Application {
-        return Application.currentApplication;
-    }
-
-    registerSystem(systemClass: typeof System) {
-        var system = new systemClass;
+    registerSystem(systemClass: typeof System){
+        var system = new systemClass(this);
         this.systems[system.name] = system;
     }
 
-    registerSystems(systemClasses: Array<typeof System>) {
-        systemClasses.forEach(this.registerSystem.bind(this));
+    registerSystems(systemClasses: Array<typeof System>){
+        for (let i = 0; i < systemClasses.length; i++) {
+            this.registerSystem(systemClasses[i]);
+        }
     }
 
-    getSystem(name: string) : System {
+    getSystem(name: string):System{
         return this.systems[name];
     }
 
-    loadScene = (scene: Scene) => {
+    loadScene(scene: Scene){
         if (this.currentScene) {
             this.currentScene.teardown();
             this.currentScene.destroy();
@@ -128,13 +126,13 @@ export class Application {
         this.gameLoop(0);
     }
 
-    registerEntityForDestruction = (entity: Entity) => {
+    registerEntityForDestruction(entity: Entity){
         if (this.poolOfDestruction.indexOf(entity) === -1) {
             this.poolOfDestruction.push(entity);
         }
     }
 
-    private commenceAnnihilation = (): void => {
+    private commenceAnnihilation(): void{
         let entities = this.poolOfDestruction;
         let i, n = entities.length;
         for (i = 0; i < n; i++) {

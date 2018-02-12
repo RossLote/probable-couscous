@@ -3,13 +3,13 @@ import {Entity} from './Entity';
 
 export class Component {
 
-    constructor(protected system: System, protected entity: Entity, data: any) {
+    constructor(protected system: System, public entity: Entity, data: any) {
         for (let key in data) {
             (<any>this)[key] = data[key];
         }
     }
 
-    destroy = () => {
+    destroy(){
         for (let key in this) {
             if (this.hasOwnProperty(key)) {
                 delete this[key];
@@ -17,7 +17,7 @@ export class Component {
         }
     }
 
-    toJSON = (): any => {
+    toJSON():any{
         throw new Error("Method not implemented.");
     }
 }

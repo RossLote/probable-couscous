@@ -5,22 +5,23 @@ import {Application} from './Application';
 export class System {
     name: string;
     entities: Array<Entity> = [];
-    protected app: Application;
+    components: Array<Component>;
     ComponentType: typeof Component = Component;
 
-    constructor() {
-        this.app = Application.getCurrentApplication();
+    constructor(protected app: Application) {
+        this.components = [];
     }
 
-    addComponent(entity: Entity, data: any) : Component {
-        this.entities.push(entity);
-        return new this.ComponentType(this, entity, data);
+    addComponent(entity: Entity, data: any):Component {
+        let component =  new this.ComponentType(this, entity, data);
+        this.components.push(component);
+        return component;
     }
 
-    removeComponent = (entity: Entity) => {
-        let index = this.entities.indexOf(entity);
+    removeComponent(component: Component){
+        let index = this.components.indexOf(component);
         if (index > -1) {
-            this.entities.splice(index, 1);
+            this.components.splice(index, 1);
         }
     }
 
@@ -36,9 +37,8 @@ export class System {
     }
 
     update(dt: number) : void {
-        this.entities.forEach((entity: Entity) => {
-            let component = entity.getComponent(this.name);
-            this.updateEntity(dt, entity, component);
+        this.components.forEach((component: Component) => {
+            this.updateEntity(dt, component.entity, component);
         });
     }
 

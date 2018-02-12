@@ -15,20 +15,19 @@ export class Entity {
     public transform: Transform;
 
     private components: IComponents;
-    private app: Application;
+
     private _orderInLayer: number;
     private _renderLayer: Layer;
 
-    constructor() {
+    constructor(private app: Application) {
         this.components = {};
-        this.app = Application.getCurrentApplication();
         this.id = uuid();
         this.renderLayer = this.app.layerManager.getLayer('default');
         this.transform = new Transform(this);
     }
 
-    static buildFromJSON(data: any) {
-        let entity = new Entity()
+    static buildFromJSON(app: Application, data: any) {
+        let entity = new Entity(app);
         entity.id = data.id;
         entity.transform.fromJSON(data.transform);
         entity.renderLayer = entity.app.layerManager.getLayer(data.renderLayer);
@@ -39,45 +38,45 @@ export class Entity {
         if (data.children) {
             let i, n, e;
             for (i = 0, n = data.children.length; i < n; i++) {
-                e = Entity.buildFromJSON(data.children[i])
+                e = Entity.buildFromJSON(app, data.children[i])
                 e.transform.parent = entity.transform;
             }
         }
         return entity
     }
 
-    addChild = (entity: Entity): Entity => {
+    addChild(entity: Entity): Entity{
         entity.transform.parent = this.transform;
         return this;
     }
 
-    createChild = (): Entity => {
-        var entity = new Entity();
+    createChild(): Entity{
+        var entity = new Entity(this.app);
         this.addChild(entity);
         return entity;
     }
 
-    addComponent = (name: string, data: object): Entity => {
+    addComponent(name: string, data: object): Entity{
         let component = this.app.getSystem(name).addComponent(this, data);
         this.components[name] = component;
         return this;
     }
 
-    removeComponent = (name: string) => {
+    removeComponent(name: string){
         let component =  this.components[name];
-        this.app.getSystem(name).removeComponent(this);
+        this.app.getSystem(name).removeComponent(component);
         component.destroy();
         delete this.components[name];
     }
 
-    getComponent = (name: string): Component => {
+    getComponent(name: string): Component{
         if (name in this.components) {
             return this.components[name];
         }
         return undefined;
     }
 
-    getChildren = ():Array<Entity> => {
+    getChildren():Array<Entity>{
         let entities: Array<Entity> = [];
         let childTransforms = this.transform.children;
         let i, n;
@@ -87,11 +86,11 @@ export class Entity {
         return entities
     }
 
-    destroy = () => {
+    destroy(){
         this.app.registerEntityForDestruction(this);
     }
 
-    forceDestroy = () => {
+    forceDestroy(){
         for (let key in this.components) {
             this.removeComponent(key);
         }
@@ -143,7 +142,7 @@ export class Entity {
         this.renderLayer.sort();
     }
 
-    toJSON = ():any => {
+    toJSON():any{
         return {
             id: this.id,
             transform: this.transform,

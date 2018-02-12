@@ -70,23 +70,23 @@ export class Keyboard {
     private lastKeymap: IKeymap = {};
 
     constructor(public window: Window){
-        window.addEventListener('keydown', this.keydown);
-        window.addEventListener('keyup', this.keyup);
+        window.addEventListener('keydown', this.keydown.bind(this));
+        window.addEventListener('keyup', this.keyup.bind(this));
     }
 
-    isPressed = (key: string):boolean => {
+    isPressed(key: string):boolean{
         return !!this.currentKeymap[key];
     }
 
-    wasPressed = (key: string):boolean => {
+    wasPressed(key: string):boolean{
         return !!this.currentKeymap[key] && !this.lastKeymap[key];
     }
 
-    wasReleased = (key: string): boolean => {
+    wasReleased(key: string): boolean{
         return !this.currentKeymap[key] && !!this.lastKeymap[key];
     }
 
-    private keydown = (event: KeyboardEvent) => {
+    private keydown(event: KeyboardEvent){
         const code = masterKeyMap[event.which];
         event.preventDefault();
         event.stopPropagation();
@@ -96,13 +96,13 @@ export class Keyboard {
         }
     }
 
-    private keyup = (event: KeyboardEvent) => {
+    private keyup(event: KeyboardEvent){
         event.preventDefault();
         event.stopPropagation();
         delete this.currentKeymap[masterKeyMap[event.which]];
     }
 
-    update = () => {
+    update(){
         let prop;
 
         for (prop in this.lastKeymap) {

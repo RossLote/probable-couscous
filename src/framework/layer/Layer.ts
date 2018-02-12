@@ -9,33 +9,33 @@ export class Layer {
         this.entities = [];
     }
 
-    preRenderSetup = () => {
+    preRenderSetup(){
         if (this.requiresSort) {
             this._sort();
         }
     }
 
-    addEntity = (entity: Entity) => {
+    addEntity(entity: Entity){
         this.entities.push(entity);
         this.sort();
     }
 
-    removeEntity = (entity: Entity) => {
+    removeEntity(entity: Entity){
         let index: number = this.entities.indexOf(entity);
         if (index > -1) {
             this.entities.splice(index, 1);
         }
     }
 
-    getEntities = () => {
+    getEntities(){
         return this.entities;
     }
 
-    sort = () => {
+    sort(){
         this.requiresSort = true;
     }
 
-    _sort = () => {
+    _sort(){
         this.entities.sort(function(a: Entity, b: Entity){
             if (a.orderInLayer < b.orderInLayer) {
                 return -1;
@@ -48,7 +48,7 @@ export class Layer {
         this.requiresSort = false;
     }
 
-    toJSON = ():any => {
+    toJSON():any{
         return {
             name: this.name,
             order: this.order

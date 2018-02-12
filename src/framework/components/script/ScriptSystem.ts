@@ -11,7 +11,7 @@ export class ScriptSystem extends System {
     name: string = 'script';
     ComponentType: typeof ScriptComponent = ScriptComponent;
 
-    addComponent(entity: Entity, data: IScriptData) : ScriptComponent {
+    addComponent(entity: Entity, data: IScriptData):ScriptComponent {
         let scriptClass = this.app.scriptRegistry.getScript(data.scriptName);
         let script = new scriptClass(entity, this.app);
         let component = <ScriptComponent>super.addComponent(entity, {
@@ -26,6 +26,7 @@ export class ScriptSystem extends System {
     }
 
     updateEntity(dt:number, entity: Entity, component: ScriptComponent) {
+        console.log(component)
         component.script.update(dt);
     }
 
