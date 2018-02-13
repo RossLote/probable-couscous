@@ -16,18 +16,18 @@ import {TilesetRegistry} from './core/tileset';
 
 /**
 TODO:
-* Tilesets                          ✓
-* Layers                            ✓
-* Input                             ✓
-* Scenes                            ✓
-* Serialisation                     ✓
-* Convert registries to app objects ✓
-* Update systems to store components instead of entities.
+* Tilesets                                                  ✓
+* Layers                                                    ✓
+* Input                                                     ✓
+* Scenes                                                    ✓
+* Serialisation                                             ✓
+* Convert registries to app objects                         ✓
+* Update systems to store components instead of entities.   ✓
+* Events/Triggers
 * Collision
 * Physics
 * Scene entity sharing?
 * Sound
-* Events/Triggers
 * Lights
 * UI
 * Fonts
