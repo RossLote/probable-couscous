@@ -4,17 +4,18 @@ import {Application} from './Application';
 import {Layer} from './layer/Layer';
 import {Vector2} from './math/Vector2';
 import {uuid} from './core/uuid';
-import {IEvented} from './events/Evented';
+import {events, IEvents} from './events/events';
 
 interface IComponents {
     [key: string]: Component
 }
 
 
-export class Entity implements IEvented {
+export class Entity implements IEvents {
     public id: string;
     public transform: Transform;
     public eventCallbacks:any;
+    public activeEventCallbacks:any;
 
     private components: IComponents;
 
@@ -26,26 +27,32 @@ export class Entity implements IEvented {
         this.id = uuid();
         this.renderLayer = this.app.layerManager.getLayer('default');
         this.transform = new Transform(this);
+        this.eventCallbacks = [];
+        this.activeEventCallbacks = [];
         this.off('tester', function(){});
-        this.on('tester', function(){});
+        this.once('tester', function(...args:any[]){console.log(...args)});
         this.once('tester', function(){});
-        this.trigger('tester');
+        this.trigger('tester', 5, 7, 1, 2, 6, 5,4);
     }
 
-    off(key: string, callback: Function, context?: any) {
-        console.log('Evented: off - ', this)
+    off(key?: string, callback?: Function): Entity {
+        events.off.call(this, key, callback);
+        return this;
     }
 
-    on(key: string, callback: Function, context?: any) {
-        console.log('Evented: on - ', this)
+    on(key: string, callback: Function, context?: any): Entity {
+        events.on.call(this, key, callback);
+        return this;
     }
 
-    once(key: string, callback: Function, context?: any) {
-        console.log('Evented: once - ', this)
+    once(key: string, callback: Function, context?: any): Entity {
+        events.once.call(this, key, callback);
+        return this;
     }
 
-    trigger(key: string, a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any, j?: any, k?: any, l?: any, m?: any) {
-        console.log('Evented: trigger - ', this)
+    trigger(key: string, ...args: any[]) {
+        events.trigger.call(this, key, ...args);
+        return this;
     }
 
     static buildFromJSON(app: Application, data: any) {
