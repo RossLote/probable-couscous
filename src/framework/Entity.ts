@@ -4,15 +4,17 @@ import {Application} from './Application';
 import {Layer} from './layer/Layer';
 import {Vector2} from './math/Vector2';
 import {uuid} from './core/uuid';
+import {IEvented} from './events/Evented';
 
 interface IComponents {
     [key: string]: Component
 }
 
 
-export class Entity {
+export class Entity implements IEvented {
     public id: string;
     public transform: Transform;
+    public eventCallbacks:any;
 
     private components: IComponents;
 
@@ -24,6 +26,26 @@ export class Entity {
         this.id = uuid();
         this.renderLayer = this.app.layerManager.getLayer('default');
         this.transform = new Transform(this);
+        this.off('tester', function(){});
+        this.on('tester', function(){});
+        this.once('tester', function(){});
+        this.trigger('tester');
+    }
+
+    off(key: string, callback: Function, context?: any) {
+        console.log('Evented: off - ', this)
+    }
+
+    on(key: string, callback: Function, context?: any) {
+        console.log('Evented: on - ', this)
+    }
+
+    once(key: string, callback: Function, context?: any) {
+        console.log('Evented: once - ', this)
+    }
+
+    trigger(key: string, a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any, j?: any, k?: any, l?: any, m?: any) {
+        console.log('Evented: trigger - ', this)
     }
 
     static buildFromJSON(app: Application, data: any) {

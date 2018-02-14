@@ -26,7 +26,6 @@ export class ScriptSystem extends System {
     }
 
     updateEntity(dt:number, entity: Entity, component: ScriptComponent) {
-        console.log(component)
         component.script.update(dt);
     }
 
