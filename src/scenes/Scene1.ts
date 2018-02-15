@@ -9,8 +9,6 @@ export class Scene1 extends Scene {
             this.root = Entity.buildFromJSON(this.app, JSON.parse(this.data));
         } else {
             let entity = this.createEntity();
-            entity.createChild().createChild();
-            entity.createChild().createChild();
             entity.transform.setPivot([12, 15]);
 
             this.player = entity.addComponent('sprite', {

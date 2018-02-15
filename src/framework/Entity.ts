@@ -14,27 +14,22 @@ interface IComponents {
 export class Entity implements IEvents {
     public id: string;
     public transform: Transform;
-    public eventCallbacks:any;
-    public activeEventCallbacks:any;
+    public eventCallbacks:any = {};
 
-    private components: IComponents;
+    private components: IComponents = {};
 
     private _orderInLayer: number;
     private _renderLayer: Layer;
 
     constructor(private app: Application) {
-        this.components = {};
+        var this_ = this;
         this.id = uuid();
         this.renderLayer = this.app.layerManager.getLayer('default');
         this.transform = new Transform(this);
-        this.eventCallbacks = [];
-        this.activeEventCallbacks = [];
-        this.off('tester', function(){});
-        this.once('tester', function(...args:any[]){console.log(...args)});
-        this.once('tester', function(){});
-        this.trigger('tester', 5, 7, 1, 2, 6, 5,4);
+        this.eventCallbacks = new Array<Function>();
     }
 
+    // Start IEvents methods
     off(key?: string, callback?: Function): Entity {
         events.off.call(this, key, callback);
         return this;
@@ -54,6 +49,7 @@ export class Entity implements IEvents {
         events.trigger.call(this, key, ...args);
         return this;
     }
+    // End IEvents methods
 
     static buildFromJSON(app: Application, data: any) {
         let entity = new Entity(app);

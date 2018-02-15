@@ -1,6 +1,5 @@
 export interface IEvents {
     eventCallbacks:any;
-    activeEventCallbacks:any;
     off(key?: string, callback?: Function):any;
     on(key: string, callback: Function):any;
     once(key: string, callback: Function):any;
@@ -38,6 +37,9 @@ export const events = {
     },
 
     trigger: function(key: string, ...args: any[]) {
+        if (!this.eventCallbacks[key]) {
+            return;
+        }
         let callbacks: Array<Function> = this.eventCallbacks[key];
         let callbacksToExecute = [];
         if (callbacks) {
@@ -46,13 +48,19 @@ export const events = {
                 callback = callbacks[i];
                 callbacksToExecute.push(callback);
                 if ((<any>callback).once) {
-                    this.eventCallbacks[i] = null;
+                    callbacks[i] = null;
                 }
             }
         }
-        this.eventCallbacks = this.eventCallbacks.filter(function(callback: Function){
+        callbacks = callbacks.filter(function(callback: Function){
             return callback !== null;
         });
+
+        if (callbacks) {
+            this.eventCallbacks[key] = callbacks
+        } else {
+            delete this.eventCallbacks[key];
+        }
 
         for (let i = 0; i < callbacksToExecute.length; i++) {
             callbacksToExecute[i](...args);
