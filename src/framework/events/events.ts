@@ -37,32 +37,31 @@ export const events = {
     },
 
     trigger: function(key: string, ...args: any[]) {
-        if (!this.eventCallbacks[key]) {
+        let callbacks: Array<Function> = this.eventCallbacks[key];
+        if (!callbacks || callbacks.length === 0) {
             return;
         }
-        let callbacks: Array<Function> = this.eventCallbacks[key];
         let callbacksToExecute = [];
-        if (callbacks) {
-            let i, callback;
-            for (let i = 0; i < callbacks.length; i++) {
-                callback = callbacks[i];
-                callbacksToExecute.push(callback);
-                if ((<any>callback).once) {
-                    callbacks[i] = null;
-                }
+        let i, callback;
+        for (i = 0; i < callbacks.length; i++) {
+            callback = callbacks[i];
+            callbacksToExecute.push(callback);
+            if ((<any>callback).once) {
+                callbacks[i] = null;
             }
         }
+
         callbacks = callbacks.filter(function(callback: Function){
             return callback !== null;
         });
 
         if (callbacks) {
-            this.eventCallbacks[key] = callbacks
+            this.eventCallbacks[key] = callbacks;
         } else {
             delete this.eventCallbacks[key];
         }
 
-        for (let i = 0; i < callbacksToExecute.length; i++) {
+        for (i = 0; i < callbacksToExecute.length; i++) {
             callbacksToExecute[i](...args);
         }
     }
