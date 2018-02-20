@@ -148,6 +148,13 @@ export class Vector2 {
       return this;
     }
 
+    reverse(): Vector2 {
+        let d = this.data;
+        d[0] = -d[0];
+        d[1] = -d[1];
+        return this;
+    }
+
     rotate(angle: number) {
         let x = this.x;
         let y = this.y;
