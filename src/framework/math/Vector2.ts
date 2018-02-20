@@ -141,6 +141,21 @@ export class Vector2 {
         return this;
     }
 
+    perpendicular() {
+      let x = this.x;
+      this.x = this.y;
+      this.y = -x;
+      return this;
+    }
+
+    rotate(angle: number) {
+        let x = this.x;
+        let y = this.y;
+        this.x = x * Math.cos(angle) - y * Math.sin(angle);
+        this.y = x * Math.sin(angle) + y * Math.cos(angle);
+        return this;
+    };
+
     scale(scalar: number): Vector2{
         let a = this.data;
 
