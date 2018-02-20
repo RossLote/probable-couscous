@@ -9,7 +9,7 @@ import {sortFunctions} from './utils';
 export class TileMapSystem extends System {
     name: string = 'tilemap';
 
-    addComponent(entity: Entity, data: TileMapData):TileMapComponent {
+    addComponent(componentName: string, entity: Entity, data: TileMapData):TileMapComponent {
         let mapData = data.data;
         let _mapData = Array<ITileData>();
         let tileset = this.app.tilesetRegistry.getTileset(data.tilesetName);

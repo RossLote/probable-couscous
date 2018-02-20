@@ -70,38 +70,38 @@ export class Entity implements IEvents {
         return entity
     }
 
-    addChild(entity: Entity): Entity{
+    addChild(entity: Entity): Entity {
         entity.transform.parent = this.transform;
         return this;
     }
 
-    createChild(): Entity{
+    createChild(): Entity {
         var entity = new Entity(this.app);
         this.addChild(entity);
         return entity;
     }
 
-    addComponent(name: string, data: object): Entity{
-        let component = this.app.getSystem(name).addComponent(this, data);
+    addComponent(name: string, data: object): Entity {
+        let component = this.app.getSystem(name).addComponent(name, this, data);
         this.components[name] = component;
         return this;
     }
 
-    removeComponent(name: string){
+    removeComponent(name: string) {
         let component =  this.components[name];
         this.app.getSystem(name).removeComponent(component);
         component.destroy();
         delete this.components[name];
     }
 
-    getComponent(name: string): Component{
+    getComponent(name: string): Component {
         if (name in this.components) {
             return this.components[name];
         }
         return undefined;
     }
 
-    getChildren():Array<Entity>{
+    getChildren(): Array<Entity> {
         let entities: Array<Entity> = [];
         let childTransforms = this.transform.children;
         let i, n;
@@ -167,7 +167,7 @@ export class Entity implements IEvents {
         this.renderLayer.sort();
     }
 
-    toJSON():any{
+    toJSON(): any {
         return {
             id: this.id,
             transform: this.transform,

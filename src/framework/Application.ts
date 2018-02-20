@@ -47,10 +47,11 @@ interface ISystems {
 export class Application {
     private static currentApplication: Application;
     private systems: ISystems = {};
+    private systemsList: Array<System> = [];
     private startTime: number;
     private lastFrameTime: number;
     private renderer: Renderer;
-    private poolOfDestruction: Array<Entity>;
+    private poolOfDestruction: Array<Entity> = [];
     assetsRegistry: AssetRegistry;
     scriptRegistry: ScriptRegistry;
     spriteRegistry: SpriteRegistry;
@@ -79,7 +80,6 @@ export class Application {
         this.canvas = canvas;
         this.renderer = new Renderer(this);
         this.keyboard = new Keyboard(window);
-        this.poolOfDestruction = [];
         this.layerManager = new LayerManager();
         this.sceneManager = new SceneManager(this);
 
@@ -94,6 +94,10 @@ export class Application {
     registerSystem(systemClass: typeof System){
         var system = new systemClass(this);
         this.systems[system.name] = system;
+        for (let i = 0; i < system.variants.length; i++) {
+            this.systems[system.variants[i]] = system;
+        }
+        this.systemsList.push(system);
     }
 
     registerSystems(systemClasses: Array<typeof System>){
@@ -147,8 +151,8 @@ export class Application {
         this.lastFrameTime = time;
         window.requestAnimationFrame(this.gameLoop.bind(this));
         if (this.playing) {
-            for (let name in this.systems) {
-                this.systems[name].update(dt);
+            for (let i = 0; i < this.systemsList.length; i++) {
+                this.systemsList[i].update(dt);
             }
             this.renderer.render(dt);
             this.keyboard.update();

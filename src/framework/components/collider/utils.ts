@@ -78,12 +78,11 @@ class Polygon {
     setPoints(points: Array<Vector2> = new Array<Vector2>()): Polygon {
         let lengthChanged = !this.points || this.points.length !== points.length;
         if (lengthChanged) {
-          let i;
-          let calcPoints = this.calcPoints = [];
-          let edges = this.edges = [];
-          let normals = this.normals = [];
+          let calcPoints: Array<Vector2> = this.calcPoints = [];
+          let edges: Array<Vector2> = this.edges = [];
+          let normals: Array<Vector2> = this.normals = [];
           // Allocate the vector arrays for the calculated properties
-          for (i = 0; i < points.length; i++) {
+          for (let i = 0; i < points.length; i++) {
             calcPoints.push(new Vector2());
             edges.push(new Vector2());
             normals.push(new Vector2());
@@ -117,8 +116,7 @@ class Polygon {
         let offset = this.offset;
         let angle = this.angle;
         let len = points.length;
-        let i;
-        for (i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             let calcPoint = calcPoints[i].copy(points[i]);
             calcPoint.x += offset.x;
             calcPoint.y += offset.y;
@@ -127,7 +125,7 @@ class Polygon {
             }
         }
         // Calculate the edges/normals
-        for (i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             let p1 = calcPoints[i];
             let p2 = i < len - 1 ? calcPoints[i + 1] : calcPoints[0];
             let e = edges[i].copy(p2).subtract(p1);
@@ -168,8 +166,7 @@ class Polygon {
     rotate(angle: number) {
         let points = this.points;
         let len = points.length;
-        let i;
-        for (i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             points[i].rotate(angle);
         }
         this.recalculate();
@@ -191,8 +188,7 @@ class Polygon {
      translate(x: number, y: number) {
         let points = this.points;
         let len = points.length;
-        let i;
-        for (i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             points[i].x += x;
             points[i].y += y;
         }
@@ -216,8 +212,7 @@ class Polygon {
         let yMin = points[0].y;
         let xMax = points[0].x;
         let yMax = points[0].y;
-        let i;
-        for (i = 1; i < len; i++) {
+        for (let i = 1; i < len; i++) {
             var point = points[i];
             if (point.x < xMin) {
                 xMin = point.x;
@@ -245,15 +240,15 @@ class Polygon {
      * @return {Vector} A Vector that contains the coordinates of the Centroid.
      */
     getCentroid() {
-        var points = this.calcPoints;
-        var len = points.length;
-        var cx = 0;
-        var cy = 0;
-        var ar = 0;
-        for (var i = 0; i < len; i++) {
-            var p1 = points[i];
-            var p2 = i === len - 1 ? points[0] : points[i+1]; // Loop around if last point
-            var a = p1.x * p2.y - p2.x * p1.y;
+        let points = this.calcPoints;
+        let len = points.length;
+        let cx = 0;
+        let cy = 0;
+        let ar = 0;
+        for (let i = 0; i < len; i++) {
+            let p1 = points[i];
+            let p2 = i === len - 1 ? points[0] : points[i+1]; // Loop around if last point
+            let a = p1.x * p2.y - p2.x * p1.y;
             cx += (p1.x + p2.x) * a;
             cy += (p1.y + p2.y) * a;
             ar += a;

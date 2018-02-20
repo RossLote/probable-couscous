@@ -4,6 +4,7 @@ import {Application} from './Application';
 
 export class System {
     name: string;
+    variants: Array<string> = [];
     entities: Array<Entity> = [];
     components: Array<Component>;
     ComponentType: typeof Component = Component;
@@ -12,7 +13,7 @@ export class System {
         this.components = [];
     }
 
-    addComponent(entity: Entity, data: any):Component {
+    addComponent(componentName: string, entity: Entity, data: any):Component {
         let component =  new this.ComponentType(this, entity, data);
         this.components.push(component);
         return component;
