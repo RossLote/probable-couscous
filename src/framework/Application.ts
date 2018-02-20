@@ -2,9 +2,12 @@ import {Keyboard} from './input/Keyboard';
 import {System} from '../framework/System';
 import {Entity} from '../framework/Entity';
 import {Renderer} from './Renderer';
+
+import {ColliderSystem} from '../framework/components/collider/ColliderSystem';
 import {ScriptSystem} from '../framework/components/script/ScriptSystem';
 import {SpriteSystem} from '../framework/components/sprite/SpriteSystem';
 import {TileMapSystem} from '../framework/components/tilemap/TileMapSystem';
+
 import {Scene} from './scene/Scene';
 import {SceneManager} from './scene/SceneManager';
 import {LayerManager} from './layer/LayerManager';
@@ -86,7 +89,8 @@ export class Application {
         this.registerSystems([
             ScriptSystem,
             TileMapSystem,
-            SpriteSystem
+            SpriteSystem,
+            ColliderSystem
         ]);
         this.root = new Entity(this);
     }

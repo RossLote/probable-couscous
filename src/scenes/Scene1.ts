@@ -15,6 +15,9 @@ export class Scene1 extends Scene {
                 spriteName: 'runE'
             }).addComponent('script', {
                 scriptName: 'tester'
+            }).addComponent('boxcollider', {
+                width: 32,
+                height: 32
             });
         }
     }

@@ -7,6 +7,11 @@ export class Component {
         for (let key in data) {
             (<any>this)[key] = data[key];
         }
+        this.initialize();
+    }
+
+    initialize() {
+        // noop
     }
 
     destroy(){
