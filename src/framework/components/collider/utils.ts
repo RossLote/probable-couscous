@@ -103,7 +103,7 @@ export class Polygon implements ICollider {
     /**
      * @return {Polygon} This for chaining.
      */
-    private recalculate() {
+    private recalculate(): Polygon {
 
         //TODO: make this dirty
 
@@ -146,7 +146,7 @@ export class Polygon implements ICollider {
      * @param {number} angle The current rotation angle (in radians).
      * @return {Polygon} This for chaining.
      */
-    setAngle(angle: number) {
+    setAngle(angle: number): Polygon {
         this.angle = angle;
         this.recalculate();
         return this;
@@ -157,7 +157,7 @@ export class Polygon implements ICollider {
      * @param {Vector} offset The new offset vector.
      * @return {Polygon} This for chaining.
      */
-    setOffset(offset: Vector2) {
+    setOffset(offset: Vector2): Polygon {
         this.offset = offset;
         this.recalculate();
         return this;
@@ -170,7 +170,7 @@ export class Polygon implements ICollider {
      * @param {number} angle The angle to rotate (in radians)
      * @return {Polygon} This for chaining.
      */
-    rotate(angle: number) {
+    rotate(angle: number): Polygon {
         let points = this.points;
         let len = points.length;
         for (let i = 0; i < len; i++) {
@@ -192,7 +192,7 @@ export class Polygon implements ICollider {
      * @param {number} y The vertical amount to translate.
      * @return {Polygon} This for chaining.
      */
-     translate(x: number, y: number) {
+     translate(x: number, y: number): Polygon {
         let points = this.points;
         let len = points.length;
         for (let i = 0; i < len; i++) {
@@ -212,7 +212,7 @@ export class Polygon implements ICollider {
     /**
      * @return {Polygon} The AABB
      */
-    getAABB() {
+    getAABB(): Polygon {
         let points = this.calcPoints;
         let len = points.length;
         let xMin = points[0].x;
@@ -220,7 +220,7 @@ export class Polygon implements ICollider {
         let xMax = points[0].x;
         let yMax = points[0].y;
         for (let i = 1; i < len; i++) {
-            var point = points[i];
+            let point = points[i];
             if (point.x < xMin) {
                 xMin = point.x;
             }
@@ -246,7 +246,7 @@ export class Polygon implements ICollider {
     /**
      * @return {Vector} A Vector that contains the coordinates of the Centroid.
      */
-    getCentroid() {
+    getCentroid(): Vector2 {
         let points = this.calcPoints;
         let len = points.length;
         let cx = 0;
@@ -283,14 +283,12 @@ export class Box implements ICollider {
      * @param {?number=} height The height of the box.
      * @constructor
      */
-    constructor(public position: Vector2 = Vector2.ZERO, public width: number = 0, public height: number = 0) {
-        console.log(this.position)
-    }
+    constructor(public position: Vector2 = Vector2.ZERO, public width: number = 0, public height: number = 0) {}
     // Returns a polygon whose edges are the same as this box.
     /**
      * @return {Polygon} A new Polygon that represents this box.
      */
-    toPolygon() {
+    toPolygon(): Polygon {
         let pos = this.position;
         let w = this.width;
         let h = this.height;
@@ -327,91 +325,95 @@ class Response {
     /**
      * @return {Response} This for chaining
      */
-    clear() {
-      this.aInB = true;
-      this.bInA = true;
-      this.overlap = Number.MAX_VALUE;
-      return this;
+    clear(): Response {
+        this.aInB = true;
+        this.bInA = true;
+        this.overlap = Number.MAX_VALUE;
+        return this;
     };
 
-  }
+}
 
-  // ## Object Pools
+// ## Object Pools
 
-  // A pool of `Vector` objects that are used in calculations to avoid
-  // allocating memory.
-  /**
-   * @type {Array.<Vector>}
-   */
-  const T_VECTORS: Array<Vector2> = [];
-  for (var i = 0; i < 10; i++) { T_VECTORS.push(new Vector2()); }
+// A pool of `Vector` objects that are used in calculations to avoid
+// allocating memory.
+/**
+ * @type {Array.<Vector>}
+ */
+const T_VECTORS: Array<Vector2> = [];
+for (let i = 0; i < 10; i++) {
+    T_VECTORS.push(new Vector2());
+}
 
-  // A pool of arrays of numbers used in calculations to avoid allocating
-  // memory.
-  /**
-   * @type {Array.<Array.<number>>}
-   */
-  const T_ARRAYS: Array<Array<number>> = [];
-  for (var i = 0; i < 5; i++) { T_ARRAYS.push([]); }
+// A pool of arrays of numbers used in calculations to avoid allocating
+// memory.
+/**
+ * @type {Array.<Array.<number>>}
+ */
+const T_ARRAYS: Array<Array<number>> = [];
+for (let i = 0; i < 5; i++) {
+    T_ARRAYS.push([]);
+}
 
-  // Temporary response used for polygon hit detection.
-  /**
-   * @type {Response}
-   */
-  const T_RESPONSE = new Response();
+// Temporary response used for polygon hit detection.
+/**
+ * @type {Response}
+ */
+const T_RESPONSE: Response = new Response();
 
-  // Tiny "point" polygon used for polygon hit detection.
-  /**
-   * @type {Polygon}
-   */
-  const TEST_POINT = new Box(new Vector2(), 0.000001, 0.000001).toPolygon();
+// Tiny "point" polygon used for polygon hit detection.
+/**
+ * @type {Polygon}
+ */
+const TEST_POINT: Polygon = new Box(new Vector2(), 0.000001, 0.000001).toPolygon();
 
-  // ## Helper Functions
+// ## Helper Functions
 
-  // Flattens the specified array of points onto a unit vector axis,
-  // resulting in a one dimensional range of the minimum and
-  // maximum value on that axis.
-  /**
-   * @param {Array.<Vector>} points The points to flatten.
-   * @param {Vector} normal The unit vector axis to flatten on.
-   * @param {Array.<number>} result An array.  After calling this function,
-   *   result[0] will be the minimum value,
-   *   result[1] will be the maximum value.
-   */
-  function flattenPointsOn(points: Array<Vector2>, normal: Vector2, result: Array<number>) {
-    let min = Number.MAX_VALUE;
-    let max = -Number.MAX_VALUE;
-    let len = points.length;
+// Flattens the specified array of points onto a unit vector axis,
+// resulting in a one dimensional range of the minimum and
+// maximum value on that axis.
+/**
+ * @param {Array.<Vector>} points The points to flatten.
+ * @param {Vector} normal The unit vector axis to flatten on.
+ * @param {Array.<number>} result An array.  After calling this function,
+ *   result[0] will be the minimum value,
+ *   result[1] will be the maximum value.
+ */
+function flattenPointsOn(points: Array<Vector2>, normal: Vector2, result: Array<number>) {
+    let min: number = Number.MAX_VALUE;
+    let max: number = -Number.MAX_VALUE;
+    let len: number = points.length;
     for (let i = 0; i < len; i++ ) {
-      // The magnitude of the projection of the point onto the normal
-      let dot = points[i].dot(normal);
-      if (dot < min) { min = dot; }
-      if (dot > max) { max = dot; }
+        // The magnitude of the projection of the point onto the normal
+        let dot: number = points[i].dot(normal);
+        if (dot < min) { min = dot; }
+        if (dot > max) { max = dot; }
     }
     result[0] = min; result[1] = max;
-  }
+}
 
-  // Check whether two convex polygons are separated by the specified
-  // axis (must be a unit vector).
-  /**
-   * @param {Vector} aPos The position of the first polygon.
-   * @param {Vector} bPos The position of the second polygon.
-   * @param {Array.<Vector>} aPoints The points in the first polygon.
-   * @param {Array.<Vector>} bPoints The points in the second polygon.
-   * @param {Vector} axis The axis (unit sized) to test against.  The points of both polygons
-   *   will be projected onto this axis.
-   * @param {Response=} response A Response object (optional) which will be populated
-   *   if the axis is not a separating axis.
-   * @return {boolean} true if it is a separating axis, false otherwise.  If false,
-   *   and a response is passed in, information about how much overlap and
-   *   the direction of the overlap will be populated.
-   */
-  function isSeparatingAxis(aPos: Vector2, bPos: Vector2, aPoints: Array<Vector2>, bPoints: Array<Vector2>, axis: Vector2, response: Response) {
-    var rangeA = T_ARRAYS.pop();
-    var rangeB = T_ARRAYS.pop();
+// Check whether two convex polygons are separated by the specified
+// axis (must be a unit vector).
+/**
+ * @param {Vector} aPos The position of the first polygon.
+ * @param {Vector} bPos The position of the second polygon.
+ * @param {Array.<Vector>} aPoints The points in the first polygon.
+ * @param {Array.<Vector>} bPoints The points in the second polygon.
+ * @param {Vector} axis The axis (unit sized) to test against.  The points of both polygons
+ *   will be projected onto this axis.
+ * @param {Response=} response A Response object (optional) which will be populated
+ *   if the axis is not a separating axis.
+ * @return {boolean} true if it is a separating axis, false otherwise.  If false,
+ *   and a response is passed in, information about how much overlap and
+ *   the direction of the overlap will be populated.
+ */
+function isSeparatingAxis(aPos: Vector2, bPos: Vector2, aPoints: Array<Vector2>, bPoints: Array<Vector2>, axis: Vector2, response: Response): boolean {
+    let rangeA = T_ARRAYS.pop();
+    let rangeB = T_ARRAYS.pop();
     // The magnitude of the offset between the two polygons
-    var offsetV = T_VECTORS.pop().copy(bPos).subtract(aPos);
-    var projectedOffset = offsetV.dot(axis);
+    let offsetV = T_VECTORS.pop().copy(bPos).subtract(aPos);
+    let projectedOffset = offsetV.dot(axis);
     // Project the polygons onto the axis.
     flattenPointsOn(aPoints, axis, rangeA);
     flattenPointsOn(bPoints, axis, rangeB);
@@ -420,359 +422,365 @@ class Response {
     rangeB[1] += projectedOffset;
     // Check if there is a gap. If there is, this is a separating axis and we can stop
     if (rangeA[0] > rangeB[1] || rangeB[0] > rangeA[1]) {
-      T_VECTORS.push(offsetV);
-      T_ARRAYS.push(rangeA);
-      T_ARRAYS.push(rangeB);
-      return true;
+        T_VECTORS.push(offsetV);
+        T_ARRAYS.push(rangeA);
+        T_ARRAYS.push(rangeB);
+        return true;
     }
     // This is not a separating axis. If we're calculating a response, calculate the overlap.
     if (response) {
-      var overlap = 0;
-      // A starts further left than B
-      if (rangeA[0] < rangeB[0]) {
-        response['aInB'] = false;
-        // A ends before B does. We have to pull A out of B
-        if (rangeA[1] < rangeB[1]) {
-          overlap = rangeA[1] - rangeB[0];
-          response['bInA'] = false;
-        // B is fully inside A.  Pick the shortest way out.
+        let overlap = 0;
+        // A starts further left than B
+        if (rangeA[0] < rangeB[0]) {
+            response.aInB = false;
+            // A ends before B does. We have to pull A out of B
+            if (rangeA[1] < rangeB[1]) {
+                overlap = rangeA[1] - rangeB[0];
+                response.bInA = false;
+            // B is fully inside A.    Pick the shortest way out.
+            } else {
+                let option1 = rangeA[1] - rangeB[0];
+                let option2 = rangeB[1] - rangeA[0];
+                overlap = option1 < option2 ? option1 : -option2;
+            }
+        // B starts further left than A
         } else {
-          var option1 = rangeA[1] - rangeB[0];
-          var option2 = rangeB[1] - rangeA[0];
-          overlap = option1 < option2 ? option1 : -option2;
+            response.bInA = false;
+            // B ends before A ends. We have to push A out of B
+            if (rangeA[1] > rangeB[1]) {
+                overlap = rangeA[0] - rangeB[1];
+                response.aInB = false;
+            // A is fully inside B.    Pick the shortest way out.
+            } else {
+                let option1 = rangeA[1] - rangeB[0];
+                let option2 = rangeB[1] - rangeA[0];
+                overlap = option1 < option2 ? option1 : -option2;
+            }
         }
-      // B starts further left than A
-      } else {
-        response['bInA'] = false;
-        // B ends before A ends. We have to push A out of B
-        if (rangeA[1] > rangeB[1]) {
-          overlap = rangeA[0] - rangeB[1];
-          response['aInB'] = false;
-        // A is fully inside B.  Pick the shortest way out.
-        } else {
-          var option1 = rangeA[1] - rangeB[0];
-          var option2 = rangeB[1] - rangeA[0];
-          overlap = option1 < option2 ? option1 : -option2;
+        // If this is the smallest amount of overlap we've seen so far, set it as the minimum overlap.
+        let absOverlap = Math.abs(overlap);
+        if (absOverlap < response.overlap) {
+            response.overlap = absOverlap;
+            response.overlapN.copy(axis);
+            if (overlap < 0) {
+                response.overlapN.reverse();
+            }
         }
-      }
-      // If this is the smallest amount of overlap we've seen so far, set it as the minimum overlap.
-      var absOverlap = Math.abs(overlap);
-      if (absOverlap < response['overlap']) {
-        response['overlap'] = absOverlap;
-        response['overlapN'].copy(axis);
-        if (overlap < 0) {
-          response['overlapN'].reverse();
-        }
-      }
     }
     T_VECTORS.push(offsetV);
     T_ARRAYS.push(rangeA);
     T_ARRAYS.push(rangeB);
     return false;
-  }
+}
 
-  // Calculates which Voronoi region a point is on a line segment.
-  // It is assumed that both the line and the point are relative to `(0,0)`
-  //
-  //            |       (0)      |
-  //     (-1)  [S]--------------[E]  (1)
-  //            |       (0)      |
-  /**
-   * @param {Vector} line The line segment.
-   * @param {Vector} point The point.
-   * @return  {number} LEFT_VORONOI_REGION (-1) if it is the left region,
-   *          MIDDLE_VORONOI_REGION (0) if it is the middle region,
-   *          RIGHT_VORONOI_REGION (1) if it is the right region.
-   */
-  function voronoiRegion(line: Vector2, point: Vector2) {
-    var len2 = line.lengthSquared();
-    var dp = point.dot(line);
+// Calculates which Voronoi region a point is on a line segment.
+// It is assumed that both the line and the point are relative to `(0,0)`
+//
+//            |       (0)      |
+//     (-1)  [S]--------------[E]  (1)
+//            |       (0)      |
+/**
+ * @param {Vector} line The line segment.
+ * @param {Vector} point The point.
+ * @return  {number} LEFT_VORONOI_REGION (-1) if it is the left region,
+ *          MIDDLE_VORONOI_REGION (0) if it is the middle region,
+ *          RIGHT_VORONOI_REGION (1) if it is the right region.
+ */
+function voronoiRegion(line: Vector2, point: Vector2): number {
+    let len2 = line.lengthSquared();
+    let dp = point.dot(line);
     // If the point is beyond the start of the line, it is in the
     // left voronoi region.
-    if (dp < 0) { return LEFT_VORONOI_REGION; }
+    if (dp < 0) {
+      return LEFT_VORONOI_REGION;
+    }
     // If the point is beyond the end of the line, it is in the
     // right voronoi region.
-    else if (dp > len2) { return RIGHT_VORONOI_REGION; }
+    else if (dp > len2) {
+        return RIGHT_VORONOI_REGION;
+    }
     // Otherwise, it's in the middle one.
-    else { return MIDDLE_VORONOI_REGION; }
-  }
-  // Constants for Voronoi regions
-  /**
-   * @const
-   */
-  const LEFT_VORONOI_REGION: number = -1;
-  /**
-   * @const
-   */
-  const MIDDLE_VORONOI_REGION: number = 0;
-  /**
-   * @const
-   */
-  const RIGHT_VORONOI_REGION: number = 1;
+    else {
+        return MIDDLE_VORONOI_REGION;
+    }
+}
+// Constants for Voronoi regions
+/**
+ * @const
+ */
+const LEFT_VORONOI_REGION: number = -1;
+/**
+ * @const
+ */
+const MIDDLE_VORONOI_REGION: number = 0;
+/**
+ * @const
+ */
+const RIGHT_VORONOI_REGION: number = 1;
 
-  // ## Collision Tests
+// ## Collision Tests
 
-  // Check if a point is inside a circle.
-  /**
-   * @param {Vector} point The point to test.
-   * @param {Circle} circle The circle to test.
-   * @return {boolean} true if the point is inside the circle, false if it is not.
-   */
-  function pointInCircle(point: Vector2, circle: Circle) {
-    var differenceV = T_VECTORS.pop().copy(point).subtract(circle.position);
-    var radiusSq = circle.radius * circle.radius;
-    var distanceSq = differenceV.lengthSquared();
+// Check if a point is inside a circle.
+/**
+ * @param {Vector} point The point to test.
+ * @param {Circle} circle The circle to test.
+ * @return {boolean} true if the point is inside the circle, false if it is not.
+ */
+function pointInCircle(point: Vector2, circle: Circle): boolean {
+    let differenceV = T_VECTORS.pop().copy(point).subtract(circle.position);
+    let radiusSq = circle.radius * circle.radius;
+    let distanceSq = differenceV.lengthSquared();
     T_VECTORS.push(differenceV);
     // If the distance between is smaller than the radius then the point is inside the circle.
     return distanceSq <= radiusSq;
-  }
+}
 
-  // Check if a point is inside a convex polygon.
-  /**
-   * @param {Vector} point The point to test.
-   * @param {Polygon} polygon The polygon to test.
-   * @return {boolean} true if the point is inside the polygon, false if it is not.
-   */
-  function pointInPolygon(point: Vector2, polygon: Polygon) {
+// Check if a point is inside a convex polygon.
+/**
+ * @param {Vector} point The point to test.
+ * @param {Polygon} polygon The polygon to test.
+ * @return {boolean} true if the point is inside the polygon, false if it is not.
+ */
+function pointInPolygon(point: Vector2, polygon: Polygon): boolean {
     TEST_POINT.position.copy(point);
     T_RESPONSE.clear();
-    var result = testPolygonPolygon(TEST_POINT, polygon, T_RESPONSE);
+    let result = testPolygonPolygon(TEST_POINT, polygon, T_RESPONSE);
     if (result) {
-      result = T_RESPONSE.aInB;
+        result = T_RESPONSE.aInB;
     }
     return result;
-  }
+}
 
-  // Check if two circles collide.
-  /**
-   * @param {Circle} a The first circle.
-   * @param {Circle} b The second circle.
-   * @param {Response=} response Response object (optional) that will be populated if
-   *   the circles intersect.
-   * @return {boolean} true if the circles intersect, false if they don't.
-   */
-  function testCircleCircle(a: Circle, b: Circle, response: Response) {
+// Check if two circles collide.
+/**
+ * @param {Circle} a The first circle.
+ * @param {Circle} b The second circle.
+ * @param {Response=} response Response object (optional) that will be populated if
+ *   the circles intersect.
+ * @return {boolean} true if the circles intersect, false if they don't.
+ */
+function testCircleCircle(a: Circle, b: Circle, response: Response): boolean {
     // Check if the distance between the centers of the two
     // circles is greater than their combined radius.
-    var differenceV = T_VECTORS.pop().copy(b.position).subtract(a.position);
-    var totalRadius = a.radius + b.radius;
-    var totalRadiusSq = totalRadius * totalRadius;
-    var distanceSq = differenceV.lengthSquared();
+    let differenceV = T_VECTORS.pop().copy(b.position).subtract(a.position);
+    let totalRadius = a.radius + b.radius;
+    let totalRadiusSq = totalRadius * totalRadius;
+    let distanceSq = differenceV.lengthSquared();
     // If the distance is bigger than the combined radius, they don't intersect.
     if (distanceSq > totalRadiusSq) {
-      T_VECTORS.push(differenceV);
-      return false;
+        T_VECTORS.push(differenceV);
+        return false;
     }
-    // They intersect.  If we're calculating a response, calculate the overlap.
+    // They intersect. If we're calculating a response, calculate the overlap.
     if (response) {
-      var dist = Math.sqrt(distanceSq);
-      response.a = a;
-      response.b = b;
-      response.overlap = totalRadius - dist;
-      response.overlapN.copy(differenceV.normalize());
-      response.overlapV.copy(differenceV).scale(response.overlap);
-      response.aInB= a.radius <= b.radius && dist <= b.radius - a.radius;
-      response.bInA = b.radius <= a.radius && dist <= a.radius - b.radius;
+        let dist = Math.sqrt(distanceSq);
+        response.a = a;
+        response.b = b;
+        response.overlap = totalRadius - dist;
+        response.overlapN.copy(differenceV.normalize());
+        response.overlapV.copy(differenceV).scale(response.overlap);
+        response.aInB= a.radius <= b.radius && dist <= b.radius - a.radius;
+        response.bInA = b.radius <= a.radius && dist <= a.radius - b.radius;
     }
     T_VECTORS.push(differenceV);
     return true;
-  }
+}
 
-  // Check if a polygon and a circle collide.
-  /**
-   * @param {Polygon} polygon The polygon.
-   * @param {Circle} circle The circle.
-   * @param {Response=} response Response object (optional) that will be populated if
-   *   they interset.
-   * @return {boolean} true if they intersect, false if they don't.
-   */
-  function testPolygonCircle(polygon: Polygon, circle: Circle, response: Response) {
+// Check if a polygon and a circle collide.
+/**
+ * @param {Polygon} polygon The polygon.
+ * @param {Circle} circle The circle.
+ * @param {Response=} response Response object (optional) that will be populated if
+ *   they interset.
+ * @return {boolean} true if they intersect, false if they don't.
+ */
+function testPolygonCircle(polygon: Polygon, circle: Circle, response: Response): boolean {
     // Get the position of the circle relative to the polygon.
-    var circlePos = T_VECTORS.pop().copy(circle.position).subtract(polygon.position);
-    var radius = circle.radius;
-    var radius2 = radius * radius;
-    var points = polygon.calcPoints;
-    var len = points.length;
-    var edge = T_VECTORS.pop();
-    var point = T_VECTORS.pop();
+    let circlePos = T_VECTORS.pop().copy(circle.position).subtract(polygon.position);
+    let radius = circle.radius;
+    let radius2 = radius * radius;
+    let points = polygon.calcPoints;
+    let len = points.length;
+    let edge = T_VECTORS.pop();
+    let point = T_VECTORS.pop();
 
     // For each edge in the polygon:
-    for (var i = 0; i < len; i++) {
-      var next = i === len - 1 ? 0 : i + 1;
-      var prev = i === 0 ? len - 1 : i - 1;
-      var overlap = 0;
-      var overlapN = null;
+    for (let i = 0; i < len; i++) {
+        let next = i === len - 1 ? 0 : i + 1;
+        let prev = i === 0 ? len - 1 : i - 1;
+        let overlap = 0;
+        let overlapN = null;
 
-      // Get the edge.
-      edge.copy(polygon.edges[i]);
-      // Calculate the center of the circle relative to the starting point of the edge.
-      point.copy(circlePos).subtract(points[i]);
+        // Get the edge.
+        edge.copy(polygon.edges[i]);
+        // Calculate the center of the circle relative to the starting point of the edge.
+        point.copy(circlePos).subtract(points[i]);
 
-      // If the distance between the center of the circle and the point
-      // is bigger than the radius, the polygon is definitely not fully in
-      // the circle.
-      if (response && point.lengthSquared() > radius2) {
-        response.aInB = false;
-      }
-
-      // Calculate which Voronoi region the center of the circle is in.
-      var region = voronoiRegion(edge, point);
-      // If it's the left region:
-      if (region === LEFT_VORONOI_REGION) {
-        // We need to make sure we're in the RIGHT_VORONOI_REGION of the previous edge.
-        edge.copy(polygon.edges[prev]);
-        // Calculate the center of the circle relative the starting point of the previous edge
-        var point2 = T_VECTORS.pop().copy(circlePos).subtract(points[prev]);
-        region = voronoiRegion(edge, point2);
-        if (region === RIGHT_VORONOI_REGION) {
-          // It's in the region we want.  Check if the circle intersects the point.
-          var dist = point.length();
-          if (dist > radius) {
-            // No intersection
-            T_VECTORS.push(circlePos);
-            T_VECTORS.push(edge);
-            T_VECTORS.push(point);
-            T_VECTORS.push(point2);
-            return false;
-          } else if (response) {
-            // It intersects, calculate the overlap.
-            response.bInA = false;
-            overlapN = point.normalize();
-            overlap = radius - dist;
-          }
+        // If the distance between the center of the circle and the point
+        // is bigger than the radius, the polygon is definitely not fully in
+        // the circle.
+        if (response && point.lengthSquared() > radius2) {
+            response.aInB = false;
         }
-        T_VECTORS.push(point2);
-      // If it's the right region:
-      } else if (region === RIGHT_VORONOI_REGION) {
-        // We need to make sure we're in the left region on the next edge
-        edge.copy(polygon.edges[next]);
-        // Calculate the center of the circle relative to the starting point of the next edge.
-        point.copy(circlePos).subtract(points[next]);
-        region = voronoiRegion(edge, point);
+
+        // Calculate which Voronoi region the center of the circle is in.
+        let region = voronoiRegion(edge, point);
+        // If it's the left region:
         if (region === LEFT_VORONOI_REGION) {
-          // It's in the region we want.  Check if the circle intersects the point.
-          var dist = point.length();
-          if (dist > radius) {
-            // No intersection
-            T_VECTORS.push(circlePos);
-            T_VECTORS.push(edge);
-            T_VECTORS.push(point);
-            return false;
-          } else if (response) {
-            // It intersects, calculate the overlap.
-            response.bInA = false;
-            overlapN = point.normalize();
-            overlap = radius - dist;
-          }
+            // We need to make sure we're in the RIGHT_VORONOI_REGION of the previous edge.
+            edge.copy(polygon.edges[prev]);
+            // Calculate the center of the circle relative the starting point of the previous edge
+            let point2 = T_VECTORS.pop().copy(circlePos).subtract(points[prev]);
+            region = voronoiRegion(edge, point2);
+            if (region === RIGHT_VORONOI_REGION) {
+                // It's in the region we want.    Check if the circle intersects the point.
+                let dist = point.length();
+                if (dist > radius) {
+                    // No intersection
+                    T_VECTORS.push(circlePos);
+                    T_VECTORS.push(edge);
+                    T_VECTORS.push(point);
+                    T_VECTORS.push(point2);
+                    return false;
+                } else if (response) {
+                    // It intersects, calculate the overlap.
+                    response.bInA = false;
+                    overlapN = point.normalize();
+                    overlap = radius - dist;
+                }
+            }
+            T_VECTORS.push(point2);
+        // If it's the right region:
+        } else if (region === RIGHT_VORONOI_REGION) {
+            // We need to make sure we're in the left region on the next edge
+            edge.copy(polygon.edges[next]);
+            // Calculate the center of the circle relative to the starting point of the next edge.
+            point.copy(circlePos).subtract(points[next]);
+            region = voronoiRegion(edge, point);
+            if (region === LEFT_VORONOI_REGION) {
+                // It's in the region we want.    Check if the circle intersects the point.
+                let dist = point.length();
+                if (dist > radius) {
+                    // No intersection
+                    T_VECTORS.push(circlePos);
+                    T_VECTORS.push(edge);
+                    T_VECTORS.push(point);
+                    return false;
+                } else if (response) {
+                    // It intersects, calculate the overlap.
+                    response.bInA = false;
+                    overlapN = point.normalize();
+                    overlap = radius - dist;
+                }
+            }
+        // Otherwise, it's the middle region:
+        } else {
+            // Need to check if the circle is intersecting the edge,
+            // Change the edge into its "edge normal".
+            let normal = edge.perpendicular().normalize();
+            // Find the perpendicular distance between the center of the
+            // circle and the edge.
+            let dist = point.dot(normal);
+            let distAbs = Math.abs(dist);
+            // If the circle is on the outside of the edge, there is no intersection.
+            if (dist > 0 && distAbs > radius) {
+                // No intersection
+                T_VECTORS.push(circlePos);
+                T_VECTORS.push(normal);
+                T_VECTORS.push(point);
+                return false;
+            } else if (response) {
+                // It intersects, calculate the overlap.
+                overlapN = normal;
+                overlap = radius - dist;
+                // If the center of the circle is on the outside of the edge, or part of the
+                // circle is on the outside, the circle is not fully inside the polygon.
+                if (dist >= 0 || overlap < 2 * radius) {
+                    response.bInA = false;
+                }
+            }
         }
-      // Otherwise, it's the middle region:
-      } else {
-        // Need to check if the circle is intersecting the edge,
-        // Change the edge into its "edge normal".
-        var normal = edge.perpendicular().normalize();
-        // Find the perpendicular distance between the center of the
-        // circle and the edge.
-        var dist = point.dot(normal);
-        var distAbs = Math.abs(dist);
-        // If the circle is on the outside of the edge, there is no intersection.
-        if (dist > 0 && distAbs > radius) {
-          // No intersection
-          T_VECTORS.push(circlePos);
-          T_VECTORS.push(normal);
-          T_VECTORS.push(point);
-          return false;
-        } else if (response) {
-          // It intersects, calculate the overlap.
-          overlapN = normal;
-          overlap = radius - dist;
-          // If the center of the circle is on the outside of the edge, or part of the
-          // circle is on the outside, the circle is not fully inside the polygon.
-          if (dist >= 0 || overlap < 2 * radius) {
-            response.bInA = false;
-          }
-        }
-      }
 
-      // If this is the smallest overlap we've seen, keep it.
-      // (overlapN may be null if the circle was in the wrong Voronoi region).
-      if (overlapN && response && Math.abs(overlap) < Math.abs(response.overlap)) {
-        response.overlap = overlap;
-        response.overlapN.copy(overlapN);
-      }
+        // If this is the smallest overlap we've seen, keep it.
+        // (overlapN may be null if the circle was in the wrong Voronoi region).
+        if (overlapN && response && Math.abs(overlap) < Math.abs(response.overlap)) {
+            response.overlap = overlap;
+            response.overlapN.copy(overlapN);
+        }
     }
 
     // Calculate the final overlap vector - based on the smallest overlap.
     if (response) {
-      response.a = polygon;
-      response.b = circle;
-      response.overlapV.copy(response.overlapN).scale(response.overlap);
+        response.a = polygon;
+        response.b = circle;
+        response.overlapV.copy(response.overlapN).scale(response.overlap);
     }
     T_VECTORS.push(circlePos);
     T_VECTORS.push(edge);
     T_VECTORS.push(point);
     return true;
-  }
+}
 
-  // Check if a circle and a polygon collide.
-  //
-  // **NOTE:** This is slightly less efficient than polygonCircle as it just
-  // runs polygonCircle and reverses everything at the end.
-  /**
-   * @param {Circle} circle The circle.
-   * @param {Polygon} polygon The polygon.
-   * @param {Response=} response Response object (optional) that will be populated if
-   *   they interset.
-   * @return {boolean} true if they intersect, false if they don't.
-   */
-  function testCirclePolygon(circle: Circle, polygon: Polygon, response: Response) {
+// Check if a circle and a polygon collide.
+//
+// **NOTE:** This is slightly less efficient than polygonCircle as it just
+// runs polygonCircle and reverses everything at the end.
+/**
+ * @param {Circle} circle The circle.
+ * @param {Polygon} polygon The polygon.
+ * @param {Response=} response Response object (optional) that will be populated if
+ *   they interset.
+ * @return {boolean} true if they intersect, false if they don't.
+ */
+function testCirclePolygon(circle: Circle, polygon: Polygon, response: Response): boolean {
     // Test the polygon against the circle.
-    var result = testPolygonCircle(polygon, circle, response);
+    let result = testPolygonCircle(polygon, circle, response);
     if (result && response) {
-      // Swap A and B in the response.
-      var a = response.a;
-      var aInB = response.aInB;
-      response.overlapN.reverse();
-      response.overlapV.reverse();
-      response.a = response.b;
-      response.b = a;
-      response.aInB = response.bInA;
-      response.bInA = aInB;
+        // Swap A and B in the response.
+        let a = response.a;
+        let aInB = response.aInB;
+        response.overlapN.reverse();
+        response.overlapV.reverse();
+        response.a = response.b;
+        response.b = a;
+        response.aInB = response.bInA;
+        response.bInA = aInB;
     }
     return result;
-  }
+}
 
-  // Checks whether polygons collide.
-  /**
-   * @param {Polygon} a The first polygon.
-   * @param {Polygon} b The second polygon.
-   * @param {Response=} response Response object (optional) that will be populated if
-   *   they interset.
-   * @return {boolean} true if they intersect, false if they don't.
-   */
-  function testPolygonPolygon(a: Polygon, b: Polygon, response: Response) {
-    var aPoints = a.calcPoints;
-    var aLen = aPoints.length;
-    var bPoints = b.calcPoints;
-    var bLen = bPoints.length;
+// Checks whether polygons collide.
+/**
+ * @param {Polygon} a The first polygon.
+ * @param {Polygon} b The second polygon.
+ * @param {Response=} response Response object (optional) that will be populated if
+ *   they interset.
+ * @return {boolean} true if they intersect, false if they don't.
+ */
+function testPolygonPolygon(a: Polygon, b: Polygon, response: Response): boolean {
+    let aPoints = a.calcPoints;
+    let aLen = aPoints.length;
+    let bPoints = b.calcPoints;
+    let bLen = bPoints.length;
     // If any of the edge normals of A is a separating axis, no intersection.
-    for (var i = 0; i < aLen; i++) {
-      if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, a.normals[i], response)) {
-        return false;
-      }
+    for (let i = 0; i < aLen; i++) {
+        if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, a.normals[i], response)) {
+            return false;
+        }
     }
     // If any of the edge normals of B is a separating axis, no intersection.
-    for (var i = 0;i < bLen; i++) {
-      if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, b.normals[i], response)) {
-        return false;
-      }
+    for (let i = 0;i < bLen; i++) {
+        if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, b.normals[i], response)) {
+            return false;
+        }
     }
     // Since none of the edge normals of A or B are a separating axis, there is an intersection
     // and we've already calculated the smallest overlap (in isSeparatingAxis).  Calculate the
     // final overlap vector.
     if (response) {
-      response.a = a;
-      response.b = b;
-      response.overlapV.copy(response.overlapN).scale(response.overlap);
+        response.a = a;
+        response.b = b;
+        response.overlapV.copy(response.overlapN).scale(response.overlap);
     }
     return true;
-  }
+}
