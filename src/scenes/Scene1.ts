@@ -9,15 +9,18 @@ export class Scene1 extends Scene {
             this.root = Entity.buildFromJSON(this.app, JSON.parse(this.data));
         } else {
             let entity = this.createEntity();
-            entity.transform.setPivot([12, 15]);
-
+            let box = this.createEntity().addComponent('boxcollider', {
+                width: 100,
+                height: 100,
+            }).transform.setLocalPosition([200, 200]);
+            // entity.transform.setPivot([12, 15]);
             this.player = entity.addComponent('sprite', {
                 spriteName: 'runE'
             }).addComponent('script', {
                 scriptName: 'tester'
             }).addComponent('boxcollider', {
-                width: 32,
-                height: 32
+                width: 24,
+                height: 30
             });
         }
     }

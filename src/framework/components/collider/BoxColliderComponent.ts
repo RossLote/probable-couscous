@@ -1,6 +1,6 @@
 import {Vector2} from '../../math/Vector2';
 import {Component} from '../../Component';
-import {Box} from './utils';
+import {Box} from './SAT';
 
 
 export class BoxColliderComponent extends Component {

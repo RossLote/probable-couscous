@@ -292,10 +292,15 @@ export class Box implements ICollider {
         let pos = this.position;
         let w = this.width;
         let h = this.height;
-        return new Polygon(new Vector2(pos.x, pos.y), [
-            new Vector2(), new Vector2(w, 0),
-            new Vector2(w,h), new Vector2(0,h)
-        ]);
+        return new Polygon(
+            new Vector2(pos.x, pos.y),
+            [
+                new Vector2(),
+                new Vector2(w, 0),
+                new Vector2(w,h),
+                new Vector2(0,h)
+            ]
+        );
     };
 }
 
@@ -309,7 +314,7 @@ export class Box implements ICollider {
   //    from the second one (as well as a unit vector in that direction and the magnitude
   //    of the overlap)
   //  - Whether the first object is entirely inside the second, and vice versa.
-class Response {
+export class Response {
     aInB: boolean;
     bInA: boolean;
     overlap: number;
@@ -317,6 +322,10 @@ class Response {
     b: ICollider = null;
     overlapN: Vector2 = new Vector2();
     overlapV: Vector2 = new Vector2();
+
+    constructor() {
+        this.clear();
+    }
 
 
     // Set some values of the response back to their defaults.  Call this between tests if
@@ -380,7 +389,7 @@ const TEST_POINT: Polygon = new Box(new Vector2(), 0.000001, 0.000001).toPolygon
  *   result[0] will be the minimum value,
  *   result[1] will be the maximum value.
  */
-function flattenPointsOn(points: Array<Vector2>, normal: Vector2, result: Array<number>) {
+export function flattenPointsOn(points: Array<Vector2>, normal: Vector2, result: Array<number>) {
     let min: number = Number.MAX_VALUE;
     let max: number = -Number.MAX_VALUE;
     let len: number = points.length;
@@ -408,7 +417,7 @@ function flattenPointsOn(points: Array<Vector2>, normal: Vector2, result: Array<
  *   and a response is passed in, information about how much overlap and
  *   the direction of the overlap will be populated.
  */
-function isSeparatingAxis(aPos: Vector2, bPos: Vector2, aPoints: Array<Vector2>, bPoints: Array<Vector2>, axis: Vector2, response: Response): boolean {
+export function isSeparatingAxis(aPos: Vector2, bPos: Vector2, aPoints: Array<Vector2>, bPoints: Array<Vector2>, axis: Vector2, response: Response): boolean {
     let rangeA = T_ARRAYS.pop();
     let rangeB = T_ARRAYS.pop();
     // The magnitude of the offset between the two polygons
@@ -486,7 +495,7 @@ function isSeparatingAxis(aPos: Vector2, bPos: Vector2, aPoints: Array<Vector2>,
  *          MIDDLE_VORONOI_REGION (0) if it is the middle region,
  *          RIGHT_VORONOI_REGION (1) if it is the right region.
  */
-function voronoiRegion(line: Vector2, point: Vector2): number {
+export function voronoiRegion(line: Vector2, point: Vector2): number {
     let len2 = line.lengthSquared();
     let dp = point.dot(line);
     // If the point is beyond the start of the line, it is in the
@@ -526,7 +535,7 @@ const RIGHT_VORONOI_REGION: number = 1;
  * @param {Circle} circle The circle to test.
  * @return {boolean} true if the point is inside the circle, false if it is not.
  */
-function pointInCircle(point: Vector2, circle: Circle): boolean {
+export function pointInCircle(point: Vector2, circle: Circle): boolean {
     let differenceV = T_VECTORS.pop().copy(point).subtract(circle.position);
     let radiusSq = circle.radius * circle.radius;
     let distanceSq = differenceV.lengthSquared();
@@ -541,7 +550,7 @@ function pointInCircle(point: Vector2, circle: Circle): boolean {
  * @param {Polygon} polygon The polygon to test.
  * @return {boolean} true if the point is inside the polygon, false if it is not.
  */
-function pointInPolygon(point: Vector2, polygon: Polygon): boolean {
+export function pointInPolygon(point: Vector2, polygon: Polygon): boolean {
     TEST_POINT.position.copy(point);
     T_RESPONSE.clear();
     let result = testPolygonPolygon(TEST_POINT, polygon, T_RESPONSE);
@@ -559,7 +568,7 @@ function pointInPolygon(point: Vector2, polygon: Polygon): boolean {
  *   the circles intersect.
  * @return {boolean} true if the circles intersect, false if they don't.
  */
-function testCircleCircle(a: Circle, b: Circle, response: Response): boolean {
+export function testCircleCircle(a: Circle, b: Circle, response: Response): boolean {
     // Check if the distance between the centers of the two
     // circles is greater than their combined radius.
     let differenceV = T_VECTORS.pop().copy(b.position).subtract(a.position);
@@ -594,7 +603,7 @@ function testCircleCircle(a: Circle, b: Circle, response: Response): boolean {
  *   they interset.
  * @return {boolean} true if they intersect, false if they don't.
  */
-function testPolygonCircle(polygon: Polygon, circle: Circle, response: Response): boolean {
+export function testPolygonCircle(polygon: Polygon, circle: Circle, response: Response): boolean {
     // Get the position of the circle relative to the polygon.
     let circlePos = T_VECTORS.pop().copy(circle.position).subtract(polygon.position);
     let radius = circle.radius;
@@ -732,7 +741,7 @@ function testPolygonCircle(polygon: Polygon, circle: Circle, response: Response)
  *   they interset.
  * @return {boolean} true if they intersect, false if they don't.
  */
-function testCirclePolygon(circle: Circle, polygon: Polygon, response: Response): boolean {
+export function testCirclePolygon(circle: Circle, polygon: Polygon, response: Response): boolean {
     // Test the polygon against the circle.
     let result = testPolygonCircle(polygon, circle, response);
     if (result && response) {
@@ -757,7 +766,7 @@ function testCirclePolygon(circle: Circle, polygon: Polygon, response: Response)
  *   they interset.
  * @return {boolean} true if they intersect, false if they don't.
  */
-function testPolygonPolygon(a: Polygon, b: Polygon, response: Response): boolean {
+export function testPolygonPolygon(a: Polygon, b: Polygon, response: Response): boolean {
     let aPoints = a.calcPoints;
     let aLen = aPoints.length;
     let bPoints = b.calcPoints;
@@ -783,4 +792,28 @@ function testPolygonPolygon(a: Polygon, b: Polygon, response: Response): boolean
         response.overlapV.copy(response.overlapN).scale(response.overlap);
     }
     return true;
+}
+
+export function testCollision(colliderA: ICollider, colliderB: ICollider, response: Response): boolean{
+    let collided: boolean;
+    if (colliderA instanceof Box) {
+        colliderA = colliderA.toPolygon()
+    }
+    if (colliderB instanceof Box) {
+        colliderB = colliderB.toPolygon()
+    }
+    if (colliderA instanceof Circle) {
+        if (colliderB instanceof Circle) {
+          collided = testCircleCircle(<Circle>colliderA, <Circle>colliderB, this.response);
+        } else {
+          collided = testCirclePolygon(<Circle>colliderA, <Polygon>colliderB, this.response);
+        }
+    } else {
+        if (colliderB instanceof Circle) {
+            collided = testPolygonCircle(<Polygon>colliderA, <Circle>colliderB, this.response);
+        } else {
+            collided = testPolygonPolygon(<Polygon>colliderA, <Polygon>colliderB, this.response);
+        }
+    }
+    return collided;
 }

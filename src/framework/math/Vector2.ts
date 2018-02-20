@@ -2,7 +2,7 @@ export class Vector2 {
     data: Float32Array;
 
     constructor(x?: any, y?: number) {
-        if (x) {
+        if (x !== undefined) {
             if (x.length === 2) {
                 this.data = new Float32Array(x);
             } else {
