@@ -1,16 +1,16 @@
 import {Vector2} from '../../math/Vector2';
 import {Component} from '../../Component';
-import {Box} from './SAT';
+import {Box, Polygon} from './SAT';
 
 
 export class BoxColliderComponent extends Component {
     position: Vector2;
     width: number;
     height: number;
-    collider: Box;
+    collider: Polygon;
 
     initialize() {
-        this.collider = new Box(this.position, this.width, this.height);
+        this.collider = new Box(this.position, this.width, this.height).toPolygon();
     }
 
     toJSON():any {

@@ -45,12 +45,17 @@ export class ColliderSystem extends System {
             let componentA = components[i]
             let entityA = componentA.entity;
             let colliderA = (<BoxColliderComponent>componentA).collider;
+            colliderA.position = entityA.transform.getPosition();
+            colliderA.setAngle(entityA.transform.getRotation());
             colliderA.position = entityA.transform.getLocalPosition();
+            colliderA.scale = entityA.transform.getScale();
             for (let j = i + 1; j < n; j++) {
                 let componentB = components[j]
                 let entityB = componentB.entity;
                 let colliderB = (<BoxColliderComponent>componentB).collider
-                colliderB.position = entityB.transform.getLocalPosition();
+                colliderB.position = entityB.transform.getPosition();
+                colliderB.setAngle(entityB.transform.getRotation());
+                colliderB.scale = entityB.transform.getScale();
                 this.response.clear();
                 var collided = SAT.testCollision(colliderA, colliderB, this.response);
                 if (collided) {

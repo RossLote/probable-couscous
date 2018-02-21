@@ -150,7 +150,6 @@ export class Transform {
                 // concatenated with the local to parent matrix
                 this.localToWorldMatrix = Matrix3.multiply([this.parent.getWorldTransform(), this.calculateLocalToParentMatrix()]);
             }
-
             // clear the dirty flag since the
             // matrix is now up to date
             this.isDirty = false;
@@ -188,6 +187,10 @@ export class Transform {
 		return this;
 	}
 
+	getPosition(): Vector2 {
+		return this.getWorldTransform().decompose().position;
+	}
+
 	getLocalRotation():number{
 		return this.localRotation;
 	}
@@ -198,6 +201,10 @@ export class Transform {
 			this.setDirty();
 		}
 		return this;
+	}
+
+	getRotation(): number {
+		return this.getWorldTransform().decompose().rotation;
 	}
 
 	getLocalScale():Vector2{
@@ -211,6 +218,10 @@ export class Transform {
 			this.setDirty();
 		}
 		return this;
+	}
+
+	getScale(): Vector2 {
+		return this.getWorldTransform().decompose().scale;
 	}
 
 	getPivot():Vector2{

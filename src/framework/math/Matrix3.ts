@@ -55,7 +55,7 @@ export class Matrix3 {
     }
 
     static rotateDegrees(angle: number): Matrix3 {
-        angle *= 0.01745329251994329;
+        angle *= (Math.PI / 180);
         let cos = Math.cos(angle),
 			sin = Math.sin(angle);
         return new Matrix3(
@@ -87,7 +87,7 @@ export class Matrix3 {
         return new Matrix3().copy(this);
     }
 
-    copy(rhs: Matrix3):Matrix3{
+    copy(rhs: Matrix3): Matrix3{
         let a = this.data,
             b = rhs.data;
 
@@ -106,7 +106,25 @@ export class Matrix3 {
         return this;
     }
 
-    equals(rhs: Matrix3):boolean{
+    decompose(): any {
+        let d = this.data.slice();
+        let position = new Vector2(d[2], d[5]);
+        d[2] = d[5] = 0;
+        let scalex = new Vector2(d[0], d[3]).length();
+        let scaley = new Vector2(d[1], d[4]).length();
+        d[0] /= scalex;
+        d[3] /= scalex;
+        d[1] /= scaley;
+        d[4] /= scaley;
+        let angle = Math.acos(d[0])
+        return {
+            position: position,
+            scale: new Vector2(scalex, scaley),
+            rotation: angle
+        }
+    }
+
+    equals(rhs: Matrix3): boolean{
         let a = this.data;
         let b = rhs.data;
         return (
@@ -120,6 +138,11 @@ export class Matrix3 {
             (a[7] === b[7]) &&
             (a[8] === b[8])
         )
+    }
+
+    getTranslation(): Vector2 {
+        let d = this.data;
+        return new Vector2(d[2], d[5]);
     }
 
     inverse():Matrix3{

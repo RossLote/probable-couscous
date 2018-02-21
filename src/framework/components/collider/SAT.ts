@@ -52,6 +52,7 @@ export class Circle implements ICollider {
 export class Polygon implements ICollider {
     offset: Vector2 = Vector2.ZERO;
     angle: number = 0
+    scale: Vector2 = new Vector2(1, 1);
     points: Array<Vector2> = []
     calcPoints: Array<Vector2> = [];
     edges: Array<Vector2> = [];
@@ -125,6 +126,7 @@ export class Polygon implements ICollider {
         let len = points.length;
         for (let i = 0; i < len; i++) {
             let calcPoint = calcPoints[i].copy(points[i]);
+            calcPoint.multiply(this.scale);
             calcPoint.x += offset.x;
             calcPoint.y += offset.y;
             if (angle !== 0) {

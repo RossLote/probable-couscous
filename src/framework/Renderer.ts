@@ -31,19 +31,22 @@ export class Renderer {
     }
 
     renderCollider(context: CanvasRenderingContext2D, dt: number, entity: Entity, component: BoxColliderComponent) {
+        let poly = component.collider
+        let points = poly.points;
+        context.save()
+        context.translate(poly.position.x, poly.position.y);
+        context.rotate(poly.angle);
+        context.scale(poly.scale.x, poly.scale.y);
         context.lineWidth=1;
         context.strokeStyle="lime";
-        let aabb = component.collider;
-        let poly = component.collider.toPolygon()
-        let points = poly.points;
         context.beginPath();
-        // context.moveTo(points[0].x, points[0].y);
-        // for (let i = 1; i < points.length; i++) {
-        //     context.lineTo(points[i].x, points[i].y);
-        // }
-        context.rect(0,0, aabb.width, aabb.height);
+        context.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length; i++) {
+            context.lineTo(points[i].x, points[i].y);
+        }
         context.closePath();
         context.stroke();
+        context.restore();
     }
 
     renderSprite(context: CanvasRenderingContext2D, dt: number, entity: Entity, component: SpriteComponent) {
@@ -84,8 +87,10 @@ export class Renderer {
         let tilemap = <TileMapComponent>entity.getComponent('tilemap');
         let collider = <BoxColliderComponent>entity.getComponent('boxcollider');
         this.context.setTransform(m[0], m[3], m[1], m[4], m[2], m[5]);
-        collider && this.renderCollider(context, dt, entity, collider);
         tilemap && this.renderTileMap(context, dt, entity, tilemap);
         sprite && this.renderSprite(context, dt, entity, sprite);
+
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        collider && this.renderCollider(context, dt, entity, collider);
     }
 }

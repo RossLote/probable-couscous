@@ -10,9 +10,9 @@ export class Scene1 extends Scene {
         } else {
             let entity = this.createEntity();
             let box = this.createEntity().addComponent('boxcollider', {
-                width: 100,
-                height: 100,
-            }).transform.setLocalPosition([200, 200]);
+                width: 126,
+                height: 218,
+            }).transform.setLocalPosition([400, 200]).setLocalRotation(1.5);
             // entity.transform.setPivot([12, 15]);
             this.player = entity.addComponent('sprite', {
                 spriteName: 'runE'
@@ -21,7 +21,7 @@ export class Scene1 extends Scene {
             }).addComponent('boxcollider', {
                 width: 24,
                 height: 30
-            });
+            }).transform.setLocalPosition([100, 100]).setLocalRotation(2.4).setLocalScale([1.5, 2.3]);
         }
     }
 
