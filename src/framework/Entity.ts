@@ -82,8 +82,12 @@ export class Entity implements IEvents {
     }
 
     addComponent(name: string, data: object): Entity {
-        let component = this.app.getSystem(name).addComponent(name, this, data);
+        let system = this.app.getSystem(name)
+        let component = system.addComponent(name, this, data);
         this.components[name] = component;
+        if (system.variants.indexOf(name) > -1) {
+            this.components[system.name] = component;
+        }
         return this;
     }
 
