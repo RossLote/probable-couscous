@@ -5,7 +5,6 @@ interface ICollider {
     position: Vector2
 }
 
-
 // ## Circle
 //
 // Represents a circle with a position and a radius.
@@ -54,9 +53,10 @@ export class Polygon implements ICollider {
     angle: number = 0
     scale: Vector2 = new Vector2(1, 1);
     points: Array<Vector2> = []
-    calcPoints: Array<Vector2> = [];
-    edges: Array<Vector2> = [];
-    normals: Array<Vector2> = [];
+    private calcPoints: Array<Vector2> = [];
+    private edges: Array<Vector2> = [];
+    private normals: Array<Vector2> = [];
+    private isDirty: boolean = false;
 
 
     /**
@@ -99,15 +99,38 @@ export class Polygon implements ICollider {
         return this;
     }
 
+    getEdges(): Array<Vector2> {
+        if (this.isDirty) {
+            this._recalculate();
+        }
+        return this.edges;
+    }
+
+    getNormals(): Array<Vector2> {
+        if (this.isDirty) {
+            this._recalculate();
+        }
+        return this.normals;
+    }
+
+    getPoints(): Array<Vector2> {
+        if (this.isDirty) {
+            this._recalculate();
+        }
+        return this.calcPoints;
+    }
+
+    private recalculate(): Polygon {
+        this.isDirty = true;
+        return this;
+    }
+
     // Computes the calculated collision polygon. Applies the `angle` and `offset` to the original points then recalculates the
     // edges and normals of the collision polygon.
     /**
      * @return {Polygon} This for chaining.
      */
-    private recalculate(): Polygon {
-
-        //TODO: make this dirty
-
+    private _recalculate(): Polygon {
         // Calculated points - this is what is used for underlying collisions and takes into account
         // the angle/offset set on the polygon.
         let calcPoints = this.calcPoints;
@@ -140,17 +163,33 @@ export class Polygon implements ICollider {
             let e = edges[i].copy(p2).subtract(p1);
             normals[i].copy(e).perpendicular().normalize();
         }
+        this.isDirty = false;
         return this;
     };
 
     // Set the current rotation angle of the polygon.
     /**
-     * @param {number} angle The current rotation angle (in radians).
+     * @param {number} angle The new rotation angle (in radians).
      * @return {Polygon} This for chaining.
      */
     setAngle(angle: number): Polygon {
-        this.angle = angle;
-        this.recalculate();
+        if (this.angle !== angle) {
+            this.angle = angle;
+            this.recalculate();
+        }
+        return this;
+    };
+
+    // Set the current scale of the polygon.
+    /**
+     * @param {number} scale The new scale vector.
+     * @return {Polygon} This for chaining.
+     */
+    setScale(scale: Vector2): Polygon {
+        if (!this.scale.equals(scale)) {
+            this.scale = scale;
+            this.recalculate();
+        }
         return this;
     };
 
@@ -160,8 +199,10 @@ export class Polygon implements ICollider {
      * @return {Polygon} This for chaining.
      */
     setOffset(offset: Vector2): Polygon {
-        this.offset = offset;
-        this.recalculate();
+        if (!this.offset.equals(offset)) {
+            this.offset = offset;
+            this.recalculate();
+        }
         return this;
     };
 
@@ -610,7 +651,8 @@ export function testPolygonCircle(polygon: Polygon, circle: Circle, response: Re
     let circlePos = T_VECTORS.pop().copy(circle.position).subtract(polygon.position);
     let radius = circle.radius;
     let radius2 = radius * radius;
-    let points = polygon.calcPoints;
+    let points = polygon.getPoints();
+    let edges = polygon.getEdges()
     let len = points.length;
     let edge = T_VECTORS.pop();
     let point = T_VECTORS.pop();
@@ -623,7 +665,7 @@ export function testPolygonCircle(polygon: Polygon, circle: Circle, response: Re
         let overlapN = null;
 
         // Get the edge.
-        edge.copy(polygon.edges[i]);
+        edge.copy(edges[i]);
         // Calculate the center of the circle relative to the starting point of the edge.
         point.copy(circlePos).subtract(points[i]);
 
@@ -639,7 +681,7 @@ export function testPolygonCircle(polygon: Polygon, circle: Circle, response: Re
         // If it's the left region:
         if (region === LEFT_VORONOI_REGION) {
             // We need to make sure we're in the RIGHT_VORONOI_REGION of the previous edge.
-            edge.copy(polygon.edges[prev]);
+            edge.copy(edges[prev]);
             // Calculate the center of the circle relative the starting point of the previous edge
             let point2 = T_VECTORS.pop().copy(circlePos).subtract(points[prev]);
             region = voronoiRegion(edge, point2);
@@ -664,7 +706,7 @@ export function testPolygonCircle(polygon: Polygon, circle: Circle, response: Re
         // If it's the right region:
         } else if (region === RIGHT_VORONOI_REGION) {
             // We need to make sure we're in the left region on the next edge
-            edge.copy(polygon.edges[next]);
+            edge.copy(edges[next]);
             // Calculate the center of the circle relative to the starting point of the next edge.
             point.copy(circlePos).subtract(points[next]);
             region = voronoiRegion(edge, point);
@@ -769,19 +811,21 @@ export function testCirclePolygon(circle: Circle, polygon: Polygon, response: Re
  * @return {boolean} true if they intersect, false if they don't.
  */
 export function testPolygonPolygon(a: Polygon, b: Polygon, response: Response): boolean {
-    let aPoints = a.calcPoints;
+    let aNormals = a.getNormals()
+    let aPoints = a.getPoints();
     let aLen = aPoints.length;
-    let bPoints = b.calcPoints;
+    let bNormals = b.getNormals();
+    let bPoints = b.getPoints();
     let bLen = bPoints.length;
     // If any of the edge normals of A is a separating axis, no intersection.
     for (let i = 0; i < aLen; i++) {
-        if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, a.normals[i], response)) {
+        if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, aNormals[i], response)) {
             return false;
         }
     }
     // If any of the edge normals of B is a separating axis, no intersection.
     for (let i = 0;i < bLen; i++) {
-        if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, b.normals[i], response)) {
+        if (isSeparatingAxis(a.position, b.position, aPoints, bPoints, bNormals[i], response)) {
             return false;
         }
     }
