@@ -6,7 +6,8 @@ import {SpriteRegistry} from './core/sprites';
 import {Entity} from './Entity';
 import {SpriteComponent} from './components/sprite/SpriteComponent';
 import {TileMapComponent} from './components/tilemap/TileMapComponent';
-import {BoxColliderComponent} from './components/collider/BoxColliderComponent';
+import {IColliderComponent} from './components/collider/ColliderComponent';
+import {Circle, Polygon} from './components/collider/SAT';
 
 export class Renderer {
 
@@ -30,15 +31,21 @@ export class Renderer {
         });
     }
 
-    renderCollider(context: CanvasRenderingContext2D, dt: number, entity: Entity, component: BoxColliderComponent) {
-        let poly = component.collider
-        let points = poly.points;
-        context.save()
-        context.translate(poly.position.x, poly.position.y);
-        context.rotate(poly.angle);
-        context.scale(poly.scale.x, poly.scale.y);
-        context.lineWidth=1;
-        context.strokeStyle="lime";
+    renderCircleCollider(context: CanvasRenderingContext2D, collider: Circle) {
+        let position = collider.position
+        context.translate(position.x, position.y);
+        context.beginPath();
+        context.arc(0, 0, collider.radius, 0, 2 * Math.PI);
+        context.stroke();
+    }
+
+    renderPolygonCollider(context: CanvasRenderingContext2D, collider: Polygon) {
+        let points = collider.points;
+        let position = collider.position
+        let scale = collider.scale
+        context.translate(position.x, position.y);
+        context.rotate(collider.angle);
+        context.scale(scale.x, scale.y);
         context.beginPath();
         context.moveTo(points[0].x, points[0].y);
         for (let i = 1; i < points.length; i++) {
@@ -46,6 +53,19 @@ export class Renderer {
         }
         context.closePath();
         context.stroke();
+    }
+
+    renderCollider(context: CanvasRenderingContext2D, dt: number, entity: Entity, component: any) {
+        let collider = component.collider
+
+        context.save()
+        context.lineWidth=1;
+        context.strokeStyle="red";
+        if (collider instanceof Circle) {
+            this.renderCircleCollider(context, collider);
+        } else if (collider instanceof Polygon) {
+            this.renderPolygonCollider(context, collider);
+        }
         context.restore();
     }
 
@@ -85,7 +105,7 @@ export class Renderer {
         let m = entity.transform.getWorldTransform().data;
         let sprite = <SpriteComponent>entity.getComponent('sprite');
         let tilemap = <TileMapComponent>entity.getComponent('tilemap');
-        let collider = <BoxColliderComponent>entity.getComponent('boxcollider');
+        let collider = <IColliderComponent>entity.getComponent('collider');
         this.context.setTransform(m[0], m[3], m[1], m[4], m[2], m[5]);
         tilemap && this.renderTileMap(context, dt, entity, tilemap);
         sprite && this.renderSprite(context, dt, entity, sprite);

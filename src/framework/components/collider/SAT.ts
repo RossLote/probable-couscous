@@ -1,8 +1,10 @@
 import {Vector2} from '../../math/Vector2';
 
 
-interface ICollider {
-    position: Vector2
+export interface ICollider {
+    position: Vector2;
+    setAngle: Function;
+    setScale: Function;
 }
 
 // ## Circle
@@ -28,10 +30,17 @@ export class Circle implements ICollider {
      * @return {Polygon} The AABB
      */
     getAABB() {
-        let radius = this.radius;
-        let corner = this.position.clone().subtract(new Vector2(radius, radius));
-        return new Box(corner, radius*2, radius*2).toPolygon();
+         let radius = this.radius;
+         let corner = this.position.clone().subtract(new Vector2(radius, radius));
+         return new Box(corner, radius*2, radius*2).toPolygon();
     };
+    setAngle(angle: number): Circle {
+        return this;
+    }
+
+    setScale(scale: Vector2): Circle {
+        return this;
+    }
 }
 
 
@@ -53,7 +62,7 @@ export class Polygon implements ICollider {
     angle: number = 0
     scale: Vector2 = new Vector2(1, 1);
     points: Array<Vector2> = []
-    private calcPoints: Array<Vector2> = [];
+    private calculatedPoints: Array<Vector2> = [];
     private edges: Array<Vector2> = [];
     private normals: Array<Vector2> = [];
     private isDirty: boolean = false;
@@ -84,12 +93,12 @@ export class Polygon implements ICollider {
     setPoints(points: Array<Vector2> = new Array<Vector2>()): Polygon {
         let lengthChanged = !this.points || this.points.length !== points.length;
         if (lengthChanged) {
-          let calcPoints: Array<Vector2> = this.calcPoints = [];
+          let calculatedPoints: Array<Vector2> = this.calculatedPoints = [];
           let edges: Array<Vector2> = this.edges = [];
           let normals: Array<Vector2> = this.normals = [];
           // Allocate the vector arrays for the calculated properties
           for (let i = 0; i < points.length; i++) {
-            calcPoints.push(new Vector2());
+            calculatedPoints.push(new Vector2());
             edges.push(new Vector2());
             normals.push(new Vector2());
           }
@@ -117,7 +126,7 @@ export class Polygon implements ICollider {
         if (this.isDirty) {
             this._recalculate();
         }
-        return this.calcPoints;
+        return this.calculatedPoints;
     }
 
     private recalculate(): Polygon {
@@ -133,7 +142,7 @@ export class Polygon implements ICollider {
     private _recalculate(): Polygon {
         // Calculated points - this is what is used for underlying collisions and takes into account
         // the angle/offset set on the polygon.
-        let calcPoints = this.calcPoints;
+        let calculatedPoints = this.calculatedPoints;
         // The edges here are the direction of the `n`th edge of the polygon, relative to
         // the `n`th point. If you want to draw a given edge from the edge value, you must
         // first translate to the position of the starting point.
@@ -148,7 +157,7 @@ export class Polygon implements ICollider {
         let angle = this.angle;
         let len = points.length;
         for (let i = 0; i < len; i++) {
-            let calcPoint = calcPoints[i].copy(points[i]);
+            let calcPoint = calculatedPoints[i].copy(points[i]);
             calcPoint.multiply(this.scale);
             calcPoint.x += offset.x;
             calcPoint.y += offset.y;
@@ -158,8 +167,8 @@ export class Polygon implements ICollider {
         }
         // Calculate the edges/normals
         for (let i = 0; i < len; i++) {
-            let p1 = calcPoints[i];
-            let p2 = i < len - 1 ? calcPoints[i + 1] : calcPoints[0];
+            let p1 = calculatedPoints[i];
+            let p2 = i < len - 1 ? calculatedPoints[i + 1] : calculatedPoints[0];
             let e = edges[i].copy(p2).subtract(p1);
             normals[i].copy(e).perpendicular().normalize();
         }
@@ -256,7 +265,7 @@ export class Polygon implements ICollider {
      * @return {Polygon} The AABB
      */
     getAABB(): Polygon {
-        let points = this.calcPoints;
+        let points = this.calculatedPoints;
         let len = points.length;
         let xMin = points[0].x;
         let yMin = points[0].y;
@@ -290,7 +299,7 @@ export class Polygon implements ICollider {
      * @return {Vector} A Vector that contains the coordinates of the Centroid.
      */
     getCentroid(): Vector2 {
-        let points = this.calcPoints;
+        let points = this.calculatedPoints;
         let len = points.length;
         let cx = 0;
         let cy = 0;
@@ -345,6 +354,14 @@ export class Box implements ICollider {
             ]
         );
     };
+
+    setAngle(angle: number): Box {
+        return this;
+    }
+
+    setScale(scale: Vector2): Box {
+        return this;
+    }
 }
 
 
