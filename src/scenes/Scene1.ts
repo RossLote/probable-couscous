@@ -22,10 +22,12 @@ export class Scene1 extends Scene {
                 spriteName: 'runE'
             }).addComponent('script', {
                 scriptName: 'tester'
+            }).addComponent('ridgedbody', {
+                
             }).addComponent('boxcollider', {
                 width: 24,
                 height: 30
-            })
+            });
         }
     }
 

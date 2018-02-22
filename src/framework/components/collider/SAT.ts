@@ -867,15 +867,15 @@ export function testCollision(colliderA: ICollider, colliderB: ICollider, respon
     }
     if (colliderA instanceof Circle) {
         if (colliderB instanceof Circle) {
-          collided = testCircleCircle(<Circle>colliderA, <Circle>colliderB, this.response);
+          collided = testCircleCircle(<Circle>colliderA, <Circle>colliderB, response);
         } else {
-          collided = testCirclePolygon(<Circle>colliderA, <Polygon>colliderB, this.response);
+          collided = testCirclePolygon(<Circle>colliderA, <Polygon>colliderB, response);
         }
     } else {
         if (colliderB instanceof Circle) {
-            collided = testPolygonCircle(<Polygon>colliderA, <Circle>colliderB, this.response);
+            collided = testPolygonCircle(<Polygon>colliderA, <Circle>colliderB, response);
         } else {
-            collided = testPolygonPolygon(<Polygon>colliderA, <Polygon>colliderB, this.response);
+            collided = testPolygonPolygon(<Polygon>colliderA, <Polygon>colliderB, response);
         }
     }
     return collided;

@@ -43,25 +43,12 @@ export class ColliderSystem extends System {
     update(dt: number): void {
         let components = this.components;
         for (let i = 0, n = components.length; i < n; i++) {
-            let componentA = components[i];
-            let entityA = componentA.entity;
-            let colliderA = (<IColliderComponent>componentA).collider;
-            colliderA.position = entityA.transform.getPosition();
-            colliderA.setAngle(entityA.transform.getRotation());
-            colliderA.setScale(entityA.transform.getScale());
-            for (let j = i + 1; j < n; j++) {
-                let componentB = components[j]
-                let entityB = componentB.entity;
-                let colliderB = (<IColliderComponent>componentB).collider
-                colliderB.position = entityB.transform.getPosition();
-                colliderB.setAngle(entityB.transform.getRotation());
-                colliderB.setScale(entityB.transform.getScale());
-                this.response.clear();
-                let collided = SAT.testCollision(colliderA, colliderB, this.response);
-                if (collided) {
-                    console.log('CRASH BANG WOLLOP!!!');
-                }
-            }
+            let component = components[i];
+            let transform = component.entity.transform;
+            let collider = (<IColliderComponent>component).collider;
+            collider.position = transform.getPosition();
+            collider.setAngle(transform.getRotation());
+            collider.setScale(transform.getScale());
         }
     }
 }

@@ -4,6 +4,7 @@ import {Entity} from '../framework/Entity';
 import {Renderer} from './Renderer';
 
 import {ColliderSystem} from '../framework/components/collider/ColliderSystem';
+import {RidgedBodySystem} from '../framework/components/ridgedbody/RidgedBodySystem';
 import {ScriptSystem} from '../framework/components/script/ScriptSystem';
 import {SpriteSystem} from '../framework/components/sprite/SpriteSystem';
 import {TileMapSystem} from '../framework/components/tilemap/TileMapSystem';
@@ -65,7 +66,8 @@ export class Application {
             ScriptSystem,
             TileMapSystem,
             SpriteSystem,
-            ColliderSystem
+            ColliderSystem,
+            RidgedBodySystem
         ]);
         this.root = new Entity(this);
     }
@@ -85,7 +87,7 @@ export class Application {
         }
     }
 
-    getSystem(name: string):System{
+    getSystem(name: string): System {
         return this.systems[name];
     }
 

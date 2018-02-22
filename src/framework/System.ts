@@ -2,6 +2,11 @@ import {Entity} from './Entity';
 import {Component} from './Component';
 import {Application} from './Application';
 
+interface ISystem {
+    components: Array<Component>;
+}
+
+
 export class System {
     name: string;
     variants: Array<string> = [];
