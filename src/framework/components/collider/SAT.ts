@@ -401,6 +401,28 @@ export class Response {
         return this;
     };
 
+    clone(): Response {
+        let r = new Response();
+        r.aInB = this.aInB;
+        r.bInA = this.bInA;
+        r.overlap = this.overlap;
+        r.a = this.a;
+        r.b = this.b;
+        r.overlapN = this.overlapN.clone();
+        r.overlapV = this.overlapV.clone();
+        return r;
+    }
+
+    reverse(): Response {
+        let tmp = this.a;
+        let tmp2 = this.aInB;
+        this.b = this.a;
+        this.a = tmp;
+        this.bInA = this.aInB;
+        this.aInB = tmp2;
+        return this;
+    }
+
 }
 
 // ## Object Pools

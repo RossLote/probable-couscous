@@ -1,5 +1,7 @@
 import {Application} from './framework/Application';
-import TestScript from './scripts/Tester';
+import BallScript from './scripts/Ball';
+import BrickScript from './scripts/Brick';
+import PaddleScript from './scripts/Paddle';
 
 import {Scene1, Scene2} from './scenes/all';
 
@@ -26,9 +28,17 @@ let assetsPromise = app.assetsRegistry.loadAssets({
 
 let scriptsPromise = app.scriptRegistry.loadScripts([
     {
-        name: 'tester',
-        script: TestScript
-    }
+        name: 'ball',
+        script: BallScript
+    },
+    {
+        name: 'paddle',
+        script: PaddleScript
+    },
+    {
+        name: 'brick',
+        script: BrickScript
+    },
 ]);
 
 Promise.all([assetsPromise, scriptsPromise]).then(function(){

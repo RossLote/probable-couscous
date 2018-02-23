@@ -4,38 +4,42 @@ import {Scene} from '../framework/scene/Scene';
 import { Vector2 } from '../framework/math/Vector2';
 
 export class Scene1 extends Scene {
-    player: any;
+    brick: Entity;
+    paddle: Entity;
+    ball: Entity;
+
     initialize = () => {
-        if (this.data) {
-            this.root = Entity.buildFromJSON(this.app, JSON.parse(this.data));
-        } else {
-            let entity = this.createEntity();
-            // let box = this.createEntity().addComponent('polygoncollider', {
-            //     points: [new Vector2(0,0), new Vector2(60, 0), new Vector2(100, 40), new Vector2(60, 80), new Vector2(0, 80)]
-            // }).transform.setLocalPosition([400, 200]).setLocalRotation(1.5);
-            // entity.transform.setPivot([12, 15]);
-            let circle = this.createEntity().addComponent('circlecollider', {
-                radius: 20
-            });
-            circle.transform.setLocalPosition([400, 200]);
-            this.player = entity.addComponent('sprite', {
-                spriteName: 'runE'
-            }).addComponent('script', {
-                scriptName: 'tester'
-            }).addComponent('ridgedbody', {
-                
-            }).addComponent('boxcollider', {
-                width: 24,
-                height: 30
-            });
-        }
+        let ballScript;
+        let brickScript;
+        let paddleScript;
+        this.ball = this.createEntity()
+            .addComponent('circlecollider', {radius: 5})
+            .addComponent('ridgedbody')
+            .addComponent('script', {scriptName:'ball'});
+        this.paddle = this.createEntity()
+            .addComponent('boxcollider', {width: 300, height: 20})
+            .addComponent('ridgedbody')
+            .addComponent('script', {scriptName:'paddle'});
+        this.brick = this.createEntity()
+            // .addComponent('boxcollider', {width: 300, height: 20})
+            .addComponent('ridgedbody')
+            .addComponent('script', {scriptName:'brick'});
+
+        this.createEntity().addComponent('boxcollider', {width: 20, height: 600}).addComponent('ridgedbody')
+        this.createEntity().addComponent('boxcollider', {width: 20, height: 600}).addComponent('ridgedbody').transform.setLocalPosition([980, 0])
+        this.createEntity().addComponent('boxcollider', {width: 1000, height: 20}).addComponent('ridgedbody')
+        // this.createEntity().addComponent('boxcollider', {width: 1000, height: 20}).addComponent('ridgedbody').transform.setLocalPosition([0, 580])
+
+
+        this.paddle.transform.setLocalPosition([400, 550])
+        ballScript = (<any>this.ball.getComponent('script')).script;
+        brickScript = (<any>this.brick.getComponent('script')).script;
+        paddleScript = (<any>this.paddle.getComponent('script')).script;
+
+
     }
 
     postInitialize = () => {
 
-    }
-
-    teardown = () => {
-        this.data = JSON.stringify(this.root);
     }
 }

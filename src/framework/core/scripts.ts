@@ -3,6 +3,7 @@ import { Application } from '../Application';
 
 
 export class Script {
+    attributes: any = {};
     constructor(protected entity: Entity, protected app: Application){}
     initialize(){}
     update(deltaTime: number){}

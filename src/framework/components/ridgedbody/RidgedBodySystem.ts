@@ -15,6 +15,7 @@ export class RidgedBodySystem extends System {
     colliderSystem: ColliderSystem;
     components: Array<RidgedBodyComponent> = [];
     response: Response = new Response();
+    collisionEntries: {[key: string]: boolean} = {};
 
     constructor(protected app: Application) {
         super(app);
@@ -31,17 +32,39 @@ export class RidgedBodySystem extends System {
         return component;
     }
 
+    private removeCollision(a: Entity, b: Entity):boolean {
+        let hash1 = `${a.id}-${b.id}`;
+        let hash2 = `${b.id}-${a.id}`;
+        let exists = hash1 in this.collisionEntries;
+        delete this.collisionEntries[hash1];
+        delete this.collisionEntries[hash2];
+        return exists;
+    }
+
+    private storeCollision(a: Entity, b: Entity):boolean {
+        let hash1 = `${a.id}-${b.id}`;
+        let hash2 = `${b.id}-${a.id}`;
+        let exists = hash1 in this.collisionEntries;
+        this.collisionEntries[hash1] = true;
+        this.collisionEntries[hash2] = true;
+        return !exists;
+    }
+
     update(dt: number): void {
         let ridgedBodyComponents = this.components;
         let colliderComponents = this.colliderSystem.components;
         for (let i = 0, n = ridgedBodyComponents.length; i < n; i++) {
 
-            let ridgedbody = ridgedBodyComponents[i];
-            let entityA = ridgedbody.entity;
-            let colliderA = ridgedbody.collider;
+            let ridgedbodyA = ridgedBodyComponents[i];
+            let entityA = ridgedbodyA.entity;
+            let colliderA = ridgedbodyA.collider;
 
             if (!colliderA) {
-                colliderA = ridgedbody.collider = (<IColliderComponent>entityA.getComponent('collider')).collider;
+                let colliderComp = (<IColliderComponent>entityA.getComponent('collider'));
+                if (!colliderComp) {
+                    continue;
+                }
+                colliderA = ridgedbodyA.collider = (<IColliderComponent>entityA.getComponent('collider')).collider;
                 if (!colliderA) {
                     continue;
                 }
@@ -50,14 +73,40 @@ export class RidgedBodySystem extends System {
             for (let j = 0; j < n; j++) {
 
                 let componentB = colliderComponents[j];
+                if (componentB === undefined) {
+                    continue;
+                }
                 let colliderB = (<IColliderComponent>componentB).collider;
                 if (colliderA === colliderB) {
                     continue;
                 }
                 this.response.clear();
                 let collided = testCollision(colliderA, colliderB, this.response);
+                let entityB = componentB.entity;
                 if (collided) {
-                    console.log("THERE WAS A COLLISION!!");
+                    let newCollision = this.storeCollision(entityA, entityB);
+                    if (newCollision) {
+                        let ridgedbodyB = entityB.getComponent('ridgedbody');
+                        if (ridgedbodyB) {
+                            entityA.trigger('collisionstart', entityB, this.response.clone())
+                            entityB.trigger('collisionstart', entityA, this.response.clone().reverse())
+                        } else {
+                            entityA.trigger('triggerenter', entityB, this.response.clone())
+                            entityB.trigger('triggerenter', entityA, this.response.clone().reverse())
+                        }
+                    }
+                } else {
+                    let wasColliding = this.removeCollision(entityA, entityB);
+                    if (wasColliding) {
+                        let ridgedbodyB = entityB.getComponent('ridgedbody');
+                        if (ridgedbodyB) {
+                            entityA.trigger('collisionend', entityB, this.response.clone())
+                            entityB.trigger('collisionend', entityA, this.response.clone().reverse())
+                        } else {
+                            entityA.trigger('triggerleave', entityB, this.response.clone())
+                            entityB.trigger('triggerleave', entityA, this.response.clone().reverse())
+                        }
+                    }
                 }
             }
         }

@@ -180,6 +180,7 @@ export class Transform {
 
 	setLocalPosition(vector: Vector2|Array<number>):Transform{
 		vector = castVector2(vector);
+		// console.trace(vector.x, vector.y)
 		if (!vector.equals(this.localPosition)) {
 			this.localPosition = vector;
 			this.setDirty();
