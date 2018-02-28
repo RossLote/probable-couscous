@@ -17,6 +17,7 @@ export class Renderer {
     constructor(private app: Application) {
         this.canvas = app.canvas;
         this.context = this.canvas.getContext('2d');
+        this.context.imageSmoothingEnabled = false;
     }
 
     render(dt: number){
@@ -36,7 +37,7 @@ export class Renderer {
         context.translate(position.x, position.y);
         context.beginPath();
         context.arc(0, 0, collider.radius, 0, 2 * Math.PI);
-        context.stroke();
+        context.fill();
     }
 
     renderPolygonCollider(context: CanvasRenderingContext2D, collider: Polygon) {
@@ -44,6 +45,7 @@ export class Renderer {
         let position = collider.position
         let scale = collider.scale
         context.translate(position.x, position.y);
+        context.fillStyle = 'red';
         context.rotate(collider.angle);
         context.scale(scale.x, scale.y);
         context.beginPath();
@@ -52,7 +54,7 @@ export class Renderer {
             context.lineTo(points[i].x, points[i].y);
         }
         context.closePath();
-        context.stroke();
+        context.fill();
     }
 
     renderCollider(context: CanvasRenderingContext2D, dt: number, entity: Entity, component: any) {

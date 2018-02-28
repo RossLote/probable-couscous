@@ -180,9 +180,19 @@ export class Transform {
 
 	setLocalPosition(vector: Vector2|Array<number>):Transform{
 		vector = castVector2(vector);
-		// console.trace(vector.x, vector.y)
 		if (!vector.equals(this.localPosition)) {
 			this.localPosition = vector;
+			this.setDirty();
+		}
+		return this;
+	}
+
+	translate(vector: Vector2|Array<number>): Transform {
+		vector = castVector2(vector);
+		if (!vector.equals(Vector2.ZERO)) {
+			// console.log(this.localPosition.data);
+			this.localPosition.add(vector);
+			// console.log(this.localPosition.data);
 			this.setDirty();
 		}
 		return this;

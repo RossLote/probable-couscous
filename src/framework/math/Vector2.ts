@@ -148,6 +148,18 @@ export class Vector2 {
       return this;
     }
 
+    static project(a: Vector2, onto: Vector2): Vector2 {
+        let top = onto.dot(a);
+        let bottom = onto.dot(onto);
+        return onto.clone().scale(top/bottom);
+    }
+
+    reflect(normal: Vector2): Vector2 {
+        let projection = Vector2.project(this, normal);
+        this.subtract(projection.scale(2));
+        return this;
+    }
+
     reverse(): Vector2 {
         let d = this.data;
         d[0] = -d[0];

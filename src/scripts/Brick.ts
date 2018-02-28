@@ -9,7 +9,7 @@ export default class BrickScript extends Script {
     }
 
     onCollide = (other:any, response:any) => {
-
+        this.entity.destroy();
     }
 
     update(dt:number){
