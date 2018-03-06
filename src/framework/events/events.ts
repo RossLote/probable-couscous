@@ -7,7 +7,7 @@ export interface IEvents {
 }
 
 
-export const events = {
+export const events = <IEvents>{
 
     off: function(key?: string, callback?: Function) {
         if (!key) {
@@ -38,30 +38,31 @@ export const events = {
 
     trigger: function(key: string, ...args: any[]) {
         let callbacks: Array<Function> = this.eventCallbacks[key];
+        let removedIndexes: Array<number> = [];
         if (!callbacks || callbacks.length === 0) {
             return;
         }
         let callbacksToExecute = [];
-        let i, callback;
-        for (i = 0; i < callbacks.length; i++) {
-            callback = callbacks[i];
+        for (let i = 0, n = callbacks.length; i < n; i++) {
+            let callback = callbacks[i];
             callbacksToExecute.push(callback);
             if ((<any>callback).once) {
-                callbacks[i] = null;
+                removedIndexes.push(i);
             }
         }
 
-        callbacks = callbacks.filter(function(callback: Function){
-            return callback !== null;
+        callbacks = callbacks.filter(function(callback: Function, index: number){
+            return removedIndexes.indexOf(index) === -1;
         });
-
-        if (callbacks) {
+        
+        
+        if (callbacks.length > 0) {
             this.eventCallbacks[key] = callbacks;
         } else {
             delete this.eventCallbacks[key];
         }
 
-        for (i = 0; i < callbacksToExecute.length; i++) {
+        for (let i = 0, n = callbacksToExecute.length; i < n; i++) {
             callbacksToExecute[i](...args);
         }
     }

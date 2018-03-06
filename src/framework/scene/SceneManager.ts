@@ -12,8 +12,16 @@ export class SceneManager {
         this.scenes = {};
     }
 
-    addScene(name: string, sceneClass: typeof Scene) {
-        this.scenes[name] = new sceneClass(this.app);
+    buildFromJSON(json: any) {
+        for (const key in json) {
+            if (json.hasOwnProperty(key)) {
+                this.addScene(key, Scene, json[key])
+            }
+        }
+    }
+
+    addScene(name: string, sceneClass: typeof Scene, json: any = undefined) {
+        this.scenes[name] = new sceneClass(this.app, json);
     }
 
     loadScene(name: string) {

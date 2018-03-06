@@ -1,24 +1,16 @@
-import {Vector2} from './math/Vector2';
+import {Vector2, castVector2} from './math/Vector2';
 import {Matrix3} from './math/Matrix3';
-import { Entity } from './Entity';
+import {Entity} from './Entity';
 
 /**
  * This is from https://www.gamedev.net/articles/programming/math-and-physics/making-a-game-engine-transformations-r3566/
  */
 
-function castVector2(vector: Vector2|Array<number>|Float32Array): Vector2 {
-	if (vector instanceof Vector2) {
-	    return vector
-	} else {
-	    return new Vector2(vector);
-	}
-}
-
 export class Transform {
     // the parent transform of this transform
     // if it is null then the parent transform
     // is the world coordinate system
-	private _parent: Transform;
+	private _parent: Transform|undefined;
     // all of the transforms that have this
     // transform set as their parent
     private _children: Array<Transform>;
@@ -75,7 +67,7 @@ export class Transform {
     // change the parent transform.
     // setting it to null makes the
     // transform a child of world coordinates
-    set parent(value: Transform) {
+    set parent(value: Transform|undefined) {
         // remove this from the previous parent
         if (this._parent) {
             let index = this._parent.children.indexOf(this);
@@ -93,12 +85,12 @@ export class Transform {
             this._parent.children.push(this);
         }
 
-        // changes parents effects
+        // changing parent effects
         // the world position
         this.setDirty();
     }
 
-    get parent(): Transform {
+    get parent(): Transform|undefined {
     	return this._parent;
     }
 
@@ -190,9 +182,7 @@ export class Transform {
 	translate(vector: Vector2|Array<number>): Transform {
 		vector = castVector2(vector);
 		if (!vector.equals(Vector2.ZERO)) {
-			// console.log(this.localPosition.data);
 			this.localPosition.add(vector);
-			// console.log(this.localPosition.data);
 			this.setDirty();
 		}
 		return this;

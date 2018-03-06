@@ -12,7 +12,7 @@ export default class PaddleScript extends Script {
 
     update(dt:number){
 
-        let speed = 400
+        let speed = 500
         let pressed = this.app.keyboard.isPressed.bind(this.app.keyboard);
 
         if (pressed('left')) {

@@ -19,7 +19,6 @@ interface IScript {
 
 export class ScriptRegistry {
     private scripts : {[key: string] : typeof Script} = {};
-    promises: Promise<any>[] = [];
 
     addScript(name: string, script: typeof Script) {
         this.addScripts([{name: name, script: script}]);
@@ -27,20 +26,12 @@ export class ScriptRegistry {
 
     addScripts(scripts: Array<IScript>): ScriptRegistry {
         scripts.forEach((data) => {
-            this.promises.push(new Promise((resolve, reject) => {
-                this.scripts[data.name] = data.script;
-                resolve();
-            }));
+            this.scripts[data.name] = data.script;
         });
         return this;
     }
 
     getScript(name: string): typeof Script {
         return this.scripts[name];
-    }
-
-    loadScripts(scriptsData: Array<IScript>): Promise<any> {
-        this.addScripts(scriptsData)
-        return Promise.all(this.promises);
     }
 }

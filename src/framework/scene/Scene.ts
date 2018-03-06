@@ -1,6 +1,5 @@
 import {Application} from '../Application';
 import {Entity} from '../Entity';
-import TestScript from '../../scripts/Tester';
 
 import {uuid} from '../core/uuid';
 
@@ -9,7 +8,8 @@ export class Scene {
     uuid: string;
     protected root: Entity;
 
-    constructor(protected app: Application, protected data: any = undefined){
+
+    constructor(protected app: Application, protected json: any = undefined){
         this.uuid = uuid();
     }
 
@@ -23,7 +23,11 @@ export class Scene {
 
     preInitialise = (): Scene => {
         if (!this.root) {
-            this.root = new Entity(this.app);
+            if (this.json) {
+                this.root = Entity.buildFromJSON(this.app, this.json);
+            } else {
+                this.root = new Entity(this.app);
+            }
         }
         return this;
     }
@@ -41,7 +45,7 @@ export class Scene {
     }
 
     destroy = () => {
-        this.root.destroy();
+        this.root.forceDestroy();
         delete this.root;
     }
 }

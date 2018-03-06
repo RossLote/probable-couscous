@@ -8,15 +8,15 @@ export class Matrix3 {
                 this.data = new Float32Array(a);
             } else {
                 let data = new Float32Array(9);
-                data[0] = a
-                data[1] = b
-                data[2] = c
-                data[3] = d
-                data[4] = e
-                data[5] = f
-                data[6] = g
-                data[7] = h
-                data[8] = i
+                data[0] = <number>a
+                data[1] = <number>b
+                data[2] = <number>c
+                data[3] = <number>d
+                data[4] = <number>e
+                data[5] = <number>f
+                data[6] = <number>g
+                data[7] = <number>h
+                data[8] = <number>i
                 this.data = data;
             }
         } else {
@@ -34,14 +34,14 @@ export class Matrix3 {
     }
 
     static multiply(matrices: Array<Matrix3>): Matrix3 {
-        let m = matrices.shift();
+        let m = matrices.shift() || Matrix3.IDENTITY;
         if (m) {
             m = m.clone();
             for (let i = 0, n = matrices.length; i < n; i++) {
                 m.multiply(matrices[i]);
             }
-            return m;
         }
+        return m;
     }
 
     static rotate(angle: number): Matrix3 {

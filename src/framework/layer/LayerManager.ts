@@ -1,11 +1,10 @@
 import {Layer} from './Layer';
 
 export class LayerManager {
-    private layers: Array<Layer>;
-    private requiresSort: boolean;
+    private layers: Array<Layer> = [];
+    private requiresSort: boolean = false;
 
     constructor() {
-        this.layers = [];
         this.createLayer('default');
     }
 
@@ -16,25 +15,31 @@ export class LayerManager {
         let layer = new Layer(name, order);
         this.layers.push(layer);
         this.requiresSort = true;
+        return layer;
     }
 
-    getLayer(name: string): Layer{
-        return this.layers.find((layer: Layer) => {
-            return layer.name === name;
-        });
+    getDefaultLayer(): Layer {
+        let layer = this.getLayer('default');
+        if (!layer) {
+            layer = this.createLayer('default', 0);
+        }
+        return layer;
+    }
+
+    getLayer(name: string): Layer | undefined {
+        let layers = this.layers;
+        for (let i = 0, n = layers.length; i < n; i++) {
+            if (layers[i].name === name) {
+                return layers[i];
+            }
+        }
     }
 
     getLayers(){
         if (this.requiresSort) {
-            this.sort();
-        }
-        return this.layers;
-    }
-
-    preRenderSetup(){
-        if (this.requiresSort) {
             this._sort();
         }
+        return this.layers;
     }
 
     sort(){
@@ -61,6 +66,9 @@ export class LayerManager {
         json.forEach((obj:any) => {
             this.createLayer(obj.name, obj.order);
         });
+        if (this.getLayer('default') === undefined) {
+            this.createLayer('default', 0);
+        }
     }
 
     toJSON():any{

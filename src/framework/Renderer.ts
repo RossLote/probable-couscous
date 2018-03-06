@@ -16,14 +16,14 @@ export class Renderer {
 
     constructor(private app: Application) {
         this.canvas = app.canvas;
-        this.context = this.canvas.getContext('2d');
+        this.context = <CanvasRenderingContext2D>this.canvas.getContext('2d');
         this.context.imageSmoothingEnabled = false;
     }
 
     render(dt: number){
         const context = this.context;
         context.setTransform(1, 0, 0, 1, 0, 0);
-        context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        context.clearRect(0, 0, this.canvas.width, this.canvas.height);        
         this.app.layerManager.getLayers().forEach((layer) => {
             layer.preRenderSetup();
             layer.getEntities().forEach((entity) => {

@@ -3,8 +3,9 @@ import {Entity} from '../framework/Entity';
 import {Scene} from '../framework/scene/Scene';
 
 
-export class Scene2 extends Scene {
+export class Tilemap extends Scene {
     initialize = () => {
+        this.createEntity().addComponent('script', { scriptName: 'scene-switcher' });
         let water = [
             [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
             [203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203, 203],
@@ -79,8 +80,8 @@ export class Scene2 extends Scene {
         entity.addComponent('sprite', {
             spriteName: 'runE'
         }).addComponent('script', {
-            scriptName: 'tester'
-        }).renderLayer = this.app.layerManager.getLayer('details');
+            scriptName: 'player'
+        }).setRenderLayer(this.app.layerManager.getLayer('details'));
 
         let tilemaps = this.createEntity();
         tilemaps.createChild().addComponent('tilemap', {
@@ -107,6 +108,8 @@ export class Scene2 extends Scene {
             tilesetName: 'tester',
             data: detailsUpper,
             sortOrder: 'bottomLeft'
-        }).renderLayer = this.app.layerManager.getLayer('details');
+        }).setRenderLayer(this.app.layerManager.getLayer('details'));
+
+        console.log(JSON.stringify(this.root));
     }
 }

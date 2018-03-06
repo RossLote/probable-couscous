@@ -98,9 +98,9 @@ export class Polygon implements ICollider {
           let normals: Array<Vector2> = this.normals = [];
           // Allocate the vector arrays for the calculated properties
           for (let i = 0; i < points.length; i++) {
-            calculatedPoints.push(new Vector2());
-            edges.push(new Vector2());
-            normals.push(new Vector2());
+            calculatedPoints.push(new Vector2);
+            edges.push(new Vector2);
+            normals.push(new Vector2);
           }
         }
         this.points = points;
@@ -347,7 +347,7 @@ export class Box implements ICollider {
         return new Polygon(
             new Vector2(pos.x, pos.y),
             [
-                new Vector2(),
+                new Vector2,
                 new Vector2(w, 0),
                 new Vector2(w,h),
                 new Vector2(0,h)
@@ -375,13 +375,13 @@ export class Box implements ICollider {
   //    of the overlap)
   //  - Whether the first object is entirely inside the second, and vice versa.
 export class Response {
-    aInB: boolean;
-    bInA: boolean;
-    overlap: number;
-    a: ICollider = null;
-    b: ICollider = null;
-    overlapN: Vector2 = new Vector2();
-    overlapV: Vector2 = new Vector2();
+    aInB: boolean = false;
+    bInA: boolean = false;
+    overlap: number = 0;
+    a: ICollider|null = null;
+    b: ICollider|null = null;
+    overlapN: Vector2 = new Vector2;
+    overlapV: Vector2 = new Vector2;
 
     constructor() {
         this.clear();
@@ -414,7 +414,7 @@ export class Response {
     }
 
     reverse(): Response {
-        let tmp = this.a;
+        let tmp = this.b;
         let tmp2 = this.aInB;
         this.b = this.a;
         this.a = tmp;
@@ -434,8 +434,9 @@ export class Response {
  */
 const T_VECTORS: Array<Vector2> = [];
 for (let i = 0; i < 10; i++) {
-    T_VECTORS.push(new Vector2());
+    T_VECTORS.push(new Vector2);
 }
+
 
 // A pool of arrays of numbers used in calculations to avoid allocating
 // memory.
@@ -457,7 +458,7 @@ const T_RESPONSE: Response = new Response();
 /**
  * @type {Polygon}
  */
-const TEST_POINT: Polygon = new Box(new Vector2(), 0.000001, 0.000001).toPolygon();
+const TEST_POINT: Polygon = new Box(new Vector2, 0.000001, 0.000001).toPolygon();
 
 // ## Helper Functions
 
@@ -500,10 +501,10 @@ export function flattenPointsOn(points: Array<Vector2>, normal: Vector2, result:
  *   the direction of the overlap will be populated.
  */
 export function isSeparatingAxis(aPos: Vector2, bPos: Vector2, aPoints: Array<Vector2>, bPoints: Array<Vector2>, axis: Vector2, response: Response): boolean {
-    let rangeA = T_ARRAYS.pop();
-    let rangeB = T_ARRAYS.pop();
+    let rangeA = T_ARRAYS.pop() || [];
+    let rangeB = T_ARRAYS.pop() || [];
     // The magnitude of the offset between the two polygons
-    let offsetV = T_VECTORS.pop().copy(bPos).subtract(aPos);
+    let offsetV = (T_VECTORS.pop() || new Vector2).copy(bPos).subtract(aPos);
     let projectedOffset = offsetV.dot(axis);
     // Project the polygons onto the axis.
     flattenPointsOn(aPoints, axis, rangeA);
@@ -618,7 +619,7 @@ const RIGHT_VORONOI_REGION: number = 1;
  * @return {boolean} true if the point is inside the circle, false if it is not.
  */
 export function pointInCircle(point: Vector2, circle: Circle): boolean {
-    let differenceV = T_VECTORS.pop().copy(point).subtract(circle.position);
+    let differenceV = (T_VECTORS.pop() || new Vector2).copy(point).subtract(circle.position);
     let radiusSq = circle.radius * circle.radius;
     let distanceSq = differenceV.lengthSquared();
     T_VECTORS.push(differenceV);
@@ -653,7 +654,7 @@ export function pointInPolygon(point: Vector2, polygon: Polygon): boolean {
 export function testCircleCircle(a: Circle, b: Circle, response: Response): boolean {
     // Check if the distance between the centers of the two
     // circles is greater than their combined radius.
-    let differenceV = T_VECTORS.pop().copy(b.position).subtract(a.position);
+    let differenceV = (T_VECTORS.pop() || new Vector2).copy(b.position).subtract(a.position);
     let totalRadius = a.radius + b.radius;
     let totalRadiusSq = totalRadius * totalRadius;
     let distanceSq = differenceV.lengthSquared();
@@ -687,14 +688,14 @@ export function testCircleCircle(a: Circle, b: Circle, response: Response): bool
  */
 export function testPolygonCircle(polygon: Polygon, circle: Circle, response: Response): boolean {
     // Get the position of the circle relative to the polygon.
-    let circlePos = T_VECTORS.pop().copy(circle.position).subtract(polygon.position);
+    let circlePos = (T_VECTORS.pop() || new Vector2).copy(circle.position).subtract(polygon.position);
     let radius = circle.radius;
     let radius2 = radius * radius;
     let points = polygon.getPoints();
-    let edges = polygon.getEdges()
+    let edges = polygon.getEdges();
     let len = points.length;
-    let edge = T_VECTORS.pop();
-    let point = T_VECTORS.pop();
+    let edge = T_VECTORS.pop() || new Vector2;
+    let point = T_VECTORS.pop() || new Vector2;
 
     // For each edge in the polygon:
     for (let i = 0; i < len; i++) {
@@ -722,7 +723,7 @@ export function testPolygonCircle(polygon: Polygon, circle: Circle, response: Re
             // We need to make sure we're in the RIGHT_VORONOI_REGION of the previous edge.
             edge.copy(edges[prev]);
             // Calculate the center of the circle relative the starting point of the previous edge
-            let point2 = T_VECTORS.pop().copy(circlePos).subtract(points[prev]);
+            let point2 = (T_VECTORS.pop() || new Vector2).copy(circlePos).subtract(points[prev]);
             region = voronoiRegion(edge, point2);
             if (region === RIGHT_VORONOI_REGION) {
                 // It's in the region we want.    Check if the circle intersects the point.

@@ -27,8 +27,7 @@ export class Application {
     private static currentApplication: Application;
     private systems: ISystems = {};
     private systemsList: Array<System> = [];
-    private startTime: number;
-    private lastFrameTime: number;
+    private lastFrameTime: number = 0;
     private renderer: Renderer;
     private poolOfDestruction: Array<Entity> = [];
     assetsRegistry: AssetRegistry;
@@ -38,22 +37,18 @@ export class Application {
     sceneManager: SceneManager;
     layerManager: LayerManager;
     canvas: HTMLCanvasElement;
-    root: Entity;
     playing: boolean = false;
     currentScene: any;
     keyboard: Keyboard;
 
-    constructor(canvas: HTMLCanvasElement = undefined) {
+    constructor() {
 
         this.assetsRegistry = new AssetRegistry;
         this.scriptRegistry = new ScriptRegistry;
         this.spriteRegistry = new SpriteRegistry(this.assetsRegistry);
         this.tilesetRegistry = new TilesetRegistry(this.assetsRegistry);
-
-        if (canvas === undefined) {
-            canvas = document.createElement('canvas');
-            document.body.appendChild(canvas);
-        }
+        let canvas = document.createElement('canvas');
+        document.body.appendChild(canvas);
         canvas.width = 1000;
         canvas.height = 600;
         this.canvas = canvas;
@@ -61,7 +56,7 @@ export class Application {
         this.keyboard = new Keyboard(window);
         this.layerManager = new LayerManager();
         this.sceneManager = new SceneManager(this);
-
+        
         this.registerSystems([
             ScriptSystem,
             TileMapSystem,
@@ -69,7 +64,18 @@ export class Application {
             ColliderSystem,
             RidgedBodySystem
         ]);
-        this.root = new Entity(this);
+
+    }
+
+    loadJSON(json: any): Promise<any> {
+        return this.assetsRegistry.loadAssets(json.assets).then(() => {
+            this.sceneManager.buildFromJSON(json.scenes);
+            this.layerManager.fromJSON(json.layers);
+            
+            this.spriteRegistry.registerSprites(json.sprites);
+            this.tilesetRegistry.registerTilesets(json.tilesets);
+            this.scriptRegistry.addScripts(json.scripts);
+        });
     }
 
     registerSystem(systemClass: typeof System){

@@ -17,7 +17,7 @@ export class TileMapComponent extends Component {
     toJSON():any{
         return {
             tilesetName: this.tilesetName,
-            originalMapData: this.originalMapData,
+            data: this.originalMapData,
             sortOrder: this.sortOrder,
             mapData: this.mapData
         }

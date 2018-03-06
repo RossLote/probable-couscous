@@ -17,14 +17,15 @@ export class Entity implements IEvents {
     public eventCallbacks:any = {};
 
     private components: IComponents = {};
+    private componentAliases: Set<string> = new Set;
 
-    private _orderInLayer: number;
-    private _renderLayer: Layer;
+    private _orderInLayer: number = 0;
+    private _renderLayer: Layer|undefined;
 
     constructor(private app: Application) {
         var this_ = this;
         this.id = uuid();
-        this.renderLayer = this.app.layerManager.getLayer('default');
+        this.setRenderLayer(app.layerManager.getDefaultLayer());
         this.transform = new Transform(this);
         this.eventCallbacks = new Array<Function>();
     }
@@ -51,11 +52,12 @@ export class Entity implements IEvents {
     }
     // End IEvents methods
 
-    static buildFromJSON(app: Application, data: any) {
+    static buildFromJSON(app: Application, data: any): Entity {
         let entity = new Entity(app);
         entity.id = data.id;
         entity.transform.fromJSON(data.transform);
-        entity.renderLayer = entity.app.layerManager.getLayer(data.renderLayer);
+        entity.setRenderLayer(undefined);
+        entity.setRenderLayer(entity.app.layerManager.getLayer(data.renderLayer));
         entity.orderInLayer = data.orderInLayer;
         for (let key in data.components) {
             entity.addComponent(key, data.components[key]);
@@ -67,7 +69,7 @@ export class Entity implements IEvents {
                 e.transform.parent = entity.transform;
             }
         }
-        return entity
+        return entity;
     }
 
     addChild(entity: Entity): Entity {
@@ -84,9 +86,12 @@ export class Entity implements IEvents {
     addComponent(name: string, data: object = {}): Entity {
         let system = this.app.getSystem(name)
         let component = system.addComponent(name, this, data);
-        this.components[name] = component;
-        if (system.variants.indexOf(name) > -1) {
-            this.components[system.name] = component;
+        if (component) {
+            this.components[name] = component;
+            if (system.variants.indexOf(name) > -1) {
+                this.components[system.name] = component;
+                this.componentAliases.add(system.name);
+            }
         }
         return this;
     }
@@ -98,7 +103,7 @@ export class Entity implements IEvents {
         delete this.components[name];
     }
 
-    getComponent(name: string): Component {
+    getComponent(name: string): Component | undefined {
         if (name in this.components) {
             return this.components[name];
         }
@@ -108,9 +113,9 @@ export class Entity implements IEvents {
     getChildren(): Array<Entity> {
         let entities: Array<Entity> = [];
         let childTransforms = this.transform.children;
-        let i, n;
-        for (i = 0, n = childTransforms.length; i < n; i++) {
-            entities.push(childTransforms[i].entity);
+        for (let i = 0, n = childTransforms.length; i < n; i++) {
+            let entity = childTransforms[i].entity;
+            entity && entities.push(childTransforms[i].entity);
         }
         return entities
     }
@@ -120,24 +125,17 @@ export class Entity implements IEvents {
     }
 
     forceDestroy(){
-        for (let key in this.components) {
-            this.removeComponent(key);
-        }
-
-        let children = this.getChildren();
-
-        this.renderLayer = undefined;
-        this.transform.entity = undefined;
-        this.transform.destroy()
-        this.transform = undefined;
-        this.app = undefined;
-
-
-        let i, n;
-        for (i = 0, n = children.length; i < n; i++) {
+        for (let i = 0, children = this.getChildren(), n = children.length; i < n; i++) {
             children[i].forceDestroy();
         }
 
+        for (let key in this.components) {
+            this.removeComponent(key);
+        }
+        
+        this.setRenderLayer(undefined);
+        this.transform.destroy()
+        
         for (let key in this) {
             if (this.hasOwnProperty(key)) {
                 delete this[key];
@@ -145,21 +143,22 @@ export class Entity implements IEvents {
         }
     }
 
-    get renderLayer(): Layer {
-        return this._renderLayer;
+    getRenderLayer(): Layer {
+        return <Layer>this._renderLayer;
     }
 
-    set renderLayer(layer: Layer) {
+    setRenderLayer(layer: Layer|undefined) {
         if (layer === this._renderLayer) {
             return;
         }
-        if (this.renderLayer) {
-            this.renderLayer.removeEntity(this);
+        if (this._renderLayer) {
+            this._renderLayer.removeEntity(this);
         }
         if (layer) {
             layer.addEntity(this);
         }
-        this._renderLayer = layer;
+        
+        this._renderLayer = <Layer>layer;
     }
 
     get orderInLayer(): number {
@@ -168,17 +167,24 @@ export class Entity implements IEvents {
 
     set orderInLayer(order: number) {
         this._orderInLayer = order;
-        this.renderLayer.sort();
+        this.getRenderLayer().sort();
     }
 
     toJSON(): any {
+        let components: {[key: string]: Component} = {};
+        for (const key in this.components) {
+            if (this.componentAliases.has(key)) {
+                continue;
+            }
+            components[key] = (this.components[key]);
+        }
         return {
             id: this.id,
             transform: this.transform,
-            components: this.components,
+            components: components,
             children: this.getChildren(),
             orderInLayer: this._orderInLayer,
-            renderLayer: this.renderLayer.name
+            renderLayer: this.getRenderLayer().name
         }
     }
 }

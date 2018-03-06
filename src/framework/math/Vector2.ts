@@ -1,3 +1,12 @@
+export function castVector2(vector: Vector2 | Array<number> | Float32Array): Vector2 {
+    if (vector instanceof Vector2) {
+        return vector
+    } else {
+        return new Vector2(vector);
+    }
+}
+
+
 export class Vector2 {
     data: Float32Array;
 
@@ -7,8 +16,8 @@ export class Vector2 {
                 this.data = new Float32Array(x);
             } else {
                 this.data = new Float32Array(2);
-                this.data[0] = x;
-                this.data[1] = y;
+                this.data[0] = <number>x;
+                this.data[1] = <number>y;
             }
         } else {
             this.data = new Float32Array([0,0])

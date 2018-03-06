@@ -8,7 +8,7 @@ interface ISystem {
 
 
 export class System {
-    name: string;
+    name: string = '';
     variants: Array<string> = [];
     entities: Array<Entity> = [];
     components: Array<Component>;
@@ -34,7 +34,9 @@ export class System {
     initialize() {
         this.entities.forEach((entity: Entity) => {
             let component = entity.getComponent(this.name);
-            this.initializeEntity(entity, component);
+            if (component) {
+                this.initializeEntity(entity, component);
+            }
         });
     }
 

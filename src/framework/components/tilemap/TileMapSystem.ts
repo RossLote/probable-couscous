@@ -17,6 +17,8 @@ export class TileMapSystem extends System {
         let imageHeight: number = tileset.image.height;
         let framesWide: number = tileset.image.width/tileset.frameWidth;
         let framesHigh: number = tileset.image.height/tileset.frameHeight;
+        console.log(mapData);
+        
         mapData.forEach((_row: Array<number>, rowIndex) => {
             _row.forEach((tile, tileIndex) => {
                 tile -= 1;

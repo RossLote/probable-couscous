@@ -19,6 +19,7 @@ export class ScriptSystem extends System {
             scriptName: data.scriptName
         });
         this.initializeEntity(entity, component)
+        
         return component;
     }
 

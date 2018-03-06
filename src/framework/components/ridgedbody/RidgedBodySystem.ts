@@ -1,5 +1,5 @@
 import {Application} from '../../Application';
-import {Component} from '.../../Component';
+import {Component} from '../../Component';
 import {Entity} from '../../Entity';
 import {System} from '../../System';
 
@@ -115,11 +115,11 @@ export class RidgedBodySystem extends System {
                             // if (ridgedbodyB.type === RidgedBodyType.dynamic) {
                             //     ridgedbodyB.velocity.reflect(this.response.overlapN).scale(ridgedbodyB.restitution);
                             // }
-                            entityA.trigger('collisionstart', entityB, this.response.clone())
-                            entityB.trigger('collisionstart', entityA, this.response.clone().reverse())
+                            entityA.trigger('collisionstart', entityB, this.response.clone());
+                            entityB.trigger('collisionstart', entityA, this.response.clone().reverse());
                         } else {
-                            entityA.trigger('triggerenter', entityB, this.response.clone())
-                            entityB.trigger('triggerenter', entityA, this.response.clone().reverse())
+                            entityA.trigger('triggerenter', entityB, this.response.clone());
+                            entityB.trigger('triggerenter', entityA, this.response.clone().reverse());
                         }
                     }
                 } else {
