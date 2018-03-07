@@ -1,15 +1,6 @@
-export interface IEvents {
-    eventCallbacks:any;
-    off(key?: string, callback?: Function):any;
-    on(key: string, callback: Function):any;
-    once(key: string, callback: Function):any;
-    trigger(key: string, ...args: any[]):any;
-}
-
-
-export const events = <IEvents>{
-
-    off: function(key?: string, callback?: Function) {
+export class Evented {
+    eventCallbacks: {[key: string]: Array<Function>} = {};
+    off(key?: string, callback?: Function) {
         if (!key) {
             this.eventCallbacks = {};
         } else if (!callback) {
@@ -20,23 +11,23 @@ export const events = <IEvents>{
                 let index = callbacks.indexOf(callback);
                 if (index > -1) {
                     callbacks = callbacks.splice(index, 1);
-                    this.eventCallbacks = callbacks;
+                    this.eventCallbacks[key] = callbacks;
                 }
             }
         }
-    },
+    }
 
-    on: function(key: string, callback: Function) {
+    on(key: string, callback: Function) {
         this.eventCallbacks[key] = this.eventCallbacks[key] || new Array<Function>();
         this.eventCallbacks[key].push(callback);
-    },
+    }
 
-    once: function(key: string, callback: Function) {
+    once(key: string, callback: Function) {
         (<any>callback).once = true;
         this.on(key, callback);
-    },
+    }
 
-    trigger: function(key: string, ...args: any[]) {
+    trigger(key: string, ...args: any[]) {
         let callbacks: Array<Function> = this.eventCallbacks[key];
         let removedIndexes: Array<number> = [];
         if (!callbacks || callbacks.length === 0) {
@@ -54,8 +45,8 @@ export const events = <IEvents>{
         callbacks = callbacks.filter(function(callback: Function, index: number){
             return removedIndexes.indexOf(index) === -1;
         });
-        
-        
+
+
         if (callbacks.length > 0) {
             this.eventCallbacks[key] = callbacks;
         } else {

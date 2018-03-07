@@ -4,17 +4,18 @@ import {Application} from './Application';
 import {Layer} from './layer/Layer';
 import {Vector2} from './math/Vector2';
 import {uuid} from './core/uuid';
-import {events, IEvents} from './events/events';
+import {Mixin} from './core/utils';
+import {Evented} from './events/events';
 
 interface IComponents {
     [key: string]: Component
 }
 
 
-export class Entity implements IEvents {
+@Mixin([Evented])
+export class Entity implements Evented {
     public id: string;
     public transform: Transform;
-    public eventCallbacks:any = {};
 
     private components: IComponents = {};
     private componentAliases: Set<string> = new Set;
@@ -22,35 +23,19 @@ export class Entity implements IEvents {
     private _orderInLayer: number = 0;
     private _renderLayer: Layer|undefined;
 
+    eventCallbacks: {[key: string]: Array<Function>} = {};
+
     constructor(private app: Application) {
         var this_ = this;
         this.id = uuid();
         this.setRenderLayer(app.layerManager.getDefaultLayer());
         this.transform = new Transform(this);
-        this.eventCallbacks = new Array<Function>();
     }
 
-    // Start IEvents methods
-    off(key?: string, callback?: Function): Entity {
-        events.off.call(this, key, callback);
-        return this;
-    }
-
-    on(key: string, callback: Function, context?: any): Entity {
-        events.on.call(this, key, callback);
-        return this;
-    }
-
-    once(key: string, callback: Function, context?: any): Entity {
-        events.once.call(this, key, callback);
-        return this;
-    }
-
-    trigger(key: string, ...args: any[]) {
-        events.trigger.call(this, key, ...args);
-        return this;
-    }
-    // End IEvents methods
+    off(key?: string, callback?: Function):any{}
+    on(key: string, callback: Function):any{}
+    once(key: string, callback: Function):any{}
+    trigger(key: string, ...args: any[]):any{}
 
     static buildFromJSON(app: Application, data: any): Entity {
         let entity = new Entity(app);
@@ -132,10 +117,10 @@ export class Entity implements IEvents {
         for (let key in this.components) {
             this.removeComponent(key);
         }
-        
+
         this.setRenderLayer(undefined);
         this.transform.destroy()
-        
+
         for (let key in this) {
             if (this.hasOwnProperty(key)) {
                 delete this[key];
@@ -157,7 +142,7 @@ export class Entity implements IEvents {
         if (layer) {
             layer.addEntity(this);
         }
-        
+
         this._renderLayer = <Layer>layer;
     }
 
