@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "./built/",
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "es2015",
@@ -8,10 +8,9 @@
     "experimentalDecorators": true,
     "target": "es5",
     "allowJs": true,
-    "strict": true,
+    // "strict": true,
     "typeRoots": [
       "node_modules/@types",
-      "node_modules/vue/types"
     ],
     "lib": [
       "es5",
@@ -34,6 +33,7 @@
   "exclude": [
     "",
     "node_modules",
-    "typings"
+    "typings",
+    "index.tester.ts"
   ]
 }

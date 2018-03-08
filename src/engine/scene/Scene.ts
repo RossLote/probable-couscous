@@ -1,4 +1,4 @@
-import {Application} from '../Application';
+import Engine from '../Engine';
 import {Entity} from '../Entity';
 
 import {uuid} from '../core/uuid';
@@ -9,8 +9,9 @@ export class Scene {
     protected root: Entity;
 
 
-    constructor(protected app: Application, protected json: any = undefined){
+    constructor(protected app: Engine, protected json: any = undefined){
         this.uuid = uuid();
+        this.root = new Entity(app);
     }
 
     createEntity = () => {

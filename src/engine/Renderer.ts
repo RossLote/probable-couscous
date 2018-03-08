@@ -1,4 +1,4 @@
-import {Application} from './Application';
+import Engine from './Engine';
 import {LayerManager} from './layer/LayerManager';
 import {AssetRegistry} from './core/assets';
 import {SpriteRegistry} from './core/sprites';
@@ -14,7 +14,7 @@ export class Renderer {
     private context: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
 
-    constructor(private app: Application) {
+    constructor(private app: Engine) {
         this.canvas = app.canvas;
         this.context = <CanvasRenderingContext2D>this.canvas.getContext('2d');
         this.context.imageSmoothingEnabled = false;

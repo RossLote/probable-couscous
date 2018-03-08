@@ -1,6 +1,6 @@
-import {Script} from '../framework/core/scripts';
-import {Vector2} from '../framework/math/Vector2';
-import {Response} from '../framework/components/collider/SAT';
+import {Script} from '../engine/core/scripts';
+import {Vector2} from '../engine/math/Vector2';
+import {Response} from '../engine/components/collider/SAT';
 
 
 export default class BallScript extends Script {

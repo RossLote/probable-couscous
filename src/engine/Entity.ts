@@ -1,6 +1,6 @@
 import {Component} from './Component';
 import {Transform} from './Transform';
-import {Application} from './Application';
+import Engine from './Engine';
 import {Layer} from './layer/Layer';
 import {Vector2} from './math/Vector2';
 import {uuid} from './core/uuid';
@@ -25,7 +25,7 @@ export class Entity implements Evented {
 
     eventCallbacks: {[key: string]: Array<Function>} = {};
 
-    constructor(private app: Application) {
+    constructor(private app: Engine) {
         var this_ = this;
         this.id = uuid();
         this.setRenderLayer(app.layerManager.getDefaultLayer());
@@ -37,7 +37,7 @@ export class Entity implements Evented {
     once(key: string, callback: Function):any{}
     trigger(key: string, ...args: any[]):any{}
 
-    static buildFromJSON(app: Application, data: any): Entity {
+    static buildFromJSON(app: Engine, data: any): Entity {
         let entity = new Entity(app);
         entity.id = data.id;
         entity.transform.fromJSON(data.transform);

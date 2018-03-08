@@ -1,6 +1,6 @@
-import { Application } from '../framework/Application';
-import { Entity } from '../framework/Entity';
-import { Scene } from '../framework/scene/Scene';
+import Engine from '../engine/Engine';
+import { Entity } from '../engine/Entity';
+import { Scene } from '../engine/scene/Scene';
 
 export class Blank extends Scene {
     // player: any;

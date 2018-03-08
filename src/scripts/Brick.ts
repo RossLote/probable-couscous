@@ -1,5 +1,5 @@
-import {Script} from '../framework/core/scripts';
-import {Vector2} from '../framework/math/Vector2';
+import {Script} from '../engine/core/scripts';
+import {Vector2} from '../engine/math/Vector2';
 
 
 export default class BrickScript extends Script {

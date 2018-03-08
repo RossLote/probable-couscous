@@ -1,4 +1,4 @@
-import {Application} from '../../Application';
+import Engine from '../../Engine';
 import {Component} from '../../Component';
 import {Entity} from '../../Entity';
 import {System} from '../../System';
@@ -17,7 +17,7 @@ export class RidgedBodySystem extends System {
     response: Response = new Response();
     collisionEntries: {[key: string]: boolean} = {};
 
-    constructor(protected app: Application) {
+    constructor(protected app: Engine) {
         super(app);
         this.colliderSystem = <ColliderSystem>app.getSystem('collider');
     }

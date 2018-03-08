@@ -1,7 +1,7 @@
-import {Application} from '../framework/Application';
-import {Entity} from '../framework/Entity';
-import {Scene} from '../framework/scene/Scene';
-import {Vector2} from '../framework/math/Vector2';
+import Engine from '../engine/Engine';
+import {Entity} from '../engine/Entity';
+import {Scene} from '../engine/scene/Scene';
+import {Vector2} from '../engine/math/Vector2';
 
 export class Breakout extends Scene {
 

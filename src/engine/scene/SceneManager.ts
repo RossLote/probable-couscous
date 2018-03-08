@@ -1,5 +1,5 @@
-import { Application } from "../Application";
-import { Scene } from "./Scene";
+import Engine from '../Engine';
+import { Scene } from './Scene';
 
 
 
@@ -7,7 +7,7 @@ export class SceneManager {
 
     private scenes: {[key: string]: Scene}
 
-    constructor(private app: Application){
+    constructor(private app: Engine){
         app.sceneManager = this;
         this.scenes = {};
     }
@@ -22,6 +22,10 @@ export class SceneManager {
 
     addScene(name: string, sceneClass: typeof Scene, json: any = undefined) {
         this.scenes[name] = new sceneClass(this.app, json);
+    }
+
+    createBlankScene(name: string) {
+        this.addScene(name, Scene);
     }
 
     loadScene(name: string) {

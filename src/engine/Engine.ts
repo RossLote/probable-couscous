@@ -1,13 +1,13 @@
 import {Keyboard} from './input/Keyboard';
-import {System} from '../framework/System';
-import {Entity} from '../framework/Entity';
+import {System} from './System';
+import {Entity} from './Entity';
 import {Renderer} from './Renderer';
 
-import {ColliderSystem} from '../framework/components/collider/ColliderSystem';
-import {RidgedBodySystem} from '../framework/components/ridgedbody/RidgedBodySystem';
-import {ScriptSystem} from '../framework/components/script/ScriptSystem';
-import {SpriteSystem} from '../framework/components/sprite/SpriteSystem';
-import {TileMapSystem} from '../framework/components/tilemap/TileMapSystem';
+import {ColliderSystem} from './components/collider/ColliderSystem';
+import {RidgedBodySystem} from './components/ridgedbody/RidgedBodySystem';
+import {ScriptSystem} from './components/script/ScriptSystem';
+import {SpriteSystem} from './components/sprite/SpriteSystem';
+import {TileMapSystem} from './components/tilemap/TileMapSystem';
 
 import {Scene} from './scene/Scene';
 import {SceneManager} from './scene/SceneManager';
@@ -23,8 +23,8 @@ interface ISystems {
     [key: string]: System
 }
 
-export class Application {
-    private static currentApplication: Application;
+export default class Engine {
+    private static currentApplication: Engine;
     private systems: ISystems = {};
     private systemsList: Array<System> = [];
     private lastFrameTime: number = 0;

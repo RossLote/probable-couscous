@@ -1,4 +1,4 @@
-import { Script } from '../framework/core/scripts';
+import { Script } from '../engine/core/scripts';
 
 
 export default class SceneSwitcher extends Script {

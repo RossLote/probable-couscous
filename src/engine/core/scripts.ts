@@ -1,10 +1,10 @@
 import { Entity } from '../Entity';
-import { Application } from '../Application';
+import Engine from '../Engine';
 
 
 export class Script {
     attributes: any = {};
-    constructor(protected entity: Entity, protected app: Application){}
+    constructor(protected entity: Entity, protected app: Engine){}
     initialize(){}
     update(deltaTime: number){}
     tearDown(){}

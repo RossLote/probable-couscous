@@ -1,6 +1,6 @@
 import {Entity} from './Entity';
 import {Component} from './Component';
-import {Application} from './Application';
+import Engine from './Engine';
 
 interface ISystem {
     components: Array<Component>;
@@ -14,7 +14,7 @@ export class System {
     components: Array<Component>;
     ComponentType: typeof Component = Component;
 
-    constructor(protected app: Application) {
+    constructor(protected app: Engine) {
         this.components = [];
     }
 
