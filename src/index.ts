@@ -1,3 +1,10 @@
-import Editor from './editor/Editor';
+import Vue from 'vue';
+import Editor from './editor/Editor.vue';
 
-new Editor().start();
+new Vue({
+el: '#app',
+template: '<Editor/>',
+components: {
+Editor
+}
+});
