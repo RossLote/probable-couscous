@@ -26,10 +26,10 @@ export class Entity implements Evented {
     eventCallbacks: {[key: string]: Array<Function>} = {};
 
     constructor(private app: Engine) {
-        var this_ = this;
         this.id = uuid();
         this.setRenderLayer(app.layerManager.getDefaultLayer());
         this.transform = new Transform(this);
+        app.trigger('entity:created', this);
     }
 
     off(key?: string, callback?: Function):any{}

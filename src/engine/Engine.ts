@@ -9,20 +9,23 @@ import {ScriptSystem} from './components/script/ScriptSystem';
 import {SpriteSystem} from './components/sprite/SpriteSystem';
 import {TileMapSystem} from './components/tilemap/TileMapSystem';
 
+import { Evented } from './events/events';
+import { LayerManager } from './layer/LayerManager';
 import {Scene} from './scene/Scene';
 import {SceneManager} from './scene/SceneManager';
-import {LayerManager} from './layer/LayerManager';
 
 import {AssetRegistry} from './core/assets';
 import {ScriptRegistry} from './core/scripts';
 import {SpriteRegistry} from './core/sprites';
 import {TilesetRegistry} from './core/tileset';
+import { Mixin } from './core/utils';
 
 
 interface ISystems {
     [key: string]: System
 }
 
+@Mixin([Evented])
 export default class Engine {
     private static currentApplication: Engine;
     private systems: ISystems = {};
@@ -40,6 +43,7 @@ export default class Engine {
     playing: boolean = false;
     currentScene: any;
     keyboard: Keyboard;
+    eventCallbacks: { [key: string]: Array<Function> } = {};
 
     constructor() {
 
@@ -66,6 +70,11 @@ export default class Engine {
         ]);
 
     }
+
+    off(key?: string, callback?: Function): any { }
+    on(key: string, callback: Function): any { }
+    once(key: string, callback: Function): any { }
+    trigger(key: string, ...args: any[]): any { }
 
     loadJSON(json: any): Promise<any> {
         return this.assetsRegistry.loadAssets(json.assets).then(() => {
