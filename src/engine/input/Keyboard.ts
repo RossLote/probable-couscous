@@ -70,8 +70,8 @@ export class Keyboard {
     private lastKeymap: IKeymap = {};
 
     constructor(public window: Window){
-        window.addEventListener('keydown', this.keydown.bind(this));
-        window.addEventListener('keyup', this.keyup.bind(this));
+        // window.addEventListener('keydown', this.keydown.bind(this));
+        // window.addEventListener('keyup', this.keyup.bind(this));
     }
 
     isPressed(key: string):boolean{

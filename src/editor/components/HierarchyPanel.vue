@@ -1,7 +1,12 @@
 <template>
-  <div class="hierarchy-panel">
+  <div class="hierarchy-panel" @click="activateSelf">
         <CreateEntityButton :engine="engine"/>
-        <HierarchyNode v-for="node in nodes" :key="node.id" :node="node" />
+        <HierarchyNode
+            v-for="entity in entities"
+            :key="entity.id"
+            :entity="entity"
+            :activateMethod="activateNode"
+            :propLabel="entity.label" />
   </div>
 </template>
 
@@ -14,26 +19,43 @@ import HierarchyNode from './HierarchyNode.vue';
 import CreateEntityButton from './CreateEntityButton.vue';
 
 
+const NEW_ENTITY_LABEL = 'New Entity';
+
+
 @Component({
     components: {HierarchyNode, CreateEntityButton}
 })
-export default class HierarchyPanel extends Vue {
-    nodes: Array<Entity> = [];
+export default class HierarchyPanel extends HierarchyNode {
 
-    @Prop()
-    engine: Engine;
+    private activeNode: HierarchyNode;
 
     constructor(){
         super();
-        const refresh = () => {
-            this.nodes.splice(0);
-            for (const node of this.engine.currentScene.root.getChildren()) {
-                this.nodes.push(node);
-            }
-            setTimeout(refresh, 500);
-        }
+        this.activeNode = this;
+    }
 
-        refresh();
+    created(){
+        this.$on('node:created', (node: HierarchyNode) => {
+            if (node.entity.label === NEW_ENTITY_LABEL) {
+                // node.editable = true;
+            }
+        });
+        this.$on('create:entity', () => {
+            let entity = this.activeNode.entity.createChild(NEW_ENTITY_LABEL);
+            this.activeNode.expanded = true;
+        });
+    }
+
+    activateSelf() {
+        this.activateNode(this);
+    }
+
+    activateNode(node: HierarchyNode) {
+        if (this.activeNode) {
+            this.activeNode.active = false;
+            node.active = true;
+        }
+        this.activeNode = node;
     }
 }
 
@@ -41,5 +63,9 @@ export default class HierarchyPanel extends Vue {
 </script>
 
 <style lang="less">
+
+.hierarchy-panel{
+    padding-bottom: 20px;
+}
 
 </style>

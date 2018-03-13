@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button @click="addEntity">Add entity</button>
+        <button @click.stop="addEntity">Add entity</button>
     </div>
 </template>
 
@@ -22,19 +22,7 @@ export default class CreateEntityButton extends Vue {
     engine: Engine;
     
     addEntity() {
-        let e = this.engine.currentScene.createEntity();
-        e.addComponent('circlecollider', {radius: 10});
-        e.addComponent('ridgedbody', {velocity: [100, 100]});
-        let f = e.createChild();
-        f.addComponent('circlecollider', {radius: 10});
-        f.addComponent('ridgedbody', {velocity: [5, 5]});
-        e.createChild();
-        e.createChild();
-        e.createChild();
-        e.createChild();
-        f.createChild();
-        f.createChild();
-        f.createChild();
+        this.$parent.$emit('create:entity');
     }
 
 }

@@ -15,6 +15,7 @@ interface IComponents {
 @Mixin([Evented])
 export class Entity implements Evented {
     public id: string;
+    public label: string;
     public transform: Transform;
 
     private components: IComponents = {};
@@ -59,11 +60,14 @@ export class Entity implements Evented {
 
     addChild(entity: Entity): Entity {
         entity.transform.parent = this.transform;
+        this.trigger('entity:added', this, entity);
         return this;
     }
 
-    createChild(): Entity {
+    createChild(label: string = ''): Entity {
         var entity = new Entity(this.app);
+        entity.label = label;
+        this.trigger('entity:created', this, entity);
         this.addChild(entity);
         return entity;
     }
@@ -126,6 +130,7 @@ export class Entity implements Evented {
                 delete this[key];
             }
         }
+        this.trigger('destroyed', this);
     }
 
     getRenderLayer(): Layer {

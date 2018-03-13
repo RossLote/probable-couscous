@@ -1,7 +1,19 @@
 <template>
-    <div class="hierarchy-node">
-        {{node.id}}
-        <HierarchyNode v-for="node in nodes" :key="node.id" :node="node" />
+    <div class="hierarchy-node" @click.stop="activate" :class="{'active': active}">
+        <div v-if="entities.length > 0" @click.stop="expanded=!expanded" class="expander">
+            <span v-if="expanded">▼</span>
+            <span v-else>▶</span>
+        </div>
+        <input v-if="editable" @keypress.enter="disableEditing" type="text" v-model="label">
+        <span v-else class="label">{{ label }}</span>
+        <div v-if="expanded" class="children">
+            <HierarchyNode
+                v-for="entity in entities"
+                :key="entity.id"
+                :entity="entity"
+                :activateMethod="activateMethod"
+                :propLabel="entity.label" />
+        </div>
     </div>
     
 </template>
@@ -16,13 +28,50 @@ import {Entity} from '../../engine/Entity';
 @Component({})
 export default class HierarchyNode extends Vue {
     label: string;
-    nodes: Array<Entity> = [];
+    entities: Array<Entity> = [];
+    active: boolean = false;
+    editable: boolean = false;
+    expanded: boolean = false;
+
+    @Prop()
+    propLabel: string;
 
     @Prop()
     engine: Engine;
 
     @Prop()
-    node: Entity;
+    entity: Entity;
+
+    @Prop()
+    activateMethod: Function
+
+    constructor() {
+        super();
+        this.label = this.propLabel;
+        this.entity.on('entity:added', (entity: Entity, other: Entity) => {
+            this.entities.push(other);
+        });
+    }
+
+    created(){
+        this.$on('node:created', (node: HierarchyNode) => {
+            this.$parent.$emit('node:created', node);
+        })
+        this.$parent.$emit('node:created', this);
+    }
+
+    activate() {
+        this.activateMethod(this);
+    }
+
+    disableEditing() {
+        this.editable = false
+    }
+
+    @Watch('label')
+    onLabelChange() {
+        this.entity.label = this.label;
+    }
 }
 
 
@@ -31,10 +80,20 @@ export default class HierarchyNode extends Vue {
 <style lang="less">
 
 .hierarchy-node {
-    padding-left: 0px;
+    margin-left: 20px;
+    position: relative;
+    
 
-    .hierarchy-node {
-        padding-left: 20px;
+    &.active {
+        > .label {
+            background: #555;
+        }
+    }
+
+    .expander {
+        cursor: pointer;
+        position: absolute;
+        left: -15px;
     }
 }
 
