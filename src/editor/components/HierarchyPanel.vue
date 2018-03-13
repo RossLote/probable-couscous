@@ -1,21 +1,39 @@
 <template>
-  <div>
-      {{tester}}
+  <div class="hierarchy-panel">
+        <CreateEntityButton :engine="engine"/>
+        <HierarchyNode v-for="node in nodes" :key="node.id" :node="node" />
   </div>
 </template>
 
 <script lang="ts">
 
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
+import Engine from '../../engine/Engine';
+import {Entity} from '../../engine/Entity';
+import HierarchyNode from './HierarchyNode.vue';
+import CreateEntityButton from './CreateEntityButton.vue';
 
-@Component({})
+
+@Component({
+    components: {HierarchyNode, CreateEntityButton}
+})
 export default class HierarchyPanel extends Vue {
-    tester: string;
+    nodes: Array<Entity> = [];
+
+    @Prop()
+    engine: Engine;
 
     constructor(){
-        super()
-        this.tester = 'what is the problem'
+        super();
+        const refresh = () => {
+            this.nodes.splice(0);
+            for (const node of this.engine.currentScene.root.getChildren()) {
+                this.nodes.push(node);
+            }
+            setTimeout(refresh, 500);
+        }
+
+        refresh();
     }
 }
 
