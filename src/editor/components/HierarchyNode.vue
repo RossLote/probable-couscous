@@ -1,25 +1,39 @@
 <template>
-    <div class="hierarchy-node" @click.stop="activate" :class="{'active': active}">
+    <div
+        @click.stop="activate"
+        @dragstart="onDragStart"
+        @dragenter.prevent="onDragEnter"
+        @dragover.prevent
+        @dragleave="onDragLeave"
+        @drop="onDrop"
+        :class="{active, dragover}"
+        draggable
+        class="hierarchy-node">
+
         <div v-if="entities.length > 0" @click.stop="expanded=!expanded" class="expander">
             <span v-if="expanded">⊟</span>
             <span v-else>⊞</span>
         </div>
-        <input
-            v-if="editable"
-            @keypress.enter="editable=false"
-            @blur="editable=false"
-            @keydown.esc="cancelEditing"
-            v-model="label"
-            type="text"
-            class="label-input"
-            autofocus>
-        <div v-else @dblclick="enableEditing" class="label">{{ label }}</div>
+        <div class="label">
+            <input
+                v-if="editable"
+                @keypress.enter="editable=false"
+                @blur="editable=false"
+                @keydown.esc="cancelEditing"
+                onFocus="this.setSelectionRange(0, this.value.length)"
+                v-model="label"
+                type="text"
+                class="label-input"
+                autofocus>
+            <div v-else @dblclick="enableEditing">{{ label }}</div>
+        </div>
         <div v-show="expanded" class="children">
             <HierarchyNode
                 v-for="entity in entities"
                 :key="entity.id"
                 :entity="entity"
                 :activateMethod="activateMethod"
+                :refreshMethod="refreshMethod"
                 :propLabel="entity.label" />
         </div>
     </div>
@@ -41,6 +55,7 @@ export default class HierarchyNode extends Vue {
     active: boolean = false;
     editable: boolean = false;
     expanded: boolean = false;
+    dragover: boolean = false;
 
     @Prop()
     propLabel: string;
@@ -53,6 +68,9 @@ export default class HierarchyNode extends Vue {
 
     @Prop()
     activateMethod: Function
+
+    @Prop()
+    refreshMethod: Function
 
     constructor() {
         super();
@@ -72,6 +90,10 @@ export default class HierarchyNode extends Vue {
         this.$parent.$emit('node:created', this);
     }
 
+    mounted() {
+        this.refresh();
+    }
+
     activate() {
         this.activateMethod(this);
     }
@@ -86,6 +108,34 @@ export default class HierarchyNode extends Vue {
 
     deleteChild(child: HierarchyNode) {
         child.entity.forceDestroy();
+    }
+
+    onDragStart(event: DragEvent) {
+        event.dataTransfer.setData("entity_id", this.entity.id)
+    }
+
+    onDragEnter(event: DragEvent) {
+        this.dragover = true;
+    }
+
+    onDragLeave(event: DragEvent) {
+        this.dragover = false;
+    }
+
+    onDrop(event: DragEvent) {
+        let id = event.dataTransfer.getData('entity_id');
+        let droppedEntity = Entity.getByID(id);
+        let receiverEntity = this.entity;
+        receiverEntity.addChild(droppedEntity);
+        this.refreshMethod();
+        this.dragover = false;
+    }
+
+    refresh(){
+        this.entities.splice(0)
+        for (const entity of this.entity.getChildren()) {
+            this.entities.push(entity);
+        }
     }
 
     removeChild(child: HierarchyNode) {
@@ -107,12 +157,6 @@ export default class HierarchyNode extends Vue {
     onLabelChange() {
         this.entity.label = this.label;
     }
-    @Watch('editable')
-    onEditableChange() {
-        if (this.editable) {
-            (<HTMLInputElement>this.$el.querySelector('.label-input')).setSelectionRange(0, this.label.length);
-        }
-    }
 }
 
 
@@ -123,11 +167,41 @@ export default class HierarchyNode extends Vue {
 .hierarchy-node {
     margin-left: 20px;
     position: relative;
-    
+    cursor: pointer;
+    font-size: 18px;
+
+    &.dragover {
+        outline: 2px solid orange;
+    }
 
     &.active {
         > .label {
-            background: #000;
+            background: rgba(0,0,0, 0.5);
+            color: white;
+        }
+    }
+
+    &:hover:not(.active) {
+        > .label {
+            background: rgba(0,0,0, 0.2);
+        }
+    }
+
+    .label-input {
+        padding: 0;
+        padding-left: 2px;
+        margin-left: -2px;
+        border: 0;
+        background: transparent;
+        color: white;
+
+        &:focus, :active {
+            outline: none;
+        }
+
+        &::selection{
+            background: black;
+            color: orange;
         }
     }
 

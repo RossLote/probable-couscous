@@ -23,11 +23,14 @@ export class Entity implements Evented {
 
     private _orderInLayer: number = 0;
     private _renderLayer: Layer|undefined;
+    
+    private static entities: {[key: string]: Entity} = {}
 
     eventCallbacks: {[key: string]: Array<Function>} = {};
 
     constructor(private app: Engine) {
         this.id = uuid();
+        Entity.entities[this.id] = this;
         this.setRenderLayer(app.layerManager.getDefaultLayer());
         this.transform = new Transform(this);
         app.trigger('entity:created', this);
@@ -37,6 +40,10 @@ export class Entity implements Evented {
     on(key: string, callback: Function):any{}
     once(key: string, callback: Function):any{}
     trigger(key: string, ...args: any[]):any{}
+
+    static getByID(id: string): Entity {
+        return Entity.entities[id];
+    }
 
     static buildFromJSON(app: Engine, data: any): Entity {
         let entity = new Entity(app);
@@ -123,10 +130,10 @@ export class Entity implements Evented {
         for (let key in this.components) {
             this.removeComponent(key);
         }
-
+        
+        delete Entity.entities[this.id];
         this.setRenderLayer(undefined);
         this.transform.destroy()
-
         for (let key in this) {
             if (this.hasOwnProperty(key)) {
                 delete this[key];

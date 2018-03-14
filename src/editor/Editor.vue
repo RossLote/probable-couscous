@@ -60,13 +60,13 @@ export default class Editor extends Vue {
 
     .main-view-wrapper {
         flex: 1;
-        background: #555;
+        background: #222;
     }
 
     .hierarchy-panel-wrapper {
         width: 400px;
-        background: #222;
-        color: #eee;
+        background: #555;
+        color: #ccc;
     }
 
 }

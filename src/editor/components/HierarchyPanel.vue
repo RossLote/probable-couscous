@@ -7,6 +7,7 @@
             :key="entity.id"
             :entity="entity"
             :activateMethod="activateNode"
+            :refreshMethod="refresh"
             :propLabel="entity.label" />
   </div>
 </template>
