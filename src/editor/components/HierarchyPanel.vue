@@ -35,11 +35,11 @@ export default class HierarchyPanel extends HierarchyNode {
     }
 
     created(){
-        this.$on('node:created', (node: HierarchyNode) => {
-            if (node.entity.label === NEW_ENTITY_LABEL) {
-                // node.editable = true;
-            }
-        });
+        // this.$on('node:created', (node: HierarchyNode) => {
+        //     if (node.entity.label === NEW_ENTITY_LABEL) {
+        //         node.editable = true;
+        //     }
+        // });
         this.$on('create:entity', () => {
             let entity = this.activeNode.entity.createChild(NEW_ENTITY_LABEL);
             this.activeNode.expanded = true;
@@ -65,7 +65,7 @@ export default class HierarchyPanel extends HierarchyNode {
 <style lang="less">
 
 .hierarchy-panel{
-    padding-bottom: 20px;
+    height: 100%;
 }
 
 </style>
