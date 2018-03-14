@@ -1,6 +1,7 @@
 <template>
   <div class="hierarchy-panel" @click="activateSelf">
-        <CreateEntityButton :engine="engine"/>
+        <button @click.stop="addEntity">Add entity</button>
+        <button @click.stop="deleteEntity" :disabled="entities.length===0">Delete entity</button>
         <HierarchyNode
             v-for="entity in entities"
             :key="entity.id"
@@ -34,28 +35,28 @@ export default class HierarchyPanel extends HierarchyNode {
         this.activeNode = this;
     }
 
-    created(){
-        // this.$on('node:created', (node: HierarchyNode) => {
-        //     if (node.entity.label === NEW_ENTITY_LABEL) {
-        //         node.editable = true;
-        //     }
-        // });
-        this.$on('create:entity', () => {
-            let entity = this.activeNode.entity.createChild(NEW_ENTITY_LABEL);
-            this.activeNode.expanded = true;
-        });
-    }
-
-    activateSelf() {
-        this.activateNode(this);
-    }
-
     activateNode(node: HierarchyNode) {
         if (this.activeNode) {
             this.activeNode.active = false;
             node.active = true;
         }
         this.activeNode = node;
+    }
+
+    activateSelf() {
+        this.activateNode(this);
+    }
+
+    addEntity() {
+        this.activeNode.createChild(NEW_ENTITY_LABEL);
+        this.activeNode.expanded = true;
+    }
+
+    deleteEntity() {
+        if (this.activeNode !== this) {
+            this.activeNode.delete()
+            this.activeNode = this;
+        }
     }
 }
 

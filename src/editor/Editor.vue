@@ -30,6 +30,8 @@ export default class Editor extends Vue {
         this.engine.sceneManager.createBlankScene('default');
         this.engine.sceneManager.loadScene('default');
         this.engine.startGameLoop();
+
+        (<any>window).TESTER = this.engine
         this.title = 'This is a test';
     }
 
@@ -63,7 +65,8 @@ export default class Editor extends Vue {
 
     .hierarchy-panel-wrapper {
         width: 400px;
-        background: #666;
+        background: #222;
+        color: #eee;
     }
 
 }

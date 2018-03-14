@@ -111,9 +111,11 @@ export class Entity implements Evented {
 
     destroy(){
         this.app.registerEntityForDestruction(this);
+        this.trigger('entity:soft-destroy', this);
     }
-
+    
     forceDestroy(){
+        this.trigger('entity:hard-destroy', this);
         for (let i = 0, children = this.getChildren(), n = children.length; i < n; i++) {
             children[i].forceDestroy();
         }
@@ -130,7 +132,6 @@ export class Entity implements Evented {
                 delete this[key];
             }
         }
-        this.trigger('destroyed', this);
     }
 
     getRenderLayer(): Layer {

@@ -1,12 +1,20 @@
 <template>
     <div class="hierarchy-node" @click.stop="activate" :class="{'active': active}">
         <div v-if="entities.length > 0" @click.stop="expanded=!expanded" class="expander">
-            <span v-if="expanded">▼</span>
-            <span v-else>▶</span>
+            <span v-if="expanded">⊟</span>
+            <span v-else>⊞</span>
         </div>
-        <input v-if="editable" @keypress.enter="disableEditing" type="text" v-model="label">
-        <span v-else class="label">{{ label }}</span>
-        <div v-if="expanded" class="children">
+        <input
+            v-if="editable"
+            @keypress.enter="editable=false"
+            @blur="editable=false"
+            @keydown.esc="cancelEditing"
+            v-model="label"
+            type="text"
+            class="label-input"
+            autofocus>
+        <div v-else @dblclick="enableEditing" class="label">{{ label }}</div>
+        <div v-show="expanded" class="children">
             <HierarchyNode
                 v-for="entity in entities"
                 :key="entity.id"
@@ -28,6 +36,7 @@ import {Entity} from '../../engine/Entity';
 @Component({})
 export default class HierarchyNode extends Vue {
     label: string;
+    tmpLabel: string;
     entities: Array<Entity> = [];
     active: boolean = false;
     editable: boolean = false;
@@ -51,6 +60,9 @@ export default class HierarchyNode extends Vue {
         this.entity.on('entity:added', (entity: Entity, other: Entity) => {
             this.entities.push(other);
         });
+        this.entity.on('entity:hard-destroy', (entity: Entity) => {
+            (<HierarchyNode>this.$parent).removeChild(this);
+        });
     }
 
     created(){
@@ -64,13 +76,42 @@ export default class HierarchyNode extends Vue {
         this.activateMethod(this);
     }
 
-    disableEditing() {
-        this.editable = false
+    createChild(label: string) {
+        this.entity.createChild(label);
+    }
+
+    delete() {
+        (<HierarchyNode>this.$parent).deleteChild(this);
+    }
+
+    deleteChild(child: HierarchyNode) {
+        child.entity.forceDestroy();
+    }
+
+    removeChild(child: HierarchyNode) {
+        let index = this.entities.indexOf(child.entity);
+        this.entities.splice(index, 1);
+    }
+
+    enableEditing() {
+        this.tmpLabel = this.label;
+        this.editable = true;
+    }
+
+    cancelEditing() {
+        this.label = this.tmpLabel;
+        this.editable = false;
     }
 
     @Watch('label')
     onLabelChange() {
         this.entity.label = this.label;
+    }
+    @Watch('editable')
+    onEditableChange() {
+        if (this.editable) {
+            (<HTMLInputElement>this.$el.querySelector('.label-input')).setSelectionRange(0, this.label.length);
+        }
     }
 }
 
@@ -86,12 +127,13 @@ export default class HierarchyNode extends Vue {
 
     &.active {
         > .label {
-            background: #555;
+            background: #000;
         }
     }
 
     .expander {
         cursor: pointer;
+        user-select: none;
         position: absolute;
         left: -15px;
     }
