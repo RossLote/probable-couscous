@@ -57,10 +57,8 @@ export class Breakout extends Scene {
         }
 
         paddle.transform.setLocalPosition([400, 550])
-        console.log(JSON.stringify(this.root));
     }
 
     teardown = () => {
-        // console.log(JSON.stringify(this.root));
     }
 }

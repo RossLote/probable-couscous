@@ -109,7 +109,5 @@ export class Tilemap extends Scene {
             data: detailsUpper,
             sortOrder: 'bottomLeft'
         }).setRenderLayer(this.app.layerManager.getLayer('details'));
-
-        console.log(JSON.stringify(this.root));
     }
 }

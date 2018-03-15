@@ -14,6 +14,10 @@ export class Scene {
         this.root = new Entity(app);
     }
 
+    getRootEntity() {
+        return this.root;
+    }
+
     createEntity = () => {
         return this.root.createChild();
     }

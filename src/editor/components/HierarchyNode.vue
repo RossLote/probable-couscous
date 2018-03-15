@@ -1,11 +1,11 @@
 <template>
     <div
         @click.stop="activate"
-        @dragstart="onDragStart"
-        @dragenter.prevent="onDragEnter"
-        @dragover.prevent
-        @dragleave="onDragLeave"
-        @drop="onDrop"
+        @dragstart.stop="onDragStart"
+        @dragenter.prevent.stop="onDragEnter"
+        @dragover.prevent.stop
+        @dragleave.prevent.stop="onDragLeave"
+        @drop.prevent.stop="onDrop"
         :class="{active, dragover}"
         draggable
         class="hierarchy-node">
@@ -25,7 +25,7 @@
                 type="text"
                 class="label-input"
                 autofocus>
-            <div v-else @dblclick="enableEditing">{{ label }}</div>
+            <div v-else @dblclick.stop="enableEditing">{{ label }}</div>
         </div>
         <div v-show="expanded" class="children">
             <HierarchyNode
@@ -49,8 +49,8 @@ import {Entity} from '../../engine/Entity';
 
 @Component({})
 export default class HierarchyNode extends Vue {
-    label: string;
-    tmpLabel: string;
+    label: string = '';
+    tmpLabel: string = '';
     entities: Array<Entity> = [];
     active: boolean = false;
     editable: boolean = false;
@@ -84,6 +84,10 @@ export default class HierarchyNode extends Vue {
     }
 
     created(){
+        this.$parent.$on('refresh', () => {
+            this.refresh();
+            this.$emit('refresh');
+        });
         this.$on('node:created', (node: HierarchyNode) => {
             this.$parent.$emit('node:created', node);
         })
@@ -111,7 +115,7 @@ export default class HierarchyNode extends Vue {
     }
 
     onDragStart(event: DragEvent) {
-        event.dataTransfer.setData("entity_id", this.entity.id)
+        event.dataTransfer.setData("entity_id", this.entity.id);
     }
 
     onDragEnter(event: DragEvent) {
@@ -171,7 +175,9 @@ export default class HierarchyNode extends Vue {
     font-size: 18px;
 
     &.dragover {
-        outline: 2px solid orange;
+        > .label {
+            outline: 2px solid orange;
+        }
     }
 
     &.active {
@@ -181,8 +187,8 @@ export default class HierarchyNode extends Vue {
         }
     }
 
-    &:hover:not(.active) {
-        > .label {
+    &:not(.active) {
+        > .label:hover {
             background: rgba(0,0,0, 0.2);
         }
     }

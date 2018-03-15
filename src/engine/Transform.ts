@@ -69,6 +69,12 @@ export class Transform {
     // transform a child of world coordinates
     set parent(value: Transform|undefined) {
         // remove this from the previous parent
+        if (value === this) {
+            throw new Error("Cannot assign parent to self")
+        }
+        if (value && value.parent === this) {
+            throw new Error("Cannot have looped parentage")
+        }
         if (this._parent) {
             let index = this._parent.children.indexOf(this);
             if (index > -1) {

@@ -4,7 +4,7 @@
 
         </div>
         <div class="hierarchy-panel-wrapper">
-            <HierarchyPanel :engine="engine" :entity="engine.currentScene.root"/>
+            <HierarchyPanel :engine="engine" :scene="engine.currentScene" :root="engine.currentScene.getRootEntity()"/>
         </div>
     </div>
 </template>
