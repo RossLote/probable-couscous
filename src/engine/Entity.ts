@@ -106,6 +106,10 @@ export class Entity implements Evented {
         return undefined;
     }
 
+    getComponents(): {[key: string]: Component} {
+        return this.components;
+    }
+
     getChildren(): Array<Entity> {
         let entities: Array<Entity> = [];
         let childTransforms = this.transform.children;

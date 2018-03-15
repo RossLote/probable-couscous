@@ -103,7 +103,9 @@ export default class HierarchyNode extends Vue {
     }
 
     createChild(label: string) {
-        this.entity.createChild(label);
+        let e = this.entity.createChild(label);
+        e.addComponent('circlecollider', {radius: 20});
+        e.addComponent('ridgedbody', {});
     }
 
     delete() {

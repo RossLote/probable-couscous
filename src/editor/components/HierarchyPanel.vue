@@ -60,6 +60,7 @@ export default class HierarchyPanel extends Vue {
         }
         node.active = true;
         this.activeNode = node;
+        this.$parent.$emit('entity:selected', node.entity);
     }
 
     refresh() {

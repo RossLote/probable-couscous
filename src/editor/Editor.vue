@@ -6,6 +6,9 @@
         <div class="hierarchy-panel-wrapper">
             <HierarchyPanel :engine="engine" :scene="engine.currentScene" :root="engine.currentScene.getRootEntity()"/>
         </div>
+        <div class="inspector-panel-wrapper">
+            <InspectorPanel/>
+        </div>
     </div>
 </template>
 
@@ -15,10 +18,11 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import Engine from '../engine/Engine';
 import HierarchyPanel from './components/HierarchyPanel.vue';
+import InspectorPanel from './components/InspectorPanel.vue';
 
 
 @Component({
-    components: {HierarchyPanel}
+    components: {HierarchyPanel, InspectorPanel}
 })
 export default class Editor extends Vue {
     title: string;
@@ -64,8 +68,14 @@ export default class Editor extends Vue {
     }
 
     .hierarchy-panel-wrapper {
-        width: 400px;
+        width: 300px;
         background: #555;
+        color: #ccc;
+    }
+    
+    .inspector-panel-wrapper {
+        width: 300px;
+        background: #666;
         color: #ccc;
     }
 
