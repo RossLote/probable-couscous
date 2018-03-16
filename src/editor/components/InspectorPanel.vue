@@ -1,10 +1,8 @@
 <template>
-    <div class="inspector">
-        <ul>
-            <li v-for="(component, name) in entityComponents" :key="name">
-                {{ name }}
-            </li>
-        </ul>
+    <div class="inspector-panel">
+        <div v-if="entityWrapper.entity">
+            <TransformComponentPanel :transform="entityWrapper.entity.transform" :key="entityWrapper.entity.id"/>
+        </div>
     </div>
 </template>
 
@@ -12,20 +10,23 @@
 <script lang="ts">
 
 import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
+import TransformComponentPanel from './entity-component-panels/TransformComponentPanel.vue';
 import {Entity} from '../../engine/Entity';
 import {Component as EntityComponent} from '../../engine/Component';
 
 
-@Component({})
+@Component({
+    components: {TransformComponentPanel}
+})
 export default class InspectorPanel extends Vue {
 
-    entity: Entity;
+    entityWrapper: {entity: Entity | undefined} = {entity: undefined}; 
     entityComponents: {[key: string]: EntityComponent} = {};
 
     created() {
         this.$parent.$on('entity:selected', (entity: Entity) => {
-            this.entity = entity;
-            this.entityComponents = this.entity.getComponents();
+            this.entityWrapper.entity = entity;
+            this.entityComponents = entity.getComponents();
         });
     }
 
@@ -34,7 +35,7 @@ export default class InspectorPanel extends Vue {
 </script>
 
 
-<style lang="less">
+<style lang="less" scoped>
 
 .inspector-panel{
     height: 100%;

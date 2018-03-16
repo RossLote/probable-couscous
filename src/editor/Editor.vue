@@ -64,7 +64,7 @@ export default class Editor extends Vue {
 
     .main-view-wrapper {
         flex: 1;
-        background: #222;
+        background: #999;
     }
 
     .hierarchy-panel-wrapper {
@@ -78,7 +78,6 @@ export default class Editor extends Vue {
         background: #666;
         color: #ccc;
     }
-
 }
 
 </style>
