@@ -33,6 +33,7 @@ export default class Engine {
     private lastFrameTime: number = 0;
     private renderer: Renderer;
     private poolOfDestruction: Array<Entity> = [];
+    renderColliders: boolean = false;
     assetsRegistry: AssetRegistry;
     scriptRegistry: ScriptRegistry;
     spriteRegistry: SpriteRegistry;

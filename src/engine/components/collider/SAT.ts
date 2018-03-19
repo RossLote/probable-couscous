@@ -15,13 +15,14 @@ export interface ICollider {
 // is given, the circle will be at `(0,0)`. If no radius is provided, the circle will
 // have a radius of `0`.
 export class Circle implements ICollider {
+    scale: Vector2 = new Vector2(1, 1);
 
     /**
      * @param {Vector=} position A vector representing the position of the center of the circle
      * @param {?number=} radius The radius of the circle
      * @constructor
      */
-    constructor(public position: Vector2 = Vector2.ZERO, public radius: number = 0) {}
+    constructor(public position: Vector2 = Vector2.ZERO, public _radius: number = 0) {}
 
     // Compute the axis-aligned bounding box (AABB) of this Circle.
     //
@@ -34,11 +35,21 @@ export class Circle implements ICollider {
          let corner = this.position.clone().subtract(new Vector2(radius, radius));
          return new Box(corner, radius*2, radius*2).toPolygon();
     };
+
+    get radius(): number {
+        return this._radius * this.scale.x;
+    }
+
+    set radius(value: number) {
+        this._radius = value;
+    }
+
     setAngle(angle: number): Circle {
         return this;
     }
-
+    
     setScale(scale: Vector2): Circle {
+        this.scale = scale;
         return this;
     }
 }
@@ -335,7 +346,10 @@ export class Box implements ICollider {
      * @param {?number=} height The height of the box.
      * @constructor
      */
-    constructor(public position: Vector2 = Vector2.ZERO, public width: number = 0, public height: number = 0) {}
+    private scale: Vector2 = Vector2.ONE;
+    private angle: number = 0;
+    
+    constructor(public position: Vector2 = Vector2.ZERO, public _width: number = 0, public _height: number = 0) {}
     // Returns a polygon whose edges are the same as this box.
     /**
      * @return {Polygon} A new Polygon that represents this box.
@@ -344,7 +358,7 @@ export class Box implements ICollider {
         let pos = this.position;
         let w = this.width;
         let h = this.height;
-        return new Polygon(
+        let polygon = new Polygon(
             new Vector2(pos.x, pos.y),
             [
                 new Vector2,
@@ -353,13 +367,34 @@ export class Box implements ICollider {
                 new Vector2(0,h)
             ]
         );
+        polygon.setScale(this.scale)
+        polygon.setAngle(this.angle)
+        return polygon;
     };
 
+    get width(): number {
+        return this._width * this.scale.x;
+    }
+
+    set width(value: number) {
+        this._width = value;
+    }
+
+    get height(): number {
+        return this._height * this.scale.y;
+    }
+
+    set height(value: number) {
+        this._height = value;
+    }
+
     setAngle(angle: number): Box {
+        this.angle = angle;
         return this;
     }
 
     setScale(scale: Vector2): Box {
+        this.scale = scale;
         return this;
     }
 }

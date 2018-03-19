@@ -31,6 +31,7 @@ export default class Editor extends Vue {
     constructor() {
         super();
         this.engine = new Engine()
+        this.engine.renderColliders = true;
         this.engine.sceneManager.createBlankScene('default');
         this.engine.sceneManager.loadScene('default');
         this.engine.startGameLoop();

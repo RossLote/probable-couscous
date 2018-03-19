@@ -14,6 +14,8 @@
 | Events/Triggers                                        |      ✓ |
 | Collision                                              |      ✓ |
 | Ridged bodies                                          |      ✓ |
+| Fix scale/angle for colliders                          |        |
+| Negative rotation acting positive                      |        |
 | Build from JSON                                        |        |
 | Script import                                          |        |
 | Sound                                                  |        |

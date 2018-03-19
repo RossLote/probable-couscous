@@ -37,15 +37,14 @@ export class Renderer {
         context.translate(position.x, position.y);
         context.beginPath();
         context.arc(0, 0, collider.radius, 0, 2 * Math.PI);
-        context.fill();
+        context.stroke();
     }
 
     renderPolygonCollider(context: CanvasRenderingContext2D, collider: Polygon) {
         let points = collider.points;
-        let position = collider.position
-        let scale = collider.scale
+        let position = collider.position;
+        let scale = collider.scale;
         context.translate(position.x, position.y);
-        context.fillStyle = 'red';
         context.rotate(collider.angle);
         context.scale(scale.x, scale.y);
         context.beginPath();
@@ -54,7 +53,7 @@ export class Renderer {
             context.lineTo(points[i].x, points[i].y);
         }
         context.closePath();
-        context.fill();
+        context.stroke();
     }
 
     renderCollider(context: CanvasRenderingContext2D, dt: number, entity: Entity, component: any) {
@@ -112,7 +111,9 @@ export class Renderer {
         tilemap && this.renderTileMap(context, dt, entity, tilemap);
         sprite && this.renderSprite(context, dt, entity, sprite);
 
-        context.setTransform(1, 0, 0, 1, 0, 0);
-        collider && this.renderCollider(context, dt, entity, collider);
+        if (this.app.renderColliders) {
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            collider && this.renderCollider(context, dt, entity, collider);
+        }
     }
 }
