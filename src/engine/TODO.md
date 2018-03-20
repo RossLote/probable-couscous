@@ -15,7 +15,8 @@
 | Collision                                              |      ✓ |
 | Ridged bodies                                          |      ✓ |
 | Fix scale/angle for colliders                          |        |
-| Negative rotation acting positive                      |        |
+| Negative rotation acting positive                      |      ✓ |
+| Offset for colliders                                   |        |
 | Build from JSON                                        |        |
 | Script import                                          |        |
 | Sound                                                  |        |

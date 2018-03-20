@@ -36,7 +36,7 @@ export class Renderer {
         let position = collider.position
         context.translate(position.x, position.y);
         context.beginPath();
-        context.arc(0, 0, collider.radius, 0, 2 * Math.PI);
+        context.arc(0, 0, collider.calculatedRadius, 0, 2 * Math.PI);
         context.stroke();
     }
 

@@ -22,7 +22,7 @@ export class Circle implements ICollider {
      * @param {?number=} radius The radius of the circle
      * @constructor
      */
-    constructor(public position: Vector2 = Vector2.ZERO, public _radius: number = 0) {}
+    constructor(public position: Vector2 = Vector2.ZERO, public radius: number = 0) {}
 
     // Compute the axis-aligned bounding box (AABB) of this Circle.
     //
@@ -31,17 +31,14 @@ export class Circle implements ICollider {
      * @return {Polygon} The AABB
      */
     getAABB() {
-         let radius = this.radius;
-         let corner = this.position.clone().subtract(new Vector2(radius, radius));
-         return new Box(corner, radius*2, radius*2).toPolygon();
+        let radius = this.calculatedRadius;
+        let corner = this.position.clone().subtract(new Vector2(radius, radius));
+        return new Box(corner, radius*2, radius*2).toPolygon();
     };
 
-    get radius(): number {
-        return this._radius * this.scale.x;
-    }
-
-    set radius(value: number) {
-        this._radius = value;
+    get calculatedRadius(): number {
+        let d = this.scale.data
+        return this.radius * Math.max(d[0], d[1]);
     }
 
     setAngle(angle: number): Circle {
@@ -690,7 +687,7 @@ export function testCircleCircle(a: Circle, b: Circle, response: Response): bool
     // Check if the distance between the centers of the two
     // circles is greater than their combined radius.
     let differenceV = (T_VECTORS.pop() || new Vector2).copy(b.position).subtract(a.position);
-    let totalRadius = a.radius + b.radius;
+    let totalRadius = a.calculatedRadius + b.calculatedRadius;
     let totalRadiusSq = totalRadius * totalRadius;
     let distanceSq = differenceV.lengthSquared();
     // If the distance is bigger than the combined radius, they don't intersect.
@@ -706,8 +703,8 @@ export function testCircleCircle(a: Circle, b: Circle, response: Response): bool
         response.overlap = totalRadius - dist;
         response.overlapN.copy(differenceV.normalize());
         response.overlapV.copy(differenceV).scale(response.overlap);
-        response.aInB= a.radius <= b.radius && dist <= b.radius - a.radius;
-        response.bInA = b.radius <= a.radius && dist <= a.radius - b.radius;
+        response.aInB= a.calculatedRadius <= b.calculatedRadius && dist <= b.calculatedRadius - a.calculatedRadius;
+        response.bInA = b.calculatedRadius <= a.calculatedRadius && dist <= a.calculatedRadius - b.calculatedRadius;
     }
     T_VECTORS.push(differenceV);
     return true;
@@ -724,7 +721,7 @@ export function testCircleCircle(a: Circle, b: Circle, response: Response): bool
 export function testPolygonCircle(polygon: Polygon, circle: Circle, response: Response): boolean {
     // Get the position of the circle relative to the polygon.
     let circlePos = (T_VECTORS.pop() || new Vector2).copy(circle.position).subtract(polygon.position);
-    let radius = circle.radius;
+    let radius = circle.calculatedRadius;
     let radius2 = radius * radius;
     let points = polygon.getPoints();
     let edges = polygon.getEdges();

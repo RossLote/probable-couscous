@@ -203,7 +203,6 @@ export class Transform {
 	}
 
 	setLocalRotation(rotation: number):Transform{
-        console.log(rotation)
 		if (rotation !== this.localRotation) {
 			this.localRotation = rotation;
 			this.setDirty();

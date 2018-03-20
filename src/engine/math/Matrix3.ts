@@ -116,7 +116,7 @@ export class Matrix3 {
         d[3] /= scalex;
         d[1] /= scaley;
         d[4] /= scaley;
-        let angle = Math.acos(d[0])
+        let angle = Math.atan2(d[3], d[0]);
         return {
             position: position,
             scale: new Vector2(scalex, scaley),

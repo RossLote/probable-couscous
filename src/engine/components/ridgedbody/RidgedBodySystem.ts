@@ -67,9 +67,10 @@ export class RidgedBodySystem extends System {
                 ridgedbodyA.entity.transform.translate(velocity.scale(dt));
                 dynamicBodies.push(ridgedbodyA);
             }
-            collider.position = transform.getPosition();
-            collider.setAngle(transform.getRotation());
-            collider.setScale(transform.getScale());
+            let transforms = transform.getWorldTransform().decompose();
+            collider.position = transforms.position;
+            collider.setAngle(transforms.rotation);
+            collider.setScale(transforms.scale);
         }
 
         let m = dynamicBodies.length;
