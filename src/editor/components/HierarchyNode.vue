@@ -2,8 +2,9 @@
     <div
         @click.stop="activate"
         @dragstart.stop="onDragStart"
+        @dragend.stop="onDragEnd"
         @dragenter.prevent.stop="onDragEnter"
-        @dragover.prevent.stop
+        @dragover="onDragOver"
         @dragleave.prevent.stop="onDragLeave"
         @drop.prevent.stop="onDrop"
         :class="{active, dragover}"
@@ -25,7 +26,7 @@
                 type="text"
                 class="label-input"
                 autofocus>
-            <div v-else @dblclick.stop="enableEditing">{{ label }}</div>
+            <div v-else @dblclick.stop="enableEditing" class="main-label">{{ label }}</div>
         </div>
         <div v-show="expanded" class="children">
             <HierarchyNode
@@ -56,6 +57,7 @@ export default class HierarchyNode extends Vue {
     editable: boolean = false;
     expanded: boolean = false;
     dragover: boolean = false;
+    dragging: boolean = false;
 
     @Prop()
     propLabel: string;
@@ -104,7 +106,7 @@ export default class HierarchyNode extends Vue {
 
     createChild(label: string) {
         let e = this.entity.createChild(label);
-        e.addComponent('boxcollider', {width: 20, height: 20});
+        e.addComponent('circlecollider', {radius: 20});
         e.addComponent('ridgedbody', {});
     }
 
@@ -117,11 +119,27 @@ export default class HierarchyNode extends Vue {
     }
 
     onDragStart(event: DragEvent) {
+        this.dragging = true;
         event.dataTransfer.setData("entity_id", this.entity.id);
     }
 
+    onDragEnd(event: DragEvent) {
+        this.dragging = false;
+    }
+
     onDragEnter(event: DragEvent) {
-        this.dragover = true;
+        if (event.dataTransfer.types.indexOf('entity_id') > -1) {
+            if(!this.dragging) {
+                this.dragover = true;
+            }
+        }
+    }
+
+    onDragOver(event: DragEvent) {
+        if (event.dataTransfer.types.indexOf('entity_id') > -1) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
     }
 
     onDragLeave(event: DragEvent) {
@@ -129,12 +147,14 @@ export default class HierarchyNode extends Vue {
     }
 
     onDrop(event: DragEvent) {
-        let id = event.dataTransfer.getData('entity_id');
-        let droppedEntity = Entity.getByID(id);
-        let receiverEntity = this.entity;
-        receiverEntity.addChild(droppedEntity);
-        this.refreshMethod();
-        this.dragover = false;
+        if (!this.dragging) {
+            let id = event.dataTransfer.getData('entity_id');
+            let droppedEntity = Entity.getByID(id);
+            let receiverEntity = this.entity;
+            receiverEntity.addChild(droppedEntity);
+            this.refreshMethod();
+            this.dragover = false;
+        }
     }
 
     refresh(){
