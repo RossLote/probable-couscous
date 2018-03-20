@@ -2,10 +2,10 @@
     <tr>
         <th>{{ label }}</th>
         <td>
-            <input type="number" v-model="x">
+            <input type="number" :step="step" v-model="x">
         </td>
         <td>
-            <input type="number" v-model="y">
+            <input type="number" :step="step" v-model="y">
         </td>
     </tr>
 </template>
@@ -33,6 +33,9 @@ export default class VectorEditor extends Vue {
     @Prop()
     setter: Function;
 
+    @Prop()
+    step: number;
+
     mounted() {
         this.x = this.vector.x;
         this.y = this.vector.y;
@@ -56,8 +59,8 @@ export default class VectorEditor extends Vue {
 
     @Watch('vector')
     onDataChange(newValue: Vector2, oldValue: Vector2) {
-        this.x = newValue.x;
-        this.y = newValue.y;
+        this.x = parseFloat(newValue.x.toFixed(2));
+        this.y = parseFloat(newValue.y.toFixed(2));
     }
 }
 
