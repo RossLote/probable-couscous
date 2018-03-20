@@ -1,6 +1,6 @@
 <template>
     <tr>
-        <th>{{ label }}</th>
+        <th><slot/></th>
         <td>
             <input type="number" :step="step" v-model="x">
         </td>
@@ -23,9 +23,6 @@ export default class VectorEditor extends Vue {
     y: number = 0;
 
     settingValue = false;
-
-    @Prop()
-    label: string;
 
     @Prop()
     vector: Vector2;

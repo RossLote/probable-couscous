@@ -2,7 +2,7 @@
     <div class="circle-collider-component-panel">
         <h5>Circle collider</h5>
         <table>
-            <ValueEditor :setter="setRadius" :label="'Radius'" :value="collider.radius" />
+            <ValueEditor :setter="setRadius" :value="collider.radius">Radius</ValueEditor>
         </table>
     </div>
 </template>

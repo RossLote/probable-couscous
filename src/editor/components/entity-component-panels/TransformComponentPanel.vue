@@ -2,9 +2,9 @@
     <div class="transform-component-panel">
         <h5>Transform</h5>
         <table>
-            <VectorEditor :vector="transform.localPosition" :label="'Position'" :setter="setPosition"/>
-            <VectorEditor :vector="transform.localScale" :label="'Scale'" :setter="setScale" :step="0.1"/>
-            <ValueEditor :value="transform.localRotation" :label="'Angle'" :setter="setRotation" :step="0.01"/>
+            <VectorEditor :vector="transform.localPosition" :setter="setPosition">Position</VectorEditor>
+            <VectorEditor :vector="transform.localScale" :setter="setScale" :step="0.1">Scale</VectorEditor>
+            <ValueEditor :value="transform.localRotation" :setter="setRotation" :step="0.01">Angle</ValueEditor>
         </table>
     </div>
 </template>
