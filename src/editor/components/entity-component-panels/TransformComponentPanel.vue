@@ -2,9 +2,9 @@
     <div class="transform-component-panel">
         <h5>Transform</h5>
         <table>
-            <VectorEditor :vector="transform.localPosition" :setter="setPosition">Position</VectorEditor>
-            <VectorEditor :vector="transform.localScale" :setter="setScale" :step="0.1">Scale</VectorEditor>
-            <ValueEditor :value="transform.localRotation" :setter="setRotation" :step="0.01">Angle</ValueEditor>
+            <VectorInput :value="transform.localPosition" @input="setPosition">Position</VectorInput>
+            <VectorInput :value="transform.localScale" @input="setScale" :step="0.1">Scale</VectorInput>
+            <ValueInput :value="transform.localRotation" @input="setRotation" :step="0.01">Angle</ValueInput>
         </table>
     </div>
 </template>
@@ -13,15 +13,15 @@
 <script lang="ts">
 
 import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
-import VectorEditor from '../../utils/VectorEditor.vue'
-import ValueEditor from '../../utils/ValueEditor.vue'
+import VectorInput from '../../utils/VectorInput.vue'
+import ValueInput from '../../utils/ValueInput.vue'
 import { Entity } from '../../../engine/Entity';
 import { Transform } from '../../../engine/Transform';
 import { Vector2 } from '../../../engine/math/Vector2';
 
 
 @Component({
-    components: {VectorEditor, ValueEditor}
+    components: {VectorInput, ValueInput}
 })
 export default class TransformComponentPanel extends Vue {
 

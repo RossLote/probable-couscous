@@ -2,7 +2,7 @@
     <tr>
         <th><slot/></th>
         <td colspan="2">
-            <input type="number" v-model="x" :step="step">
+            <input type="number" v-model="val" :step="step">
         </td>
     </tr>
 </template>
@@ -13,11 +13,9 @@ import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-p
 
 
 @Component({})
-export default class ValueEditor extends Vue {
+export default class ValueInput extends Vue {
 
-    x: number = 0;
-
-    settingValue = false;
+    val: number = 0;
 
     @Prop()
     value: number;
@@ -25,21 +23,18 @@ export default class ValueEditor extends Vue {
     @Prop()
     step: number;
 
-    @Prop()
-    setter: Function;
-
-    mounted() {
-        this.x = this.value
+    created() {
+        this.val = this.value;
     }
 
-    @Watch('x')
+    @Watch('val')
     onValChange(newValue: string) {
-        this.setter(parseFloat(newValue));
+        this.$emit('input', this.val);
     }
 
     @Watch('value')
     onDataChange(newValue: number, oldValue: number) {
-        this.x = newValue;
+        this.val = newValue;
     }
 }
 

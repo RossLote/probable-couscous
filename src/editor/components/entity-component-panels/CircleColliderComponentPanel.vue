@@ -2,7 +2,7 @@
     <div class="circle-collider-component-panel">
         <h5>Circle collider</h5>
         <table>
-            <ValueEditor :setter="setRadius" :value="collider.radius">Radius</ValueEditor>
+            <ValueInput :value="collider.radius" @input="setRadius">Radius</ValueInput>
         </table>
     </div>
 </template>
@@ -11,8 +11,8 @@
 <script lang="ts">
 
 import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
-import VectorEditor from '../../utils/VectorEditor.vue'
-import ValueEditor from '../../utils/ValueEditor.vue'
+import VectorInput from '../../utils/VectorInput.vue'
+import ValueInput from '../../utils/ValueInput.vue'
 import { Entity } from '../../../engine/Entity';
 import { CircleColliderComponent } from '../../../engine/components/collider/CircleColliderComponent';
 import { Circle } from '../../../engine/components/collider/SAT';
@@ -20,7 +20,7 @@ import { Vector2 } from '../../../engine/math/Vector2';
 
 
 @Component({
-    components: {VectorEditor, ValueEditor}
+    components: {VectorInput, ValueInput}
 })
 export default class CircleColliderComponentPanel extends Vue {
 
