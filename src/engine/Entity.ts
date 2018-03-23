@@ -89,6 +89,7 @@ export class Entity implements Evented {
                 this.componentAliases.add(system.name);
             }
         }
+        this.trigger('entity:component:added', component);
         return this;
     }
 

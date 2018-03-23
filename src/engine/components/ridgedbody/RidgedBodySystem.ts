@@ -61,16 +61,24 @@ export class RidgedBodySystem extends System {
         for (i = 0; i < n; i++) {
             ridgedbodyA = ridgedBodyComponents[i];
             let collider = ridgedbodyA.collider;
+            if (!collider) {
+                let colliderComponent = (<IColliderComponent>ridgedbodyA.entity.getComponent('collider'));
+                if (colliderComponent) {
+                    collider = ridgedbodyA.collider = colliderComponent.collider;
+                }
+            }
             let transform = ridgedbodyA.entity.transform;
             if (ridgedbodyA.type !== RidgedBodyType.static) {
                 let velocity = ridgedbodyA.velocity.clone();
                 ridgedbodyA.entity.transform.translate(velocity.scale(dt));
                 dynamicBodies.push(ridgedbodyA);
             }
-            let transforms = transform.getWorldTransform().decompose();
-            collider.position = transforms.position;
-            collider.setAngle(transforms.rotation);
-            collider.setScale(transforms.scale);
+            if (collider) {   
+                let transforms = transform.getWorldTransform().decompose();
+                collider.position = transforms.position;
+                collider.setAngle(transforms.rotation);
+                collider.setScale(transforms.scale);
+            }
         }
 
         let m = dynamicBodies.length;
@@ -81,16 +89,17 @@ export class RidgedBodySystem extends System {
             let entityA = ridgedbodyA.entity;
             let colliderA = ridgedbodyA.collider;
 
-            if (!colliderA) {
-                let colliderComp = (<IColliderComponent>entityA.getComponent('collider'));
-                if (!colliderComp) {
-                    continue;
-                }
-                colliderA = ridgedbodyA.collider = (<IColliderComponent>entityA.getComponent('collider')).collider;
-                if (!colliderA) {
-                    continue;
-                }
-            }
+            // if (!colliderA) {
+            //     let colliderComp = (<IColliderComponent>entityA.getComponent('collider'));
+            //     if (!colliderComp) {
+            //         continue;
+            //     }
+            //     colliderA = ridgedbodyA.collider = (<IColliderComponent>entityA.getComponent('collider')).collider;
+            //     console.log()
+            //     if (!colliderA) {
+            //         continue;
+            //     }
+            // }
 
             for (let j = 0; j < n; j++) {
 

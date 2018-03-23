@@ -107,7 +107,7 @@ export default class HierarchyNode extends Vue {
 
     createChild(label: string) {
         let e = this.entity.createChild(label);
-        e.addComponent('polygoncollider', {points: []});
+        // e.addComponent('polygoncollider', {points: []});
         e.addComponent('ridgedbody', {});
     }
 
