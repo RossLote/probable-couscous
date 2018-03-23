@@ -1,5 +1,5 @@
 <template>
-    <div class="circle-collider-component-panel">
+    <div class="">
         <h5>Circle collider</h5>
         <table>
             <ValueInput :value="collider.radius" @input="setRadius">Radius</ValueInput>
@@ -45,8 +45,5 @@ export default class CircleCollider extends Vue {
 
 <style lang="less" scoped>
 
-.transform-component-panel{
-
-}
 
 </style>

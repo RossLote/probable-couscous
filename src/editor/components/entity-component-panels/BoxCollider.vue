@@ -1,5 +1,5 @@
 <template>
-    <div class="circle-collider-component-panel">
+    <div class="">
         <h5>Box collider</h5>
         <table>
             <VectorInput :value="collider._size" @input="setSize">Size</VectorInput>
@@ -43,9 +43,5 @@ export default class BoxCollider extends Vue {
 
 
 <style lang="less" scoped>
-
-.transform-component-panel{
-
-}
 
 </style>

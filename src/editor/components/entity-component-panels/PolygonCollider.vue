@@ -1,5 +1,5 @@
 <template>
-    <div class="circle-collider-component-panel">
+    <div class="">
         <h5>Polygon collider</h5>
         <table>
             <VectorInput v-for="(point, index) in collider.points" :key="index" :value="point" @input="(vector) => {setPoint(point, vector)}"><span v-if="index === 0">Points</span></VectorInput>
@@ -55,8 +55,5 @@ export default class PolygonCollider extends Vue {
 
 <style lang="less" scoped>
 
-.transform-component-panel{
-
-}
 
 </style>

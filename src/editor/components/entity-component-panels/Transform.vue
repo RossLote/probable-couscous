@@ -46,8 +46,4 @@ export default class Transform extends Vue {
 
 <style lang="less">
 
-.transform-component-panel{
-
-}
-
 </style>
