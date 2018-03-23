@@ -16,17 +16,17 @@ import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-p
 import VectorInput from '../../utils/VectorInput.vue'
 import ValueInput from '../../utils/ValueInput.vue'
 import { Entity } from '../../../engine/Entity';
-import { Transform } from '../../../engine/Transform';
+import { Transform as TransformComponent } from '../../../engine/Transform';
 import { Vector2 } from '../../../engine/math/Vector2';
 
 
 @Component({
     components: {VectorInput, ValueInput}
 })
-export default class TransformComponentPanel extends Vue {
+export default class Transform extends Vue {
 
     @Prop()
-    transform: Transform;
+    transform: TransformComponent;
 
     setPosition(vector: Vector2) {
         this.transform.setLocalPosition(vector);

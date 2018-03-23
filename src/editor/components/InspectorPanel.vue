@@ -1,13 +1,13 @@
 <template>
     <div class="inspector-panel">
         <div v-if="entityWrapper.entity">
-            <TransformComponentPanel :transform="entityWrapper.entity.transform" :key="entityWrapper.entity.id+'-transform'"/>
+            <Transform :transform="entityWrapper.entity.transform" :key="entityWrapper.entity.id+'-transform'"/>
             <hr>
-            <CircleColliderComponentPanel v-if="'circlecollider' in entityWrapper.components" :component="entityWrapper.components['circlecollider']" :key="entityWrapper.entity.id+'-circlecollider'"/>
+            <CircleCollider v-if="'circlecollider' in entityWrapper.components" :component="entityWrapper.components['circlecollider']" :key="entityWrapper.entity.id+'-circlecollider'"/>
             <hr>
-            <BoxColliderComponentPanel v-if="'boxcollider' in entityWrapper.components" :component="entityWrapper.components['boxcollider']" :key="entityWrapper.entity.id+'-boxcollider'"/>
+            <BoxCollider v-if="'boxcollider' in entityWrapper.components" :component="entityWrapper.components['boxcollider']" :key="entityWrapper.entity.id+'-boxcollider'"/>
             <hr>
-            <PolygonColliderComponentPanel v-if="'polygoncollider' in entityWrapper.components" :component="entityWrapper.components['polygoncollider']" :key="entityWrapper.entity.id+'-polygoncollider'"/>
+            <PolygonCollider v-if="'polygoncollider' in entityWrapper.components" :component="entityWrapper.components['polygoncollider']" :key="entityWrapper.entity.id+'-polygoncollider'"/>
             <hr>
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -28,20 +28,20 @@
 <script lang="ts">
 
 import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
-import TransformComponentPanel from './entity-component-panels/TransformComponentPanel.vue';
-import BoxColliderComponentPanel from './entity-component-panels/BoxColliderComponentPanel.vue';
-import CircleColliderComponentPanel from './entity-component-panels/CircleColliderComponentPanel.vue';
-import PolygonColliderComponentPanel from './entity-component-panels/PolygonColliderComponentPanel.vue';
+import Transform from './entity-component-panels/Transform.vue';
+import BoxCollider from './entity-component-panels/BoxCollider.vue';
+import CircleCollider from './entity-component-panels/CircleCollider.vue';
+import PolygonCollider from './entity-component-panels/PolygonCollider.vue';
 import {Entity} from '../../engine/Entity';
 import {Component as EntityComponent} from '../../engine/Component';
 
 
 @Component({
     components: {
-        BoxColliderComponentPanel,
-        CircleColliderComponentPanel,
-        PolygonColliderComponentPanel,
-        TransformComponentPanel
+        BoxCollider,
+        CircleCollider,
+        PolygonCollider,
+        Transform
     }
 })
 export default class InspectorPanel extends Vue {

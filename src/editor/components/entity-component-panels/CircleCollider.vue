@@ -22,7 +22,7 @@ import { Vector2 } from '../../../engine/math/Vector2';
 @Component({
     components: {VectorInput, ValueInput}
 })
-export default class CircleColliderComponentPanel extends Vue {
+export default class CircleCollider extends Vue {
 
     collider: Circle;
   

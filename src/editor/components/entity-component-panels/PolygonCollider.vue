@@ -28,7 +28,7 @@ import { Vector2 } from '../../../engine/math/Vector2';
 @Component({
     components: {VectorInput, ValueInput}
 })
-export default class PolygonColliderComponentPanel extends Vue {
+export default class PolygonCollider extends Vue {
 
     collider: Polygon;
     points: Array<Vector2> = [];

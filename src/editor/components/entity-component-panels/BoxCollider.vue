@@ -21,7 +21,7 @@ import { Vector2 } from '../../../engine/math/Vector2';
 @Component({
     components: {VectorInput}
 })
-export default class BoxColliderComponentPanel extends Vue {
+export default class BoxCollider extends Vue {
 
     collider: Box;
   
