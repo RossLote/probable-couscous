@@ -7,7 +7,7 @@ import {Entity} from './Entity';
 import {SpriteComponent} from './components/sprite/SpriteComponent';
 import {TileMapComponent} from './components/tilemap/TileMapComponent';
 import {IColliderComponent} from './components/collider/ColliderComponent';
-import {Circle, Polygon} from './components/collider/SAT';
+import {Box, Circle, Polygon} from './components/collider/SAT';
 
 export class Renderer {
 
@@ -42,18 +42,20 @@ export class Renderer {
 
     renderPolygonCollider(context: CanvasRenderingContext2D, collider: Polygon) {
         let points = collider.points;
-        let position = collider.position;
-        let scale = collider.scale;
-        context.translate(position.x, position.y);
-        context.rotate(collider.angle);
-        context.scale(scale.x, scale.y);
-        context.beginPath();
-        context.moveTo(points[0].x, points[0].y);
-        for (let i = 1; i < points.length; i++) {
-            context.lineTo(points[i].x, points[i].y);
+        if (points.length > 0) {
+            let position = collider.position;
+            let scale = collider.scale;
+            context.translate(position.x, position.y);
+            context.rotate(collider.angle);
+            context.scale(scale.x, scale.y);
+            context.beginPath();
+            context.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                context.lineTo(points[i].x, points[i].y);
+            }
+            context.closePath();
+            context.stroke();
         }
-        context.closePath();
-        context.stroke();
     }
 
     renderCollider(context: CanvasRenderingContext2D, dt: number, entity: Entity, component: any) {
@@ -62,6 +64,11 @@ export class Renderer {
         context.save()
         context.lineWidth=1;
         context.strokeStyle="red";
+
+        if (collider instanceof Box) {
+            collider = collider.toPolygon()
+        }
+
         if (collider instanceof Circle) {
             this.renderCircleCollider(context, collider);
         } else if (collider instanceof Polygon) {

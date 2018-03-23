@@ -46,6 +46,7 @@
 import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
 import Engine from '../../engine/Engine';
 import {Entity} from '../../engine/Entity';
+import { Vector2 } from '../../engine/math/Vector2';
 
 
 @Component({})
@@ -106,7 +107,7 @@ export default class HierarchyNode extends Vue {
 
     createChild(label: string) {
         let e = this.entity.createChild(label);
-        e.addComponent('circlecollider', {radius: 20});
+        e.addComponent('polygoncollider', {points: []});
         e.addComponent('ridgedbody', {});
     }
 

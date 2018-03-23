@@ -33,7 +33,8 @@ export class Circle implements ICollider {
     getAABB() {
         let radius = this.calculatedRadius;
         let corner = this.position.clone().subtract(new Vector2(radius, radius));
-        return new Box(corner, radius*2, radius*2).toPolygon();
+        let size = new Vector2(radius * 2, radius * 2);
+        return new Box(corner, size).toPolygon();
     };
 
     get calculatedRadius(): number {
@@ -294,7 +295,8 @@ export class Polygon implements ICollider {
                 yMax = point.y;
             }
         }
-        return new Box(this.position.clone().add(new Vector2(xMin, yMin)), xMax - xMin, yMax - yMin).toPolygon();
+        let size = new Vector2(xMax - xMin, yMax - yMin);
+        return new Box(this.position.clone().add(new Vector2(xMin, yMin)), size).toPolygon();
     };
 
     // Compute the centroid (geometric center) of the polygon. Any current state
@@ -339,22 +341,21 @@ export class Polygon implements ICollider {
 export class Box implements ICollider {
     /**
      * @param {Vector=} position A vector representing the bottom-left of the box (i.e. the smallest x and smallest y value).
-     * @param {?number=} width The width of the box.
-     * @param {?number=} height The height of the box.
+     * @param {?Vector=} size The size (x,y) of the box.
      * @constructor
      */
     private scale: Vector2 = Vector2.ONE;
     private angle: number = 0;
     
-    constructor(public position: Vector2 = Vector2.ZERO, public _width: number = 0, public _height: number = 0) {}
+    constructor(public position: Vector2 = Vector2.ZERO, private _size: Vector2 = Vector2.ONE) {}
     // Returns a polygon whose edges are the same as this box.
     /**
      * @return {Polygon} A new Polygon that represents this box.
      */
     toPolygon(): Polygon {
         let pos = this.position;
-        let w = this.width;
-        let h = this.height;
+        let w = this._size.x;
+        let h = this._size.y;
         let polygon = new Polygon(
             new Vector2(pos.x, pos.y),
             [
@@ -369,20 +370,28 @@ export class Box implements ICollider {
         return polygon;
     };
 
+    get size(): Vector2 {
+        return Vector2.mul2(this._size, this.scale)
+    }
+
+    set size(size: Vector2) {
+        this._size = size;
+    }
+
     get width(): number {
-        return this._width * this.scale.x;
+        return this.size.x * this.scale.x;
     }
 
     set width(value: number) {
-        this._width = value;
+        this.size.x = value;
     }
 
     get height(): number {
-        return this._height * this.scale.y;
+        return this.size.y * this.scale.y;
     }
 
     set height(value: number) {
-        this._height = value;
+        this.size.y = value;
     }
 
     setAngle(angle: number): Box {
@@ -490,7 +499,7 @@ const T_RESPONSE: Response = new Response();
 /**
  * @type {Polygon}
  */
-const TEST_POINT: Polygon = new Box(new Vector2, 0.000001, 0.000001).toPolygon();
+const TEST_POINT: Polygon = new Box(new Vector2, new Vector2(0.000001, 0.000001)).toPolygon();
 
 // ## Helper Functions
 

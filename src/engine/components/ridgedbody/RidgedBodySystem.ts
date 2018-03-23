@@ -107,6 +107,7 @@ export class RidgedBodySystem extends System {
                 let entityB = componentB.entity;
                 if (collided) {
                     let newCollision = this.storeCollision(entityA, entityB);
+                    console.log('Colliding');
                     if (newCollision) {
                         let ridgedbodyB = <RidgedBodyComponent>entityB.getComponent('ridgedbody');
                         if (ridgedbodyB) {

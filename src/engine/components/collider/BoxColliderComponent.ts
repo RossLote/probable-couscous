@@ -6,19 +6,17 @@ import {IColliderComponent} from './ColliderComponent';
 
 export class BoxColliderComponent extends Component implements IColliderComponent {
     position: Vector2;
-    width: number;
-    height: number;
-    collider: Polygon;
+    size: Vector2;
+    collider: Box;
 
     initialize() {
-        this.collider = new Box(this.position, this.width, this.height).toPolygon();
+        this.collider = new Box(this.position, this.size)
     }
 
     toJSON():any {
         return {
             position: this.position,
-            width: this.width,
-            height: this.height
+            size: this.size
         }
     }
 }
