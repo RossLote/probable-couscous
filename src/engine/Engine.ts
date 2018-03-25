@@ -46,7 +46,7 @@ export default class Engine {
     keyboard: Keyboard;
     eventCallbacks: { [key: string]: Array<Function> } = {};
 
-    constructor() {
+    constructor(width: number = 1920, height: number = 1080) {
 
         this.assetsRegistry = new AssetRegistry;
         this.scriptRegistry = new ScriptRegistry;
@@ -54,8 +54,8 @@ export default class Engine {
         this.tilesetRegistry = new TilesetRegistry(this.assetsRegistry);
         let canvas = document.createElement('canvas');
         document.body.appendChild(canvas);
-        canvas.width = 1000;
-        canvas.height = 600;
+        canvas.width = width;
+        canvas.height = height;
         this.canvas = canvas;
         this.renderer = new Renderer(this);
         this.keyboard = new Keyboard(window);

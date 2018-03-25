@@ -10,8 +10,9 @@ export class PolygonColliderComponent extends Component implements IColliderComp
 
     initialize() {
         // fromJSON
+        this.points = this.points || [];
         this.position = castVector2(this.position);
-        let points = Array<Vector2>();
+        let points = new Array<Vector2>();
         for (let i = 0, n = this.points.length; i < n; i++) {
             points.push(castVector2(this.points[i]));
         }

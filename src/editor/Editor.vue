@@ -1,7 +1,12 @@
 <template>
     <div class="editor">
-        <div class="main-view-wrapper">
+        <div class="left-column">
+            <div class="main-view-wrapper">
 
+            </div>
+            <div class="asset-panel-wrapper">
+                <AssetPanel/>
+            </div>
         </div>
         <div class="hierarchy-panel-wrapper">
             <HierarchyPanel :engine="engine" :scene="engine.currentScene" :root="engine.currentScene.getRootEntity()"/>
@@ -14,15 +19,15 @@
 
 <script lang="ts">
 
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
 import Engine from '../engine/Engine';
+import AssetPanel from './components/AssetPanel.vue';
 import HierarchyPanel from './components/HierarchyPanel.vue';
 import InspectorPanel from './components/InspectorPanel.vue';
 
 
 @Component({
-    components: {HierarchyPanel, InspectorPanel}
+    components: {AssetPanel, HierarchyPanel, InspectorPanel}
 })
 export default class Editor extends Vue {
     title: string;
@@ -34,7 +39,7 @@ export default class Editor extends Vue {
         this.engine.renderColliders = true;
         this.engine.sceneManager.createBlankScene('default');
         this.engine.sceneManager.loadScene('default');
-        this.engine.startGameLoop();
+        // this.engine.startGameLoop();
 
         (<any>window).TESTER = this.engine
         this.title = 'This is a test';
@@ -63,10 +68,19 @@ export default class Editor extends Vue {
     align-items: stretch;
     align-content: stretch;
 
-    .main-view-wrapper {
-        flex: 1;
-        background: #999;
+    .left-column {
+        display: flex;
+        flex-direction: column;
+        .main-view-wrapper {
+            flex: 1;
+            background: #999;
+        }
+        .asset-panel-wrapper {
+            flex: 1;
+        }
+
     }
+
 
     .hierarchy-panel-wrapper {
         width: 300px;
@@ -81,4 +95,11 @@ export default class Editor extends Vue {
     }
 }
 
+</style>
+
+<style lang="less">
+    .main-view-wrapper canvas {
+        max-width: 100%;
+        width: 100%;
+    }
 </style>
