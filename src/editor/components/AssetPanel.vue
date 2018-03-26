@@ -5,7 +5,7 @@
          @dragover.stop.prevent="onDragOver"
          @drop.stop.prevent="onDrop">
         <ul>
-            <li v-for="file in files" :key="file.name">{{ file.name }}</li>
+            <li v-for="asset in assets" :key="asset.fullPath">{{ asset.fullPath }}</li>
         </ul>
     </div>
 </template>
@@ -16,28 +16,37 @@
 import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
 
 
-function traverseFileTree(item: WebKitDirectoryEntry, path: string) {
-  path = path || "";
-  if (item.isFile) {
-    // Get file
-    item.file(function(file) {
-      console.log("File:", path + file.name);
-    });
-  } else if (item.isDirectory) {
-    // Get folder contents
-    var dirReader = item.createReader();
-    dirReader.readEntries(function(entries) {
-      for (var i=0; i<entries.length; i++) {
-        traverseFileTree(entries[i], path + item.name + "/");
-      }
-    });
-  }
+class Asset {
+    constructor(public path: string, public file: File){}
+
+    get fullPath(): string {
+        return this.path + this.file.name
+    }
+}
+
+
+function traverseFileTree(item: any, path: string, assets: Array<Asset> = []) {
+    path = path || "";
+    if (item.isFile) {
+        // Get file
+        (<any>item).file(function(file: File) {
+            assets.push(new Asset(path, file))
+        });
+    } else if (item.isDirectory) {
+        // Get folder contents
+        let dirReader = item.createReader();
+        dirReader.readEntries(function(entries: any) {
+            for (let entry of entries) {
+                traverseFileTree(entry, path + item.name + "/", assets);
+            }
+        });
+    }
 }
 
 @Component({})
 export default class AssetPanel extends Vue {
 
-    files: Array<File> = [];
+    assets: Array<Asset> = [];
 
     onDragEnter(event: DragEvent) {
 
@@ -52,9 +61,10 @@ export default class AssetPanel extends Vue {
     }
 
     onDrop(event: DragEvent) {
-        debugger;
-        for (let index = 0; index < event.dataTransfer.files.length; index++) {
-            this.files.push(event.dataTransfer.files[index]);
+        let assets = new Array<Asset>();
+
+        for (let index = 0; index < event.dataTransfer.items.length; index++) {
+            traverseFileTree(event.dataTransfer.items[index].webkitGetAsEntry(), '', this.assets);
         }
     }
 
