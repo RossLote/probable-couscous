@@ -5,7 +5,7 @@
 
             </div>
             <div class="asset-panel-wrapper">
-                <AssetPanel/>
+                <AssetPanel :assetsRegistry="engine.assetsRegistry"/>
             </div>
         </div>
         <div class="hierarchy-panel-wrapper">
@@ -39,9 +39,9 @@ export default class Editor extends Vue {
         this.engine.renderColliders = true;
         this.engine.sceneManager.createBlankScene('default');
         this.engine.sceneManager.loadScene('default');
-        // this.engine.startGameLoop();
+        this.engine.startGameLoop();
 
-        (<any>window).TESTER = this.engine
+        (<any>window).gameEngine = this.engine
         this.title = 'This is a test';
     }
 

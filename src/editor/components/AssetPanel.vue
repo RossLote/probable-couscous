@@ -14,6 +14,7 @@
 <script lang="ts">
 
 import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
+import { AssetRegistry } from '../../engine/core/assets';
 
 
 class Asset {
@@ -25,19 +26,19 @@ class Asset {
 }
 
 
-function traverseFileTree(item: any, path: string, assets: Array<Asset> = []) {
+function traverseFileTree(item: any, path: string, callback: Function) {
     path = path || "";
     if (item.isFile) {
         // Get file
         (<any>item).file(function(file: File) {
-            assets.push(new Asset(path, file))
+            callback(path, file);
         });
     } else if (item.isDirectory) {
         // Get folder contents
         let dirReader = item.createReader();
         dirReader.readEntries(function(entries: any) {
             for (let entry of entries) {
-                traverseFileTree(entry, path + item.name + "/", assets);
+                traverseFileTree(entry, path + item.name + "/", callback);
             }
         });
     }
@@ -47,6 +48,9 @@ function traverseFileTree(item: any, path: string, assets: Array<Asset> = []) {
 export default class AssetPanel extends Vue {
 
     assets: Array<Asset> = [];
+
+    @Prop()
+    assetsRegistry: AssetRegistry;
 
     onDragEnter(event: DragEvent) {
 
@@ -64,10 +68,16 @@ export default class AssetPanel extends Vue {
         let assets = new Array<Asset>();
 
         for (let index = 0; index < event.dataTransfer.items.length; index++) {
-            traverseFileTree(event.dataTransfer.items[index].webkitGetAsEntry(), '', this.assets);
+            traverseFileTree(event.dataTransfer.items[index].webkitGetAsEntry(), '', this.addAsset);
         }
     }
 
+    addAsset = (path: string, file: File) => {
+        let asset = new Asset(path, file);
+        let url = URL.createObjectURL(file);
+        this.assets.push(asset);
+        this.assetsRegistry.addImage(url, asset.fullPath);
+    }
 }
 
 </script>
