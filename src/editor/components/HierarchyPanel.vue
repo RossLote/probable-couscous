@@ -17,14 +17,13 @@ import Engine from '../../engine/Engine';
 import {Entity} from '../../engine/Entity';
 import {Scene} from '../../engine/scene/Scene';
 import HierarchyNode from './HierarchyNode.vue';
-import CreateEntityButton from './CreateEntityButton.vue';
 
 
 const NEW_ENTITY_LABEL = 'New Entity';
 
 
 @Component({
-    components: {HierarchyNode, CreateEntityButton}
+    components: {HierarchyNode,}
 })
 export default class HierarchyPanel extends Vue {
     @Prop()
