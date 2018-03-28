@@ -68,14 +68,20 @@ export default class SpritesheetEditor extends Vue {
     }
 
     onScroll(event: WheelEvent) {
-        this.scale -= (event.deltaY/1000);
+        let scale = this.scale - (event.deltaY/1000);
+        // this.x -= (event.offsetX * scale) - (event.offsetX * this.scale);
+        // this.y -= (event.offsetY * scale) - (event.offsetY * this.scale);
+        // console.log(this.x, this.y, scale)
+        let scalechange = scale - this.scale;
+        this.x += -(event.offsetX * scalechange);
+        this.y += -(event.offsetY * scalechange);
+        this.scale = scale;
         this.redraw();
     }
 
     onDrag(event: DragEvent) {
         this.x = event.clientX - this.startX;
         this.y = event.clientY - this.startY;
-        console.log(this.x, this.y);
         this.redraw();
     }
 
@@ -88,7 +94,6 @@ export default class SpritesheetEditor extends Vue {
     onDragEnd(event: DragEvent) {
         this.x = event.clientX - this.startX;
         this.y = event.clientY - this.startY;
-        console.log(this.x, this.y);
         this.redraw();
     }
 
