@@ -49,14 +49,15 @@ export default class SpritesheetEditor extends Vue {
 
     startX: number = 0;
     startY: number = 0;
+    lastX: number = 0;
+    lastY: number = 0;
 
     redraw() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.save()
-        this.context.translate(this.x, this.y);
-        this.context.scale(this.scale, this.scale);
+        this.context.clearRect(-10000, -10000, 20000, 20000);
+        // this.context.save()
+        // this.context.translate(this.x, this.y);
+        // this.context.scale(this.scale, this.scale);
         this.context.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.image.width, this.image.height)
-        this.context.restore()
     }
 
     mounted() {
@@ -68,33 +69,41 @@ export default class SpritesheetEditor extends Vue {
     }
 
     onScroll(event: WheelEvent) {
-        let scale = this.scale - (event.deltaY/1000);
+        let scaleFactor = 0.05;
+        let scale = 1+(event.deltaY/Math.abs(event.deltaY)) * scaleFactor;
+        this.scale *= scale;
+        console.log(scale)
         // this.x -= (event.offsetX * scale) - (event.offsetX * this.scale);
         // this.y -= (event.offsetY * scale) - (event.offsetY * this.scale);
         // console.log(this.x, this.y, scale)
-        let scalechange = scale - this.scale;
-        this.x += -(event.offsetX * scalechange);
-        this.y += -(event.offsetY * scalechange);
-        this.scale = scale;
+        // let scalechange = scale - this.scale;
+        // this.x += -(event.offsetX * scalechange);
+        // this.y += -(event.offsetY * scalechange);
+        let offsetX = -event.offsetX * this.scale;
+        let offsetY = -event.offsetY * this.scale;
+        this.context.translate(offsetX, offsetY);
+        this.context.scale(scale, scale);
+        this.context.translate(-offsetX, -offsetY);
         this.redraw();
     }
 
     onDrag(event: DragEvent) {
-        this.x = event.clientX - this.startX;
-        this.y = event.clientY - this.startY;
+        let diffX = event.clientX - this.lastX;
+        let diffY = event.clientY - this.lastY;
+        this.lastX = event.clientX;
+        this.lastY = event.clientY;
+        this.context.translate(diffX, diffY);
         this.redraw();
     }
 
     onDragStart(event: DragEvent) {
-        this.startX = event.clientX - this.x;
-        this.startY = event.clientY - this.y;
+        this.lastX = event.clientX;
+        this.lastY = event.clientY;
         event.dataTransfer.setDragImage(new Image, 0, 0);
     }
 
     onDragEnd(event: DragEvent) {
-        this.x = event.clientX - this.startX;
-        this.y = event.clientY - this.startY;
-        this.redraw();
+        this.onDrag(event);
     }
 
 }
