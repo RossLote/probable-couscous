@@ -22,6 +22,12 @@
                             <input type="number" min="1" v-model="frameHeight"/>
                         </label>
                     </div>
+                    <div>
+                        <label for="">
+                            Framerate
+                            <input type="number" min="0" max="60" v-model="framerate"/>
+                        </label>
+                    </div>
                 </div>
                 <div class="canvas-wrapper">
                     <canvas class="spritesheet-canvas" draggable @dragstart="onDragStart" @dragend="onDragEnd" @drag="onDrag" @mousewheel="onScroll" width="600" height="600"></canvas>
@@ -58,7 +64,7 @@ export default class SpritesheetEditor extends Vue {
     context: CanvasRenderingContext2D;
     image: HTMLImageElement;
 
-    selectedFrames: Array<number> = [0, 1, 2, 3, 4];
+    selectedFrames: Array<number> = [20, 21, 22, 21];
     framerate: number = 10;
 
     frameWidth: number = 32;
@@ -83,17 +89,14 @@ export default class SpritesheetEditor extends Vue {
         this.image = this.engine.assetsRegistry.getImage(this.imageName);
         this.canvas = (<HTMLCanvasElement>this.$el.querySelector('.spritesheet-canvas'));
         this.context = (<CanvasRenderingContext2D>this.canvas.getContext('2d'));
-        this.setupEngine();
-        this.redraw();
+        this.setupEngine().then(() => {
+            this.redraw();
+        });
     }
 
     setupEngine() {
         this.tmpEngine.assetsRegistry.addImage(this.image.src, 'image')
-        Promise.all(this.tmpEngine.assetsRegistry.promises).then(() => {
-            // imageName: string;
-            // frameWidth: number;
-            // frameHeight: number;
-            // sprites: IUncalculatedSprites;
+        return Promise.all(this.tmpEngine.assetsRegistry.promises).then(() => {
             this.updateSprite();
             let entity = this.tmpEngine.currentScene.createEntity();
             entity.addComponent('sprite', {spriteName: 'sprite'});
@@ -112,8 +115,15 @@ export default class SpritesheetEditor extends Vue {
                 }
             }
         });
+        let entity = this.tmpEngine.currentScene.getRootEntity();
+        let scale = this.tmpEngine.canvas.width / Math.max(this.frameWidth, this.frameHeight);
+        let offsetX = (this.tmpEngine.canvas.width - this.frameWidth*scale) / 2;
+        let offsetY = (this.tmpEngine.canvas.height - this.frameHeight*scale) / 2;
+        entity.transform.setLocalScale([scale, scale]);
+        entity.transform.setLocalPosition([offsetX, offsetY]);
     }
 
+    @Watch('framerate')
     @Watch('frameWidth')
     @Watch('frameHeight')
     redraw() {
@@ -186,6 +196,19 @@ export default class SpritesheetEditor extends Vue {
 </script>
 
 
+
+<style lang="less">
+
+
+.spritesheet-editor-wrapper{
+    canvas {
+        background-image: linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+}
+
+</style>
 <style scoped lang="less">
 
 .spritesheet-editor-wrapper {
@@ -197,6 +220,7 @@ export default class SpritesheetEditor extends Vue {
     justify-content: center;
     background: rgba(0, 0, 0, 0.5);
 }
+
 
 .spritesheet-editor{
     background: #333;
@@ -222,9 +246,6 @@ export default class SpritesheetEditor extends Vue {
         canvas {
             width: 100%;
             max-width: 100%;
-            background-image: linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
     }
 }
