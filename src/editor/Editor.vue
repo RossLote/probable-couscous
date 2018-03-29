@@ -25,7 +25,7 @@ import Engine from '../engine/Engine';
 import AssetPanel from './components/AssetPanel.vue';
 import HierarchyPanel from './components/HierarchyPanel.vue';
 import InspectorPanel from './components/InspectorPanel.vue';
-import SpritesheetEditor from './components/SpritesheetEditor.vue';
+import SpritesheetEditor from './components/Sprites/SpritesheetEditor.vue';
 
 
 @Component({
