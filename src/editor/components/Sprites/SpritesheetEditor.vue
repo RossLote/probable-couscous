@@ -58,7 +58,8 @@ export default class SpritesheetEditor extends Vue {
     context: CanvasRenderingContext2D;
     image: HTMLImageElement;
 
-    selectedFrames: Array<number> = [];
+    selectedFrames: Array<number> = [0, 1, 2, 3, 4];
+    framerate: number = 10;
 
     frameWidth: number = 32;
     frameHeight: number = 32;
@@ -93,19 +94,23 @@ export default class SpritesheetEditor extends Vue {
             // frameWidth: number;
             // frameHeight: number;
             // sprites: IUncalculatedSprites;
-            this.tmpEngine.spriteRegistry.registerSprite({
-                imageName: 'image',
-                frameWidth: this.frameWidth,
-                frameHeight: this.frameHeight,
-                sprites : {
-                    'sprite' : {
-                        frames: [0, 1, 2, 3, 4, 3, 2, 1],
-                        framerate: 8
-                    }
-                }
-            });
+            this.updateSprite();
             let entity = this.tmpEngine.currentScene.createEntity();
             entity.addComponent('sprite', {spriteName: 'sprite'});
+        });
+    }
+
+    updateSprite() {
+        this.tmpEngine.spriteRegistry.registerSprite({
+            imageName: 'image',
+            frameWidth: this.frameWidth,
+            frameHeight: this.frameHeight,
+            sprites : {
+                'sprite' : {
+                    frames: this.selectedFrames,
+                    framerate: this.framerate
+                }
+            }
         });
     }
 
@@ -113,6 +118,7 @@ export default class SpritesheetEditor extends Vue {
     @Watch('frameHeight')
     redraw() {
         if (this.frameWidth > 0 && this.frameHeight > 0) {
+            this.updateSprite();
             this.context.clearRect(-10000, -10000, 20000, 20000);
             this.context.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.image.width, this.image.height);
             this.context.strokeStyle = '#fff'
