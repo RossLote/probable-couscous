@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <canvas width="100" height="100"></canvas>
-    </div>
+    <canvas :class="{active}" width="100" height="100"></canvas>
 </template>
 
 
@@ -9,6 +7,7 @@
 
 import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-property-decorator'
 import Engine from '../../../engine/Engine';
+import { Sprite } from '../../../engine/core/sprites';
 
 
 interface IFrameData {
@@ -23,27 +22,36 @@ interface IFrameData {
 export default class SpriteFrame extends Vue {
 
     @Prop()
-    imageName: string;
-
-    @Prop()
     engine: Engine;
-
     @Prop()
-    frameData: IFrameData;
-
-    image: HTMLImageElement;
-    context: CanvasRenderingContext2D;
+    frameIndex: number;
+    @Prop()
+    active: boolean;
 
     mounted() {
-        this.image = this.engine.assetsRegistry.getImage(this.imageName);
-        let canvas = (<HTMLCanvasElement>this.$el.querySelector('canvas'));
-        let fd = this.frameData
-        this.context = (<CanvasRenderingContext2D>canvas.getContext('2d'));
-        this.context.drawImage(
-            this.image,
-            fd.x, fd.y, fd.width, fd.height,
-            fd.x, fd.y, fd.width, fd.height,
-            );
+        this.$parent.$on('updated', () => {
+            this.draw();
+        });
+        this.draw();
+    }
+
+    draw() {
+        let sprite = this.engine.spriteRegistry.getSprite('sprite');
+        let image = this.engine.assetsRegistry.getImage('image')
+        let frame = sprite.frames[this.frameIndex];
+
+        let canvas = (<HTMLCanvasElement>this.$el);
+        let ctx = (<CanvasRenderingContext2D>canvas.getContext('2d'));
+        let scale = canvas.width / Math.max(frame.width, frame.height);
+        let offsetX = (canvas.width - frame.width*scale) / 2;
+        let offsetY = (canvas.height - frame.height*scale) / 2;
+        ctx.imageSmoothingEnabled = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+            image,
+            frame.x, frame.y, frame.width, frame.height,
+            offsetX, offsetY, frame.width*scale, frame.height*scale
+        );
     }
 }
 
@@ -53,5 +61,14 @@ export default class SpriteFrame extends Vue {
 
 <style scoped lang="less">
 
+    canvas {
+        margin: 0 5px;
+        border: 1px solid #ccc;
+        width: 100px;
+        height: 100px;
+        &.active {
+            outline: 2px solid rgba(255, 255, 255, 0.8)
+        }
+    }
 
 </style>

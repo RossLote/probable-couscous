@@ -2,14 +2,20 @@
     <div class="spritesheet-editor-wrapper">
         <div class="spritesheet-editor">
             <div class="upper">
-                <div class="sprite">
-                    
-                </div>
                 <div class="filmstrip">
+                    <SpriteFrame v-if="ready"
+                                 v-for="(frame, index) in selectedFrames" 
+                                 :key="'frame'+frame+index"
+                                 :engine="tmpEngine"
+                                 :active="index === activeFrame"
+                                 :frameIndex="index"/>
                 </div>
             </div>
             <div class="lower">
                 <div class="config-panel">
+                    <div class="sprite">
+                    
+                    </div>
                     <div>
                         <label for="">
                             Frame width
@@ -30,7 +36,16 @@
                     </div>
                 </div>
                 <div class="canvas-wrapper">
-                    <canvas class="spritesheet-canvas" draggable @dragstart="onDragStart" @dragend="onDragEnd" @drag="onDrag" @mousewheel="onScroll" width="600" height="600"></canvas>
+                    <canvas class="spritesheet-canvas" 
+                            draggable
+                            @dragstart="onDragStart"
+                            @dragend="onDragEnd"
+                            @drag="onDrag"
+                            @mousewheel="onScroll"
+                            @click="onClick"
+                            width="600"
+                            height="600"
+                            ></canvas>
                 </div>
             </div>
         </div>
@@ -44,6 +59,7 @@ import { Component, Emit, Inject, Model, Prop, Provide, Vue, Watch } from 'vue-p
 import Engine from '../../../engine/Engine';
 
 import SpriteFrame from './SpriteFrame.vue'
+import { SpriteComponent } from '../../../engine/components/sprite/SpriteComponent';
 
 
 @Component({
@@ -63,15 +79,19 @@ export default class SpritesheetEditor extends Vue {
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
     image: HTMLImageElement;
+    ready: boolean = false;
 
-    selectedFrames: Array<number> = [20, 21, 22, 21];
+    selectedFrames: Array<number> = [];//[20, 21, 22, 21];
     framerate: number = 10;
+    activeFrame: number = 0;
 
-    frameWidth: number = 32;
+    frameWidth: number = 24;
     frameHeight: number = 32;
 
     lastX: number = 0;
     lastY: number = 0;
+
+    scale: number = 1;
 
     constructor(){
         super()
@@ -89,17 +109,27 @@ export default class SpritesheetEditor extends Vue {
         this.image = this.engine.assetsRegistry.getImage(this.imageName);
         this.canvas = (<HTMLCanvasElement>this.$el.querySelector('.spritesheet-canvas'));
         this.context = (<CanvasRenderingContext2D>this.canvas.getContext('2d'));
+        this.context.imageSmoothingEnabled = false;
         this.setupEngine().then(() => {
             this.redraw();
+            this.ready = true;
         });
     }
 
     setupEngine() {
-        this.tmpEngine.assetsRegistry.addImage(this.image.src, 'image')
+        this.tmpEngine.assetsRegistry.addImage((<HTMLImageElement>this.image).src, 'image')
         return Promise.all(this.tmpEngine.assetsRegistry.promises).then(() => {
             this.updateSprite();
             let entity = this.tmpEngine.currentScene.createEntity();
             entity.addComponent('sprite', {spriteName: 'sprite'});
+            let spriteComponent = entity.getComponent('sprite');
+            this.$watch(
+                function(){
+                    return spriteComponent.currentFrame;
+                }, (newValue: number) => {
+                    this.activeFrame = newValue;
+                }
+            );
         });
     }
 
@@ -121,6 +151,7 @@ export default class SpritesheetEditor extends Vue {
         let offsetY = (this.tmpEngine.canvas.height - this.frameHeight*scale) / 2;
         entity.transform.setLocalScale([scale, scale]);
         entity.transform.setLocalPosition([offsetX, offsetY]);
+        this.$emit('updated')
     }
 
     @Watch('framerate')
@@ -128,13 +159,14 @@ export default class SpritesheetEditor extends Vue {
     @Watch('frameHeight')
     redraw() {
         if (this.frameWidth > 0 && this.frameHeight > 0) {
+            let image = (<HTMLImageElement>this.image);
             this.updateSprite();
             this.context.clearRect(-10000, -10000, 20000, 20000);
-            this.context.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.image.width, this.image.height);
+            this.context.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
             this.context.strokeStyle = '#fff'
             this.context.lineWidth = 1;
-            let xMax = Math.floor(this.image.width/this.frameWidth);
-            let yMax = Math.floor(this.image.height/this.frameHeight);
+            let xMax = Math.floor(image.width/this.frameWidth);
+            let yMax = Math.floor(image.height/this.frameHeight);
             // TODO: box sizing
             for (let i = 0; i < yMax; i++) {
                 let y = i * this.frameHeight;
@@ -148,21 +180,32 @@ export default class SpritesheetEditor extends Vue {
         }
     }
 
-    get currentFrameData(): any {
-        return {
-            x: 0,
-            y: 0,
-            width: this.frameWidth,
-            height: this.frameHeight
-        }
-    } 
+    getFrame(frameNumber: number): HTMLCanvasElement {
+        let sprite = this.tmpEngine.spriteRegistry.getSprite('sprite');
+        let frame = sprite.frames[frameNumber];
+        let image = this.tmpEngine.assetsRegistry.getImage('image');
+        let canvas = document.createElement('canvas');
+        let ctx = <CanvasRenderingContext2D>canvas.getContext('2d');
+        ctx.drawImage(
+            image,
+            frame.x,
+            frame.y,
+            frame.width,
+            frame.height,
+        )
+        canvas.width = canvas.height = 100;
+        return canvas;
+    }
 
-    onScroll(event: WheelEvent) {
-        // TODO: scroll to mouse
-        let scaleFactor = 0.05;
-        let scale = 1-(event.deltaY/Math.abs(event.deltaY)) * scaleFactor;
-        this.context.scale(scale, scale);
-        this.redraw();
+    onClick(event: MouseEvent) {
+        let offsetX = event.offsetX / this.scale
+        let offsetY = event.offsetY / this.scale
+        let columns = Math.floor(this.image.width / this.frameWidth);
+        let column = Math.floor(offsetX / this.frameWidth);
+        let row =  Math.floor(offsetY / this.frameHeight);
+        this.selectedFrames.push(columns*row+column);
+        this.updateSprite();
+        console.log(this.selectedFrames)
     }
 
     onDrag(event: DragEvent) {
@@ -183,6 +226,15 @@ export default class SpritesheetEditor extends Vue {
 
     onDragEnd(event: DragEvent) {
         this.onDrag(event);
+    }
+
+    onScroll(event: WheelEvent) {
+        // TODO: scroll to mouse
+        let scaleFactor = 0.05;
+        let scale = 1-(event.deltaY/Math.abs(event.deltaY)) * scaleFactor;
+        this.scale *= scale;
+        this.context.scale(scale, scale);
+        this.redraw();
     }
 
     get spriteData(): any {
@@ -229,7 +281,13 @@ export default class SpritesheetEditor extends Vue {
     color: white;
 
     .upper {
+        display: flex;
+        background: #222;
+        padding: 5px;
         
+        .filmstrip {
+            height: 100px;
+        }
     }
 
     .lower {
@@ -238,7 +296,8 @@ export default class SpritesheetEditor extends Vue {
     }
 
     .config-panel {
-        padding: 10px
+        padding: 10px;
+        width: 300px;
     }
 
     .canvas-wrapper {

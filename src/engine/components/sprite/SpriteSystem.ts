@@ -13,7 +13,7 @@ export class SpriteSystem extends System {
         component.frameTime += dt;
         if (component.frameTime >= sprite.secondsPerFrame) {
             component.frameTime = 0; // TODO: find better solution
-            component.currentFrame++;
+            component.currentFrame = component.currentFrame + 1;
             if (component.currentFrame >= sprite.frames.length) {
                 component.currentFrame = 0;
             }
