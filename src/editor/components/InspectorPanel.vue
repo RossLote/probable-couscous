@@ -11,6 +11,8 @@
             <hr>
             <Ridgedbody v-if="'ridgedbody' in entityWrapper.components" :component="entityWrapper.components['ridgedbody']" :key="entityWrapper.entity.id+'-ridgedbody'"/>
             <hr>
+            <Sprite v-if="'sprite' in entityWrapper.components" :component="entityWrapper.components['sprite']" :key="entityWrapper.entity.id+'-sprite'"/>
+            <hr>
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Add component
@@ -21,6 +23,8 @@
                     <a class="dropdown-item" href="#" @click="addComponent('boxcollider')">Box collider</a>
                     <a class="dropdown-item" href="#" @click="addComponent('circlecollider')">Circle collider</a>
                     <a class="dropdown-item" href="#" @click="addComponent('polygoncollider')">Polygon collider</a>
+                    <h6 class="dropdown-header">Graphics</h6>
+                    <a class="dropdown-item" href="#" @click="addComponent('sprite')">Sprite</a>
                 </div>
             </div>
         </div>
@@ -36,6 +40,7 @@ import BoxCollider from './entity-component-panels/BoxCollider.vue';
 import CircleCollider from './entity-component-panels/CircleCollider.vue';
 import PolygonCollider from './entity-component-panels/PolygonCollider.vue';
 import Ridgedbody from './entity-component-panels/Ridgedbody.vue';
+import Sprite from './entity-component-panels/Sprite.vue';
 import {Entity} from '../../engine/Entity';
 import {Component as EntityComponent} from '../../engine/Component';
 
@@ -46,6 +51,7 @@ import {Component as EntityComponent} from '../../engine/Component';
         CircleCollider,
         PolygonCollider,
         Ridgedbody,
+        Sprite,
         Transform
     }
 })

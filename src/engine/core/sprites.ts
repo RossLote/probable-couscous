@@ -1,22 +1,22 @@
 import {AssetRegistry} from './assets';
 
-interface IFrame {
+export interface IFrame {
     x: number;
     y: number;
     width: number;
     height: number;
 }
 
-interface IUncalculatedSprite {
+export interface IUncalculatedSprite {
     frames: Array<number>;
     framerate?: number;
 }
 
-interface IUncalculatedSprites {
+export interface IUncalculatedSprites {
     [key: string] : IUncalculatedSprite
 }
 
-interface ISpritesheetData {
+export interface ISpritesheetData {
     imageName: string;
     frameWidth: number;
     frameHeight: number;

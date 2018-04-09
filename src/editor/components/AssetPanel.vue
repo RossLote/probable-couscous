@@ -5,7 +5,7 @@
          @dragover.stop.prevent="onDragOver"
          @drop.stop.prevent="onDrop">
         <ul>
-            <li v-for="asset in assets" :key="asset.fullPath" @dblclick="editSpritesheet(asset)">{{ asset.fullPath }}</li>
+            <li v-for="asset in assets" :key="asset.fullPath" @dblclick="buildSprite(asset)">{{ asset.fullPath }}</li>
         </ul>
 
     </div>
@@ -80,8 +80,8 @@ export default class AssetPanel extends Vue {
         this.assetsRegistry.addImage(url, asset.fullPath);
     }
 
-    editSpritesheet(asset: Asset) {
-        this.$parent.$emit('editSpritesheet', asset.fullPath);
+    buildSprite(asset: Asset) {
+        this.$parent.$emit('sprite-builder:open', asset.fullPath);
     }
 }
 

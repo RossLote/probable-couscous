@@ -79,6 +79,9 @@ export class Renderer {
 
     renderSprite(context: CanvasRenderingContext2D, dt: number, entity: Entity, component: SpriteComponent) {
         let sprite = this.app.spriteRegistry.getSprite(component.spriteName);
+        if (!sprite) {
+            return;
+        }
         let frame: any = sprite.frames[component.currentFrame];
         if (!frame) {
             return;

@@ -14,7 +14,7 @@
         <div class="inspector-panel-wrapper">
             <InspectorPanel/>
         </div>
-        <SpritesheetEditor v-if="editingSpritesheet" :imageName="editingSpritesheet" :engine="engine" />
+        <SpriteBuilder v-if="editingSpritesheet" :imageName="editingSpritesheet" :engine="engine" />
     </div>
 </template>
 
@@ -25,11 +25,11 @@ import Engine from '../engine/Engine';
 import AssetPanel from './components/AssetPanel.vue';
 import HierarchyPanel from './components/HierarchyPanel.vue';
 import InspectorPanel from './components/InspectorPanel.vue';
-import SpritesheetEditor from './components/Sprites/SpritesheetEditor.vue';
+import SpriteBuilder from './components/Sprites/SpriteBuilder.vue';
 
 
 @Component({
-    components: {AssetPanel, HierarchyPanel, InspectorPanel, SpritesheetEditor}
+    components: {AssetPanel, HierarchyPanel, InspectorPanel, SpriteBuilder}
 })
 export default class Editor extends Vue {
     title: string;
@@ -49,9 +49,13 @@ export default class Editor extends Vue {
     }
 
     created() {
-        this.$on('editSpritesheet', (imageName: string) => {
+        this.$on('sprite-builder:open', (imageName: string) => {
             this.editingSpritesheet = imageName;
         });
+        this.$on('sprite-builder:close', (imageName: string) => {
+            this.editingSpritesheet = '';
+        });
+        
     }
 
     mounted() {

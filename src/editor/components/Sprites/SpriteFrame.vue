@@ -1,5 +1,8 @@
 <template>
-    <canvas :class="{active}" width="100" height="100"></canvas>
+    <div class="sprite-frame">
+        <canvas :xclass="{active}" width="100" height="100"></canvas>
+        <span class="deleter" @click="sendDelete">&times;</span>
+    </div>
 </template>
 
 
@@ -37,10 +40,13 @@ export default class SpriteFrame extends Vue {
 
     draw() {
         let sprite = this.engine.spriteRegistry.getSprite('sprite');
-        let image = this.engine.assetsRegistry.getImage('image')
         let frame = sprite.frames[this.frameIndex];
+        if (!frame) {
+            return;
+        }
 
-        let canvas = (<HTMLCanvasElement>this.$el);
+        let image = this.engine.assetsRegistry.getImage('image')
+        let canvas = (<HTMLCanvasElement>this.$el.querySelector('canvas'));
         let ctx = (<CanvasRenderingContext2D>canvas.getContext('2d'));
         let scale = canvas.width / Math.max(frame.width, frame.height);
         let offsetX = (canvas.width - frame.width*scale) / 2;
@@ -53,6 +59,10 @@ export default class SpriteFrame extends Vue {
             offsetX, offsetY, frame.width*scale, frame.height*scale
         );
     }
+
+    sendDelete(){
+        this.$parent.$emit('frame:delete', this.frameIndex);
+    }
 }
 
 
@@ -61,14 +71,36 @@ export default class SpriteFrame extends Vue {
 
 <style scoped lang="less">
 
-    canvas {
+    .sprite-frame {
+        display: inline-block;
+        position: relative;
         margin: 0 5px;
         border: 1px solid #ccc;
         width: 100px;
         height: 100px;
-        &.active {
-            outline: 2px solid rgba(255, 255, 255, 0.8)
+        canvas {
+            width: 100%;
+            height: 100%;
+            &.active {
+                outline: 2px solid rgba(255, 255, 255, 0.8);
+            }
+        }
+        .deleter {
+            cursor: pointer;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            border: 1px solid white;
+            background: black;
+            text-align: center;
+            line-height: 20px;
+            z-index: 2;
+
         }
     }
+
 
 </style>

@@ -10,6 +10,9 @@ export class SpriteSystem extends System {
 
     updateEntity(dt: number, entity: Entity, component: SpriteComponent) {
         let sprite: Sprite = this.app.spriteRegistry.getSprite(component.spriteName);
+        if (!sprite) {
+            return;
+        }
         component.frameTime += dt;
         if (component.frameTime >= sprite.secondsPerFrame) {
             component.frameTime = 0; // TODO: find better solution
