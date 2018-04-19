@@ -307,17 +307,6 @@ export default class SpriteBuilder extends Vue {
 </style>
 <style scoped lang="less">
 
-.spritesheet-editor-wrapper {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
-}
-
-
 .spritesheet-editor{
     background: #333;
     padding: 10px;

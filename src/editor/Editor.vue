@@ -1,20 +1,29 @@
 <template>
     <div class="editor">
-        <div class="left-column">
-            <div class="main-view-wrapper">
-
+        <div class="editor-container">
+            <div class="left">
+                <div class="top">
+                    <HierarchyPanel :engine="engine" :scene="engine.currentScene" :root="engine.currentScene.getRootEntity()"/>
+                </div>
+                <div class="bottom">
+                    <AssetPanel :assetsRegistry="engine.assetsRegistry"/>
+                </div>
             </div>
-            <div class="asset-panel-wrapper">
-                <AssetPanel :assetsRegistry="engine.assetsRegistry"/>
+            <div class="center">
+                <div class="top">
+                    <div class="main-view-wrapper"></div>
+                </div>
+                <div class="bottom"></div>
+            </div>
+            <div class="right">
+                <InspectorPanel/>
             </div>
         </div>
-        <div class="hierarchy-panel-wrapper">
-            <HierarchyPanel :engine="engine" :scene="engine.currentScene" :root="engine.currentScene.getRootEntity()"/>
+        <div v-if="editingSpritesheet" class="dialog">
+            <div class="dialog-content">
+                <SpriteBuilder :imageName="editingSpritesheet" :engine="engine" />
+            </div>
         </div>
-        <div class="inspector-panel-wrapper">
-            <InspectorPanel/>
-        </div>
-        <SpriteBuilder v-if="editingSpritesheet" :imageName="editingSpritesheet" :engine="engine" />
     </div>
 </template>
 
@@ -72,39 +81,60 @@ export default class Editor extends Vue {
 <style lang="less" scoped>
 
 .editor {
-    height: 100%;
-    width: 100%;
-    box-sizing: content-box;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: stretch;
-    align-content: stretch;
+    color: white;
+    .editor-container {
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;
 
-    .left-column {
+        .left {
+            grid-column: 1;
+            background: #111;
+
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+
+            .top {
+                background: #151515;
+                grid-row: 1;
+            }
+            .bottom {
+                background: #252525;
+                grid-row: 2;
+            }
+        }
+        .center {
+            grid-column: 2;
+            background: #222;
+
+            display: grid;
+            grid-template-rows: 4fr 1fr;
+
+            .top {
+                background: #444;
+                grid-row: 1;
+            }
+            .bottom {
+                grid-row: 2;
+            }
+
+        }
+        .right {
+            grid-column: 3;
+            background: #333;
+        }
+    }
+    .dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         display: flex;
-        flex-direction: column;
-        .main-view-wrapper {
-            flex: 1;
-            background: #999;
-        }
-        .asset-panel-wrapper {
-            flex: 1;
-        }
-
-    }
-
-
-    .hierarchy-panel-wrapper {
-        width: 300px;
-        background: #555;
-        color: #ccc;
-    }
-    
-    .inspector-panel-wrapper {
-        width: 300px;
-        background: #666;
-        color: #ccc;
+        align-items: center;
+        justify-content: center;
     }
 }
 
